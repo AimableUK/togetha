@@ -1,5 +1,6 @@
 import { ModeToggle } from "@/components/theme/ModeToggle";
 import { Button } from "@/components/ui/button";
+import { LoginLink, RegisterLink } from "@kinde-oss/kinde-auth-nextjs";
 import Image from "next/image";
 import React from "react";
 
@@ -40,12 +41,18 @@ const Header = () => {
 
           <div className="flex items-center gap-4">
             <div className="flex flex-row items-center gap-x-1">
-              <Button variant="ghost" className="cursor-pointer">
-                Login
-              </Button>
-              <Button variant="outline" className="cursor-pointer">
-                Register
-              </Button>
+              <LoginLink postLoginRedirectURL="/dashboard">
+                <Button variant="ghost" className="cursor-pointer">
+                  Login
+                </Button>
+              </LoginLink>
+
+              <RegisterLink>
+                <Button variant="outline" className="cursor-pointer">
+                  Register
+                </Button>
+              </RegisterLink>
+
               <ModeToggle />
             </div>
 
