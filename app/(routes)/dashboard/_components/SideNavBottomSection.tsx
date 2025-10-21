@@ -48,7 +48,7 @@ const SideNavBottomSection = ({
 
       <Dialog>
         <DialogTrigger className="w-full" asChild>
-          <Button className="mt-3 flex w-full justify-start bg-accent hover:bg-accent/80 dark:hover:bg-accent/60 active:bg-accent/80 dark:text-foreground/90 cursor-pointer trans">
+          <Button className="mt-3 flex w-full justify-start bg-accent hover:bg-accent/80 dark:hover:bg-accent/60 active:bg-accent/65 dark:text-foreground/90 cursor-pointer trans">
             <FilePlus2 strokeWidth={2} />
             New file
           </Button>
