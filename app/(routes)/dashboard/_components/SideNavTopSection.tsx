@@ -25,21 +25,23 @@ export interface TEAM {
   _id: String;
 }
 
-const SideNavTopSection = ({ user }: any) => {
+const SideNavTopSection = ({ user, setActiveTeamInfo }: any) => {
   const [teamList, setTeamList] = useState<TEAM[]>();
   const [activeTeam, setActiveTeam] = useState<TEAM>();
   const router = useRouter();
-
+  const convex = useConvex();
   const menu = [
     { id: 1, name: "Create Team", path: "teams/create", icon: Users },
     { id: 2, name: "Settings", path: "", icon: Settings },
   ];
 
-  const convex = useConvex();
-
   useEffect(() => {
     user && getTeamList();
   }, [user]);
+
+  useEffect(() => {
+    activeTeam && setActiveTeamInfo(activeTeam);
+  }, [activeTeam]);
 
   const getTeamList = async () => {
     const result = await convex.query(api.teams.getTeam, {
@@ -127,8 +129,11 @@ const SideNavTopSection = ({ user }: any) => {
         </PopoverContent>
       </Popover>
       {/* all files button */}
-      <Button variant='outline' className="justify-start gap-2 cursor-pointer hover:text-gray-100 dark:hover:text-foreground mt-5">
-        <LayoutGridIcon  /> All Files
+      <Button
+        variant="outline"
+        className="justify-start gap-2 cursor-pointer hover:text-gray-100 dark:hover:text-foreground mt-5"
+      >
+        <LayoutGridIcon /> All Files
       </Button>
     </div>
   );
