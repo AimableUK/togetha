@@ -42,14 +42,7 @@ const Dashboard = () => {
     checkUser();
   }, [user, convex, createUser]);
 
-  return (
-    <div>
-      Dashboard
-      <LogoutLink>
-        <Button>LogOut</Button>
-      </LogoutLink>
-    </div>
-  );
+  return <div>Dashboard</div>;
 };
 
 export default Dashboard;
