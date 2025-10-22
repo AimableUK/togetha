@@ -1,9 +1,10 @@
+import { ModeToggle } from "@/components/theme/ModeToggle";
 import { Button } from "@/components/ui/button";
-import { Link } from "lucide-react";
+import { Link, Save } from "lucide-react";
 import Image from "next/image";
 import React from "react";
 
-const WorkspaceHeader = () => {
+const WorkspaceHeader = ({ onSave }: any) => {
   return (
     <div className="px-3 border-b flex items-center justify-between">
       <div className="flex flex-row w-fit items-center gap-x-2 hover:bg-gray-300 dark:hover:bg-gray-800 p-2 rounded-md cursor-pointer">
@@ -12,10 +13,20 @@ const WorkspaceHeader = () => {
           File Name
         </h2>
       </div>
-      <Button className="bg-accent hover:bg-accent/80 dark:hover:bg-accent/60 active:bg-accent/65 dark:text-foreground/90 cursor-pointer trans">
-        <Link />
-        Share
-      </Button>
+      <div className="flex gap-1 items-center">
+        <Button
+          onClick={() => onSave()}
+          className="bg-[#fc7d74] hover:bg-[#fc7d74]/80 dark:hover:bg-[#fc7d74]/60 active:bg-[#fc7d74]/65 dark:text-foreground/90 cursor-pointer trans"
+        >
+          <Save />
+          Save
+        </Button>
+        <Button className="bg-accent hover:bg-accent/80 dark:hover:bg-accent/60 active:bg-accent/65 dark:text-foreground/90 cursor-pointer trans">
+          <Link />
+          Share
+        </Button>
+        <ModeToggle />
+      </div>
     </div>
   );
 };
