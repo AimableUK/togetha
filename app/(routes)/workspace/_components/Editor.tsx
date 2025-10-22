@@ -75,11 +75,11 @@ const Editor = ({
   const updateDocument = useMutation(api.files.updateDocument);
 
   useEffect(() => {
-    if (fileData) initEditor();
+    fileData && initEditor();
   }, [fileData]);
 
   useEffect(() => {
-    onSaveTrigger && onSaveDocument();
+    if (onSaveTrigger > 0) onSaveDocument();
   }, [onSaveTrigger]);
 
   const initEditor = () => {
@@ -110,15 +110,6 @@ const Editor = ({
             placeholder: "Write...",
           },
         },
-        // embed: {
-        //   class: Embed,
-        //   config: {
-        //     services: {
-        //       youtube: true,
-        //       coub: true,
-        //     },
-        //   },
-        // },
         delimiter: Delimiter,
         code: CodeTool,
         quote: {
@@ -142,41 +133,36 @@ const Editor = ({
       },
 
       holder: "editorjs",
-      data: fileData?.document ? JSON.parse(fileData.document) : document,
+      data: fileData?.document ? JSON.parse(fileData.document) : rawDocument,
     });
 
     ref.current = editor;
   };
 
-  const onSaveDocument = () => {
-    if (ref.current) {
-      const promise = ref.current
-        .save()
-        .then((outputData) => {
-          updateDocument({
-            _id: fileId,
-            document: JSON.stringify(outputData),
-          });
-        })
-        .catch((error) => {
-          toast("Error", {
-            description: error?.response?.data?.detail || "Failed to save file",
-          });
-        });
+  const onSaveDocument = async () => {
+    if (!ref.current) return;
 
-      toast.promise(promise, {
+    toast.promise(
+      (async () => {
+        const outputData = await ref.current!.save();
+        await updateDocument({
+          _id: fileId,
+          document: JSON.stringify(outputData),
+        });
+      })(),
+      {
         loading: "Saving...",
         success: () => ({
           message: "Document Updated!",
-          description: `Document saved successfully!`,
+          description: "Document saved successfully!",
         }),
         error: (error) => ({
           message: "Error",
           description:
             error?.response?.data?.detail || "Failed to process your request.",
         }),
-      });
-    }
+      }
+    );
   };
 
   return (

@@ -13,6 +13,8 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import Constant from "@/app/_constant/Constant";
+import PricingDialog from "./PricingDialog";
 
 type SideNavBottomProps = {
   onFileCreate: (fileInput: string) => void;
@@ -53,40 +55,44 @@ const SideNavBottomSection = ({
             New file
           </Button>
         </DialogTrigger>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>Create New</DialogTitle>
-            <DialogDescription>
-              Create a new file in the space provided below
-            </DialogDescription>
-          </DialogHeader>
-          <div className="flex-1 gap-2">
-            <Label htmlFor="fileName" className="sr-only">
-              Link
-            </Label>
-            <Input
-              id="fileName"
-              placeholder="Enter File Name"
-              className="mt-2"
-              onChange={(e) => setFileInput(e.target.value)}
-            />
-          </div>
-          <DialogFooter>
-            <DialogClose asChild>
-              <Button type="button" variant="secondary">
-                Close
+        {totalFiles! < Constant.MAX_FREE_FILES ? (
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>Create New</DialogTitle>
+              <DialogDescription>
+                Create a new file in the space provided below
+              </DialogDescription>
+            </DialogHeader>
+            <div className="flex-1 gap-2">
+              <Label htmlFor="fileName" className="sr-only">
+                Link
+              </Label>
+              <Input
+                id="fileName"
+                placeholder="Enter File Name"
+                className="mt-2"
+                onChange={(e) => setFileInput(e.target.value)}
+              />
+            </div>
+            <DialogFooter>
+              <DialogClose asChild>
+                <Button type="button" variant="secondary">
+                  Close
+                </Button>
+              </DialogClose>
+              <Button
+                type="submit"
+                className="flex bg-accent hover:bg-accent/80 dark:hover:bg-accent/60 active:bg-accent/80 dark:text-foreground/90 cursor-pointer trans"
+                disabled={!(fileInput && fileInput.length > 2)}
+                onClick={() => onFileCreate(fileInput)}
+              >
+                Create
               </Button>
-            </DialogClose>
-            <Button
-              type="submit"
-              className="flex bg-accent hover:bg-accent/80 dark:hover:bg-accent/60 active:bg-accent/80 dark:text-foreground/90 cursor-pointer trans"
-              disabled={!(fileInput && fileInput.length > 2)}
-              onClick={() => onFileCreate(fileInput)}
-            >
-              Create
-            </Button>
-          </DialogFooter>
-        </DialogContent>
+            </DialogFooter>
+          </DialogContent>
+        ) : (
+          <PricingDialog />
+        )}
       </Dialog>
 
       <div className="h-3 w-full bg-foreground/20 dark:bg-foreground/50 rounded-full mt-4">
@@ -101,7 +107,8 @@ const SideNavBottomSection = ({
 
       <div className="text-xs mt-3">
         <h2>
-          <strong>{totalFiles}</strong> Out of <strong>5</strong> files used
+          <strong>{totalFiles}</strong> Out of{" "}
+          <strong>{Constant.MAX_FREE_FILES}</strong> files used
         </h2>
         <h2>Upgrade your plan for unlimited access.</h2>
       </div>
