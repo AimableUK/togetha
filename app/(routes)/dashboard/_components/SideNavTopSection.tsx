@@ -20,9 +20,9 @@ import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 
 export interface TEAM {
-  createdBy: String;
-  teamName: String;
-  _id: String;
+  createdBy: string;
+  teamName: string;
+  _id: string;
 }
 
 const SideNavTopSection = ({ user, setActiveTeamInfo }: any) => {
