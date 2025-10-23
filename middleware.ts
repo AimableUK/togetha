@@ -1,16 +1,21 @@
-import { NextResponse } from 'next/server'
-import type { NextRequest } from 'next/server'
-import { getKindeServerSession } from "@kinde-oss/kinde-auth-nextjs/server";
+import { NextResponse } from "next/server";
+import type { NextRequest } from "next/server";
 
-export async function middleware(request: NextRequest) {
-    const { isAuthenticated } = getKindeServerSession();
-    if (!await isAuthenticated()) {
-        return NextResponse.redirect(new URL('/api/auth/login?post_login_redirect_url=/dashboard', request.url))
+export function middleware(request: NextRequest) {
+    const access = request.cookies.get("access_token");
+    const refresh = request.cookies.get("refresh_token");
 
+    if (!access && !refresh) {
+        const loginUrl = new URL(
+            "/api/auth/login?post_login_redirect_url=/dashboard",
+            request.url
+        );
+        return NextResponse.redirect(loginUrl);
     }
-}
 
+    return NextResponse.next();
+}
 
 export const config = {
-    matcher: ['/dashboard'],
-}
+    matcher: ["/dashboard/:path*"],
+};
