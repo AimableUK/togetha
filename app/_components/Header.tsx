@@ -1,13 +1,25 @@
+"use client";
+
 import { ModeToggle } from "@/components/theme/ModeToggle";
 import { Button } from "@/components/ui/button";
-import { LoginLink, RegisterLink } from "@kinde-oss/kinde-auth-nextjs";
+import {
+  LoginLink,
+  LogoutLink,
+  RegisterLink,
+} from "@kinde-oss/kinde-auth-nextjs";
 import Image from "next/image";
+import Link from "next/link";
 import React from "react";
 
-const Header = () => {
+type SiteProps = {
+  user: {} | null;
+  isLoading: boolean | null;
+};
+
+const Header = ({ user, isLoading }: SiteProps) => {
   return (
     <header className="border-b">
-      <div className="mx-auto flex h-16 max-w-screen-xl items-center gap-8 px-4 sm:px-6 lg:px-8">
+      <div className="mx-auto flex h-16 max-w-7xl items-center gap-8 px-4 sm:px-6 lg:px-8">
         <div className="flex flex-row items-center gap-x-2">
           <Image src="/logo.png" alt="Togetha logo" width={35} height={35} />
           <h1 className="font-semibold text-xl">Togetha</h1>
@@ -18,22 +30,19 @@ const Header = () => {
             <ul className="flex items-center gap-6 text-sm">
               <li>
                 <a className="transition hover:text-gray-400/75" href="#">
-                  {" "}
-                  About{" "}
+                  About
                 </a>
               </li>
 
               <li>
                 <a className="transition hover:text-gray-400/75" href="#">
-                  {" "}
-                  Services{" "}
+                  Services
                 </a>
               </li>
 
               <li>
                 <a className="transition hover:text-gray-400/75" href="#">
-                  {" "}
-                  Projects{" "}
+                  Projects
                 </a>
               </li>
             </ul>
@@ -41,17 +50,37 @@ const Header = () => {
 
           <div className="flex items-center gap-4">
             <div className="flex flex-row items-center gap-x-1">
-              <LoginLink postLoginRedirectURL="/dashboard">
-                <Button variant="ghost" className="cursor-pointer">
-                  Login
-                </Button>
-              </LoginLink>
+              {isLoading ? (
+                <div className="loader2"></div>
+              ) : user ? (
+                <>
+                  <LogoutLink>
+                    <Button variant="ghost" className="cursor-pointer">
+                      Logout
+                    </Button>
+                  </LogoutLink>
 
-              <RegisterLink>
-                <Button variant="outline" className="cursor-pointer">
-                  Register
-                </Button>
-              </RegisterLink>
+                  <Link href="/dashboard">
+                    <Button variant="outline" className="cursor-pointer">
+                      Dashboard
+                    </Button>
+                  </Link>
+                </>
+              ) : (
+                <>
+                  <LoginLink postLoginRedirectURL="/dashboard">
+                    <Button variant="ghost" className="cursor-pointer">
+                      Login
+                    </Button>
+                  </LoginLink>
+
+                  <RegisterLink>
+                    <Button variant="outline" className="cursor-pointer">
+                      Register
+                    </Button>
+                  </RegisterLink>
+                </>
+              )}
 
               <ModeToggle />
             </div>

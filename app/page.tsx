@@ -1,22 +1,8 @@
-"use client";
+import { pageMetadata } from "@/lib/utils";
+import LandingClient from "./LandingClient";
 
-import { useEffect } from "react";
-import Header from "./_components/Header";
-import Hero from "./_components/Hero";
-import { useKindeBrowserClient } from "@kinde-oss/kinde-auth-nextjs";
+export const metadata = pageMetadata.landing;
 
 export default function Home() {
-  const { user } = useKindeBrowserClient();
-
-  useEffect(() => {
-    console.log(user);
-  }, [user]);
-
-  return (
-    <div>
-      <Header />
-
-      <Hero />
-    </div>
-  );
+  return <LandingClient />;
 }

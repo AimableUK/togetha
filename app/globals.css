@@ -157,7 +157,7 @@ h6.ce-header {
   color: inherit !important;
 }
 
-/* loader 1 */
+/* loader1 */
 .loader1 {
   width: 120px;
   height: 22px;
@@ -167,6 +167,7 @@ h6.ce-header {
   position: relative;
 }
 
+/* loader1 */
 .loader1::before {
   content: "";
   position: absolute;
@@ -184,5 +185,23 @@ h6.ce-header {
   50% {
     left: 100%;
     transform: translateX(calc(-100% - 4px))
+  }
+}
+
+/* loader2 */
+.loader2 {
+  width: 30px;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  padding: 3px;
+  background:
+    radial-gradient(farthest-side, var(--accent) 95%, #0000) 50% 0/8px 8px no-repeat,
+    radial-gradient(farthest-side, #0000 calc(100% - 5px), var(--accent) calc(100% - 4px)) content-box;
+  animation: l6 2s infinite;
+}
+
+@keyframes l6 {
+  to {
+    transform: rotate(1turn)
   }
 }
