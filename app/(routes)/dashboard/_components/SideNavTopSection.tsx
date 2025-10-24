@@ -67,10 +67,10 @@ const SideNavTopSection = ({ user, setActiveTeamInfo }: any) => {
     <div className="flex flex-col">
       <Popover>
         <PopoverTrigger className="w-full relative">
-          <div className="flex flex-row items-center gap-x-2 hover:bg-gray-300 dark:hover:bg-gray-800 p-1 w-fit rounded-md cursor-pointer">
+          <div className="flex flex-row items-center gap-x-2 hover:bg-gray-300 dark:hover:bg-gray-800 p-1 md:w-full w-fit rounded-md cursor-pointer">
             <Image src="/logo.png" alt="Togetha logo" width={35} height={35} />
-            <h2 className="font-semibold text-xl flex gap-2 items-center">
-              {activeTeam?.teamName}
+            <h2 className="font-semibold justify-between text-xl flex flex-1 items-center">
+              <span>{activeTeam?.teamName}</span>
               <ChevronDown />
             </h2>
           </div>
@@ -83,17 +83,15 @@ const SideNavTopSection = ({ user, setActiveTeamInfo }: any) => {
         <PopoverContent className="md:ml-5 p-2">
           {/* Team section */}
           <div className="px-2">
-            <h2>
-              {teamList?.map((team, index) => (
-                <h2
-                  key={index}
-                  className={`${activeTeam?._id == team._id && "bg-accent text-foreground/90"}  p-2 rounded-md hover:bg-accent active:bg-accent/80 hover:text-gray-100 cursor-pointer trans`}
-                  onClick={() => setActiveTeam(team)}
-                >
-                  {team.teamName}
-                </h2>
-              ))}
-            </h2>
+            {teamList?.map((team, index) => (
+              <h2
+                key={index}
+                className={`${activeTeam?._id == team._id && "bg-accent text-foreground/90"}  p-2 rounded-md hover:bg-accent active:bg-accent/80 hover:text-gray-100 cursor-pointer trans`}
+                onClick={() => setActiveTeam(team)}
+              >
+                {team.teamName ?? "Team Name"}
+              </h2>
+            ))}
           </div>
           <Separator className="mt-3 mb-1" />
           {/* menu section */}
@@ -120,14 +118,14 @@ const SideNavTopSection = ({ user, setActiveTeamInfo }: any) => {
           {user && (
             <div className="mt-2 flex gap-2">
               <Image
-                src={user?.picture}
+                src={user?.picture ?? "/user.png"}
                 alt="user Image"
                 width={45}
                 height={45}
                 className="rounded-full"
               />
               <div className="flex flex-col">
-                <h2 className="flex flex-col text-xl font-bold text-foreground/85">
+                <h2 className="flex flex-col font-bold text-foreground/85">
                   {user?.given_name} {user?.family_name}
                 </h2>
                 <h2 className="flex flex-col text-[15px] text-foreground/75">

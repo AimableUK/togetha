@@ -1,20 +1,16 @@
 "use client";
 
-import { Button } from "@/components/ui/button";
 import { api } from "@/convex/_generated/api";
-import {
-  LogoutLink,
-  useKindeBrowserClient,
-} from "@kinde-oss/kinde-auth-nextjs";
+import { useKindeBrowserClient } from "@kinde-oss/kinde-auth-nextjs";
 import { useConvex, useMutation } from "convex/react";
 import React, { useEffect, useRef } from "react";
 import Header from "./_components/Header";
 import FileList from "./_components/FileList";
-
+import Image from "next/image";
 
 const DashboardClient = () => {
   const convex = useConvex();
-  const { user } = useKindeBrowserClient();
+  const { user, isLoading } = useKindeBrowserClient();
   const createUser = useMutation(api.user.createUser);
 
   const hasCreated = useRef(false);
@@ -44,6 +40,20 @@ const DashboardClient = () => {
 
     checkUser();
   }, [user, convex, createUser]);
+
+  if (isLoading)
+    return (
+      <div className="flex flex-col items-center justify-center min-h-screen gap-4">
+        <div className="flex gap-1 items-center">
+          <Image src="/logo.png" alt="togetha logo" width={40} height={40} />
+          <div>
+            <h3 className="font-bold text-2xl">Togetha</h3>
+            <h4 className="font-semibold">Loading Content</h4>
+          </div>
+        </div>
+        <div className="loader1"></div>
+      </div>
+    );
 
   return (
     <div className="p-1 px-2 md:p-4">

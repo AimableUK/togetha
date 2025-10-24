@@ -8,6 +8,7 @@ import { api } from "@/convex/_generated/api";
 import { Id } from "@/convex/_generated/dataModel";
 import { FILE } from "../../dashboard/_components/FileList";
 import Canvas from "../_components/Canvas";
+import Image from "next/image";
 
 type WorkspaceClientProps = {
   fileId: string;
@@ -20,7 +21,6 @@ const WorkspaceClient = ({ fileId }: WorkspaceClientProps) => {
   const handleSaveDoc = () => setSaveDocTrigger((prev) => prev + 1);
   const handleSaveCanvas = () => setSaveCanvasTrigger((prev) => prev + 1);
 
-  //   const { fileId } = React.use(params);
   const [fileData, setFileData] = useState<FILE | any>();
 
   const convex = useConvex();
@@ -36,13 +36,32 @@ const WorkspaceClient = ({ fileId }: WorkspaceClientProps) => {
     if (fileId) getFileData();
   }, []);
 
-  if (!fileData) return <div>Loading file...</div>;
+  useEffect(() => {
+    if (fileData?.fileName) {
+      document.title = `${fileData.fileName} Workspace`;
+    }
+  }, [fileData]);
+
+  if (!fileData)
+    return (
+      <div className="flex flex-col items-center gap-5 absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 ">
+        <div className="flex gap-1 items-center">
+          <Image src="/logo.png" alt="togetha logo" width={40} height={40} />
+          <div>
+            <h3 className="font-bold text-2xl">Togetha</h3>
+            <h4 className="font-semibold">Loading Workspace</h4>
+          </div>
+        </div>
+        <div className="loader1"></div>
+      </div>
+    );
 
   return (
     <div>
       <WorkspaceHeader
         onSaveDoc={handleSaveDoc}
         onSaveCanvas={handleSaveCanvas}
+        fileData={fileData}
       />
 
       {/*   workspace layout */}

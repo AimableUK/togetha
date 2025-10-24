@@ -8,6 +8,7 @@ import React, { useEffect, useState } from "react";
 import SideNav from "./_components/SideNav";
 import { FileListContext } from "@/app/FilesListContext";
 import { useIsMobile } from "@/app/hooks/use-mobile";
+import Image from "next/image";
 
 const DashboardLayout = ({
   children,
@@ -33,9 +34,22 @@ const DashboardLayout = ({
     });
 
     if (!result?.length) {
-      router.push("teams/create");
+      if (!window.location.pathname.includes("teams/create")) {
+        router.push("/teams/create");
+      }
     }
   };
+
+  if (isLoading)
+    return (
+      <div className="flex flex-col items-center gap-5 absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 ">
+        <div className="flex gap-1 items-center">
+          <Image src="/logo.png" alt="togetha logo" width={40} height={40} />
+          <h3 className="font-bold text-2xl">Togetha</h3>
+        </div>
+        <div className="loader1"></div>
+      </div>
+    );
 
   return (
     <FileListContext.Provider

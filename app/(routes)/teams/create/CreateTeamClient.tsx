@@ -5,10 +5,16 @@ import { Input } from "@/components/ui/input";
 import { api } from "@/convex/_generated/api";
 import { useKindeBrowserClient } from "@kinde-oss/kinde-auth-nextjs";
 import { useMutation } from "convex/react";
+import { CircleArrowLeft } from "lucide-react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import React, { useState } from "react";
 import { toast } from "sonner";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 const CreateTeamClient = () => {
   const [teamName, setTeamName] = useState("");
@@ -24,7 +30,7 @@ const CreateTeamClient = () => {
     });
 
     toast.promise(promise, {
-      loading: "Processing...",
+      loading: "Creating Team...",
       success: () => ({
         message: "Team Created",
         description: `${teamName} Team created successfully!`,
@@ -41,9 +47,30 @@ const CreateTeamClient = () => {
     });
   };
 
+  const handleGoBack = () => {
+    if (window.history.length > 1) {
+      router.back();
+    } else {
+      router.push("/dashboard");
+    }
+  };
+
   return (
     <div className="p-6 md:p-16">
       <div className="flex flex-row items-center gap-x-2 mb-3">
+        <Tooltip>
+          <TooltipTrigger>
+            <CircleArrowLeft
+              size={32}
+              className="hover:text-accent cursor-pointer active:scale-90 trans"
+              absoluteStrokeWidth
+              onClick={handleGoBack}
+            />
+          </TooltipTrigger>
+          <TooltipContent>
+            <p>Return to Files</p>
+          </TooltipContent>
+        </Tooltip>
         <Image src="/logo.png" alt="Togetha logo" width={35} height={35} />
         <h1 className="font-semibold text-xl">Togetha</h1>
       </div>

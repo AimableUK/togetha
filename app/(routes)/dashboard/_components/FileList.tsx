@@ -49,9 +49,10 @@ const FileList = () => {
           </thead>
 
           <tbody className="divide-y">
-            {fileList &&
+            {fileList && fileList.length > 0 ? (
               fileList.map((file) => (
                 <tr
+                  key={file._id}
                   className="odd:bg-foreground/5 hover:bg-foreground/15 cursor-pointer"
                   onClick={() => router.push("/workspace/" + file._id)}
                 >
@@ -93,7 +94,14 @@ const FileList = () => {
                     </DropdownMenu>
                   </td>
                 </tr>
-              ))}
+              ))
+            ) : (
+              <tr className="bg-foreground/5">
+                <td colSpan={5} className="px-3 py-2 text-center">
+                  No files Available
+                </td>
+              </tr>
+            )}
           </tbody>
         </table>
       </div>
