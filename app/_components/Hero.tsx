@@ -2,7 +2,7 @@ import React from "react";
 
 const Hero = () => {
   return (
-    <section className="lg:grid lg:h-screen lg:place-content-center">
+    <section className="lg:grid lg:place-content-center">
       <div
         className="flex items-baseline 
         justify-center pt-20"
@@ -12,7 +12,7 @@ const Hero = () => {
           <span className="text-accent">AI Diagram</span>
         </h2>
       </div>
-      <div className="mx-auto w-screen max-w-screen-xl px-4 py-3 sm:px-3 lg:px-8">
+      <div className="mx-auto w-screen max-w-7xl px-4 py-3 sm:px-3 lg:px-8">
         <div className="mx-auto max-w-prose text-center">
           <h1 className="text-4xl font-bold  sm:text-5xl">
             <strong className="text-accent"> Togetha, </strong>
