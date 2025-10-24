@@ -1,12 +1,13 @@
 import {
   ChevronDown,
   LayoutGridIcon,
+  ListCollapse,
   LogOut,
   Settings,
   Users,
 } from "lucide-react";
 import Image from "next/image";
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import {
   Popover,
   PopoverContent,
@@ -18,6 +19,8 @@ import { useConvex } from "convex/react";
 import { api } from "@/convex/_generated/api";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
+import { FileListContext } from "@/app/FilesListContext";
+import { useIsMobile } from "@/app/hooks/use-mobile";
 
 export interface TEAM {
   createdBy: string;
@@ -30,6 +33,9 @@ const SideNavTopSection = ({ user, setActiveTeamInfo }: any) => {
   const [activeTeam, setActiveTeam] = useState<TEAM>();
   const router = useRouter();
   const convex = useConvex();
+  const { collapseSidebar_, setCollapseSidebar_ } = useContext(FileListContext);
+  const isMobile = useIsMobile();
+
   const menu = [
     { id: 1, name: "Create Team", path: "teams/create", icon: Users },
     { id: 2, name: "Settings", path: "", icon: Settings },
@@ -60,8 +66,8 @@ const SideNavTopSection = ({ user, setActiveTeamInfo }: any) => {
   return (
     <div className="flex flex-col">
       <Popover>
-        <PopoverTrigger className="w-full">
-          <div className="flex flex-row items-center gap-x-2 hover:bg-gray-300 dark:hover:bg-gray-800 p-2 rounded-md cursor-pointer">
+        <PopoverTrigger className="w-full relative">
+          <div className="flex flex-row items-center gap-x-2 hover:bg-gray-300 dark:hover:bg-gray-800 p-1 w-fit rounded-md cursor-pointer">
             <Image src="/logo.png" alt="Togetha logo" width={35} height={35} />
             <h2 className="font-semibold text-xl flex gap-2 items-center">
               {activeTeam?.teamName}
@@ -69,6 +75,10 @@ const SideNavTopSection = ({ user, setActiveTeamInfo }: any) => {
             </h2>
           </div>
         </PopoverTrigger>
+        <ListCollapse
+          className={`${isMobile ? "absolute" : "hidden"} trans cursor-pointer active:scale-75 justify-end right-6 top-9`}
+          onClick={() => setCollapseSidebar_(!collapseSidebar_)}
+        />
 
         <PopoverContent className="md:ml-5 p-2">
           {/* Team section */}

@@ -14,7 +14,8 @@ const SideNav = () => {
 
   const [activeTeam, setActiveTeam] = useState<TEAM>();
   const [totalFiles, setTotalFiles] = useState<number>();
-  const { fileList_, setFileList_ } = useContext(FileListContext);
+  const { fileList_, setFileList_, collapseSidebar_ } =
+    useContext(FileListContext);
 
   useEffect(() => {
     activeTeam && getFiles();
@@ -56,7 +57,9 @@ const SideNav = () => {
   };
 
   return (
-    <div className="flex flex-col bg-sidebar border h-screen fixed w-72 border-r p-6">
+    <div
+      className={`${collapseSidebar_ && "-translate-x-72"} trans flex flex-col bg-sidebar border h-screen fixed w-72 border-r p-6`}
+    >
       <div className="flex-1">
         <SideNavTopSection
           user={user}

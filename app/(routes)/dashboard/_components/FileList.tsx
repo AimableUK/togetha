@@ -70,7 +70,7 @@ const FileList = () => {
                   </td>
                   <td className="px-3 py-2 whitespace-nowrap">
                     <Image
-                      src={user?.picture}
+                      src={user?.picture ?? "/user.png"}
                       alt="User Image"
                       width={30}
                       height={30}
@@ -85,8 +85,8 @@ const FileList = () => {
                       <DropdownMenuContent>
                         <DropdownMenuLabel>My Account</DropdownMenuLabel>
                         <DropdownMenuSeparator />
-                        <DropdownMenuItem className="group p-2 rounded-md hover:bg-accent active:bg-accent/80 hover:!text-gray-100 cursor-pointer trans">
-                          <Archive className="group-hover:!text-gray-100" />
+                        <DropdownMenuItem className="group p-2 rounded-md hover:bg-accent active:bg-accent/80 hover:text-gray-100! cursor-pointer trans">
+                          <Archive className="group-hover:text-gray-100!" />
                           Archive
                         </DropdownMenuItem>
                       </DropdownMenuContent>
