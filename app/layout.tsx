@@ -84,7 +84,7 @@ export default function RootLayout({
               "@context": "https://schema.org",
               "@type": "WebApplication",
               name: "Togetha",
-              url: "https://www.togetha.com",
+              url: "https://www.togetha-app.vercel.app",
               description:
                 "Togetha is a collaborative playground for teams and individuals to brainstorm and create in real-time.",
               applicationCategory: "ProductivityApplication",
