@@ -1,36 +1,70 @@
+import { LoginLink } from "@kinde-oss/kinde-auth-nextjs";
 import React from "react";
 
 const Hero = () => {
   return (
     <section className="lg:grid lg:place-content-center">
-      <div
-        className="flex items-baseline 
-        justify-center pt-20"
-      >
-        <h2 className="text-center flex w-fit rounded-full border border-gray-400 p-1 px-3 font-medium transition-colors">
-          See What's New &nbsp;| &nbsp;
-          <span className="text-accent">AI Diagram</span>
-        </h2>
-      </div>
-      <div className="mx-auto w-screen max-w-7xl px-4 py-3 sm:px-3 lg:px-8">
-        <div className="mx-auto max-w-prose text-center">
-          <h1 className="text-4xl font-bold  sm:text-5xl">
-            <strong className="text-accent"> Togetha, </strong>
-            Everything You Build Feels Effortless
-          </h1>
-
-          <p className="mt-4 text-base text-pretty sm:text-lg/relaxed">
-            Link ideas, tasks, and projects seamlessly, all togetha.
-          </p>
-
-          <div className="mt-4 flex justify-center gap-4 sm:mt-6">
-            <a
-              className="inline-block rounded border border-accent bg-accent px-5 py-3 font-medium text-white shadow-sm transition-colors hover:bg-[#0742a2]"
-              href="#"
-            >
-              Get Started
-            </a>
+      <div className="relative isolate px-6 lg:px-8">
+        {/* gradient */}
+        <div
+          aria-hidden="true"
+          className="absolute inset-x-0 -top-40 -z-10 transform-gpu overflow-hidden blur-3xl sm:-top-80"
+        >
+          <div
+            style={{
+              clipPath:
+                "polygon(74.1% 44.1%, 100% 61.6%, 97.5% 26.9%, 85.5% 0.1%, 80.7% 2%, 72.5% 32.5%, 60.2% 62.4%, 52.4% 68.1%, 47.5% 58.3%, 45.2% 34.5%, 27.5% 76.7%, 0.1% 64.9%, 17.9% 100%, 27.6% 76.8%, 76.1% 97.7%, 74.1% 44.1%)",
+            }}
+            className="relative left-[calc(50%-11rem)] aspect-1155/678 w-144.5 -translate-x-1/2 rotate-30 bg-linear-to-tr from-[#ff80b5] to-[#9089fc] opacity-30 sm:left-[calc(50%-30rem)] sm:w-288.75"
+          />
+        </div>
+        <div className="mx-auto max-w-2xl py-32 sm:py-48 lg:py-28">
+          <div className="hidden sm:mb-8 sm:flex sm:justify-center">
+            <div className="trans relative rounded-full px-3 py-1 text-sm/6 text-primary ring-1 ring-primary/10 hover:ring-primary/20">
+              Announcing our new Big Feature.{" "}
+              <a
+                href="#"
+                className="font-semibold text-accent hover:underline "
+              >
+                <span aria-hidden="true" className="absolute inset-0" />
+                Read more <span aria-hidden="true">&rarr;</span>
+              </a>
+            </div>
           </div>
+          <div className="text-center">
+            <h1 className="text-4xl font-bold  sm:text-5xl">
+              <strong className="text-accent"> Togetha, </strong>
+              Everything You Build Feels Effortless
+            </h1>
+            <p className="mt-8 text-lg font-medium text-pretty text-primary sm:text-xl/8">
+              Capture your ideas, edit them effortlessly, and keep your thoughts
+              organized - Togetha makes it simple to focus and create without
+              distractions
+            </p>
+            <div className="mt-10 flex items-center justify-center gap-x-6">
+              <LoginLink
+                postLoginRedirectURL="/dashboard"
+                className="rounded-md bg-accent text-white px-3.5 py-2.5 text-sm font-semibold shadow-xs hover:bg-accent/60 active:bg-accent/30 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500"
+              >
+                Get started
+              </LoginLink>
+              <a href="#" className="text-sm/6 font-semibold">
+                Learn more <span aria-hidden="true">→</span>
+              </a>
+            </div>
+          </div>
+        </div>
+        <div
+          aria-hidden="true"
+          className="absolute inset-x-0 top-[calc(100%-13rem)] -z-10 transform-gpu overflow-hidden blur-3xl sm:top-[calc(100%-30rem)]"
+        >
+          <div
+            style={{
+              clipPath:
+                "polygon(74.1% 44.1%, 100% 61.6%, 97.5% 26.9%, 85.5% 0.1%, 80.7% 2%, 72.5% 32.5%, 60.2% 62.4%, 52.4% 68.1%, 47.5% 58.3%, 45.2% 34.5%, 27.5% 76.7%, 0.1% 64.9%, 17.9% 100%, 27.6% 76.8%, 76.1% 97.7%, 74.1% 44.1%)",
+            }}
+            className="relative left-[calc(50%+3rem)] aspect-1155/678 w-144.5 -translate-x-1/2 bg-linear-to-tr from-[#ff80b5] to-[#9089fc] opacity-30 sm:left-[calc(50%+36rem)] sm:w-288.75"
+          />
         </div>
       </div>
     </section>

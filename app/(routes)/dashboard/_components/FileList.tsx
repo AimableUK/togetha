@@ -28,7 +28,7 @@ export interface FILE {
 const FileList = () => {
   const { fileList_, setFileList_ } = useContext(FileListContext);
   const [fileList, setFileList] = useState<FILE[]>();
-  const { user }: any = useKindeBrowserClient();
+  const { user, isLoading }: any = useKindeBrowserClient();
   const router = useRouter();
 
   useEffect(() => {
@@ -45,11 +45,18 @@ const FileList = () => {
               <th className="px-3 py-2 whitespace-nowrap">Created At</th>
               <th className="px-3 py-2 whitespace-nowrap">Edited At</th>
               <th className="px-3 py-2 whitespace-nowrap">Author</th>
+              <th className="px-3 py-2 whitespace-nowrap">Actions</th>
             </tr>
           </thead>
 
           <tbody className="divide-y">
-            {fileList && fileList.length > 0 ? (
+            {isLoading ? (
+              <tr>
+                <td className="flex py-3">
+                  <span className="loader1"></span>
+                </td>
+              </tr>
+            ) : fileList && fileList.length > 0 ? (
               fileList.map((file) => (
                 <tr
                   key={file._id}
