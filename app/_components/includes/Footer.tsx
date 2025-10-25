@@ -7,8 +7,8 @@ const Footer = () => {
     <footer>
       <div className="mt-5">
         <div className="container px-4 mx-auto">
-          <div className="-mx-4 flex flex-wrap justify-between">
-            <div className="px-4 my-4 w-full xl:w-1/5 flex flex-col gap-3 ">
+          <div className="-mx-4 flex flex-col justify-between">
+            <div className="px-4 my-4 w-full flex flex-col gap-3 ">
               <div className="flex flex-row items-center gap-x-2">
                 <Image
                   src="/logo.png"
