@@ -14,10 +14,10 @@ const Preview = () => {
           <span className="w-28 h-2 bg-gray-900 rounded-md dark:bg-accent mb-5 block"></span>
 
           <h1 className="font-bebas-neue uppercase text-5xl sm:text-7xl xl:text-7xl font-black leading-[0.95] tracking-tight ">
-            TOGETHA
-            <span className="block text-4xl sm:text-6xl text-accent">
+            <span className="block text-3xl sm:text-5xl text-accent">
               Notes, Docs & Diagrams
             </span>
+            TOGETHA
           </h1>
 
           <p className="mt-4 text-sm sm:text-base">
@@ -101,7 +101,6 @@ const Preview = () => {
           </div>
         </div>
       </div>
-
     </div>
   );
 };
