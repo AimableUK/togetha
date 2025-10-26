@@ -10,6 +10,7 @@ import {
 } from "@kinde-oss/kinde-auth-nextjs";
 import Image from "next/image";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import React, { useState } from "react";
 
 type SiteProps = {
@@ -20,6 +21,7 @@ type SiteProps = {
 const Header = ({ user, isLoading }: SiteProps) => {
   const [headerCollapse, setHeaderCollapse] = useState(false);
   const { startLoading, stopLoading, isButtonLoading } = useGlobalLoader();
+  const pathname = usePathname();
 
   const handleScroll = (amount: number) => {
     scrollTo({
@@ -91,9 +93,8 @@ const Header = ({ user, isLoading }: SiteProps) => {
                       onClick={() => {
                         startLoading("dashboard");
                         setTimeout(() => {
-                          window.location.pathname === "/dashboard" &&
-                            stopLoading("dashboard");
-                        }, 10);
+                          pathname === "/dashboard" && stopLoading("dashboard");
+                        }, 2000);
                       }}
                       disabled={isButtonLoading("dashboard")}
                     >
@@ -197,8 +198,7 @@ const Header = ({ user, isLoading }: SiteProps) => {
                     onClick={() => {
                       startLoading("dashboard");
                       setTimeout(() => {
-                        window.location.pathname === "/dashboard" &&
-                          stopLoading("dashboard");
+                        pathname === "/dashboard" && stopLoading("dashboard");
                       }, 2000);
                     }}
                     disabled={isButtonLoading("dashboard")}

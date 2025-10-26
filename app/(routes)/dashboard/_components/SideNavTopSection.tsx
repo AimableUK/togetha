@@ -17,10 +17,10 @@ import { LogoutLink } from "@kinde-oss/kinde-auth-nextjs";
 import { Separator } from "@/components/ui/separator";
 import { useConvex } from "convex/react";
 import { api } from "@/convex/_generated/api";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
-import { FileListContext } from "@/app/FilesListContext";
 import { useIsMobile } from "@/app/hooks/use-mobile";
+import { TeamContext } from "@/app/FilesListContext";
 
 export interface TEAM {
   createdBy: string;
@@ -31,12 +31,13 @@ export interface TEAM {
 const SideNavTopSection = ({ user, setActiveTeamInfo }: any) => {
   const [loadingItem, setLoadingItem] = useState<number | null>(null);
   const router = useRouter();
-  
+  const pathname = usePathname();
+
   const [teamList, setTeamList] = useState<TEAM[]>();
-  const [activeTeam, setActiveTeam] = useState<TEAM>();
 
   const convex = useConvex();
-  const { collapseSidebar_, setCollapseSidebar_ } = useContext(FileListContext);
+  const { collapseSidebar_, setCollapseSidebar_, activeTeam_, setActiveTeam_ } =
+    useContext(TeamContext);
   const isMobile = useIsMobile();
 
   const menu = [
@@ -49,15 +50,15 @@ const SideNavTopSection = ({ user, setActiveTeamInfo }: any) => {
   }, [user]);
 
   useEffect(() => {
-    activeTeam && setActiveTeamInfo(activeTeam);
-  }, [activeTeam]);
+    activeTeam_ && setActiveTeamInfo(activeTeam_);
+  }, [activeTeam_]);
 
   const getTeamList = async () => {
     const result = await convex.query(api.teams.getTeam, {
       email: user?.email,
     });
     setTeamList(result);
-    setActiveTeam(result[0]);
+    setActiveTeam_(result[0]);
   };
 
   const onMenuClick = (item: any) => {
@@ -65,8 +66,8 @@ const SideNavTopSection = ({ user, setActiveTeamInfo }: any) => {
     router.push(item.path);
 
     setTimeout(() => {
-      window.location.pathname !== "/dashboard" && setLoadingItem(null);
-    }, 10);
+      pathname !== "/dashboard" && setLoadingItem(null);
+    }, 2000);
   };
 
   return (
@@ -76,7 +77,7 @@ const SideNavTopSection = ({ user, setActiveTeamInfo }: any) => {
           <div className="flex flex-row items-center gap-x-2 hover:bg-gray-300 dark:hover:bg-gray-800 p-1 md:w-full w-fit rounded-md cursor-pointer">
             <Image src="/logo.png" alt="Togetha logo" width={35} height={35} />
             <h2 className="font-semibold justify-between text-xl flex flex-1 items-center">
-              <span>{activeTeam?.teamName}</span>
+              <span>{activeTeam_?.teamName}</span>
               <ChevronDown />
             </h2>
           </div>
@@ -92,8 +93,8 @@ const SideNavTopSection = ({ user, setActiveTeamInfo }: any) => {
             {teamList?.map((team, index) => (
               <h2
                 key={index}
-                className={`${activeTeam?._id == team._id && "bg-accent text-foreground/90"}  p-2 rounded-md hover:bg-accent active:bg-accent/80 hover:text-gray-100 cursor-pointer trans`}
-                onClick={() => setActiveTeam(team)}
+                className={`${activeTeam_?._id == team._id && "bg-accent text-foreground/90"}  p-2 rounded-md hover:bg-accent active:bg-accent/80 hover:text-gray-100 cursor-pointer trans`}
+                onClick={() => setActiveTeam_(team)}
               >
                 {team.teamName ?? "Team Name"}
               </h2>
@@ -128,7 +129,7 @@ const SideNavTopSection = ({ user, setActiveTeamInfo }: any) => {
           {user && (
             <div className="mt-2 flex gap-2">
               <Image
-                src={user?.picture ?? "/user.png"}
+                src={user?.picture ?? "/user.webp"}
                 alt="user Image"
                 width={45}
                 height={45}
@@ -151,7 +152,7 @@ const SideNavTopSection = ({ user, setActiveTeamInfo }: any) => {
         variant="outline"
         className="justify-start gap-2 cursor-pointer hover:text-gray-100 dark:hover:text-foreground mt-5"
       >
-        <LayoutGridIcon /> All Files
+        <LayoutGridIcon /> All Teams
       </Button>
     </div>
   );

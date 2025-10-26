@@ -6,7 +6,7 @@ export const createFile = mutation({
     fileName: v.string(),
     teamId: v.string(),
     createdBy: v.string(),
-    archive: v.boolean(),
+    archieve: v.boolean(),
     document: v.string(),
     whiteboard: v.string(),
   },
@@ -29,6 +29,28 @@ export const getFiles = query({
       .order("desc")
       .collect();
 
+    return result;
+  },
+});
+
+export const addArchieve = mutation({
+  args: {
+    _id: v.id("files"),
+    archieve: v.boolean(),
+  },
+  handler: async (ctx, args) => {
+    const result = await ctx.db.patch(args._id, { archieve: args.archieve });
+    return result;
+  },
+});
+
+export const undoArchieve = mutation({
+  args: {
+    _id: v.id("files"),
+    archieve: v.boolean(),
+  },
+  handler: async (ctx, args) => {
+    const result = await ctx.db.patch(args._id, { archieve: args.archieve });
     return result;
   },
 });

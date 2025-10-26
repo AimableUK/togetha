@@ -1,13 +1,13 @@
 "use client";
 
-import { api } from "@/convex/_generated/api";
-import { useKindeBrowserClient } from "@kinde-oss/kinde-auth-nextjs";
-import { useConvex, useMutation } from "convex/react";
-import React, { useEffect, useRef } from "react";
-import FileList from "./_components/FileList";
 import Image from "next/image";
+import React, { useEffect, useRef } from "react";
+import ArchievedList from "./ArchievedList";
+import { useConvex, useMutation } from "convex/react";
+import { useKindeBrowserClient } from "@kinde-oss/kinde-auth-nextjs";
+import { api } from "@/convex/_generated/api";
 
-const DashboardClient = () => {
+const ArchievedClient = () => {
   const convex = useConvex();
   const { user, isLoading } = useKindeBrowserClient();
   const createUser = useMutation(api.user.createUser);
@@ -54,7 +54,7 @@ const DashboardClient = () => {
       </div>
     );
 
-  return <FileList />;
+  return <ArchievedList />;
 };
 
-export default DashboardClient;
+export default ArchievedClient;

@@ -1,4 +1,4 @@
-import { FileListContext } from "@/app/FilesListContext";
+import { TeamContext } from "@/app/FilesListContext";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useKindeBrowserClient } from "@kinde-oss/kinde-auth-nextjs";
@@ -9,20 +9,32 @@ import {
   TextAlignJustify,
 } from "lucide-react";
 import Image from "next/image";
+import { usePathname } from "next/navigation";
 import React, { useContext } from "react";
 
 const Header = () => {
   const { user }: any = useKindeBrowserClient();
   const { collapseSidebar_, setCollapseSidebar_, isMobile } =
-    useContext(FileListContext);
+    useContext(TeamContext);
+  const pathname = usePathname();
 
   return (
-    <div className="flex justify-between w-full items-center gap-2 mt-3">
-      <div onClick={() => setCollapseSidebar_(!collapseSidebar_)}>
+    <div className="flex justify-between w-full items-center gap-2 mt-3 px-3">
+      <div
+        onClick={() => setCollapseSidebar_(!collapseSidebar_)}
+        className="flex gap-3 items-center"
+      >
         {collapseSidebar_ ? (
           <TextAlignJustify className="trans cursor-pointer active:scale-75" />
         ) : (
           <ListCollapse className="trans cursor-pointer active:scale-75" />
+        )}
+        {pathname === "/dashboard" ? (
+          <h2 className="font-semibold text-2xl">Files List</h2>
+        ) : pathname === "/dashboard/archieved" ? (
+          <h2 className="font-semibold text-2xl">Archieved Files</h2>
+        ) : (
+          <h2 className="font-semibold text-2xl">Getting Started</h2>
         )}
       </div>
       <div className="flex items-center gap-2">
@@ -35,7 +47,7 @@ const Header = () => {
         </div>
         <div>
           <Image
-            src={user?.picture ?? "/user.png"}
+            src={user?.picture ?? "/user.webp"}
             alt="user profile"
             width={30}
             height={30}

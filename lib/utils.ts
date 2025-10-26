@@ -91,7 +91,7 @@ export const pageMetadata = {
   },
 
   dashboard: {
-    title: "Dashboard - Manage Your Projects | Togetha",
+    title: "Files - Manage Your Projects | Togetha",
     description:
       "Track progress, manage teams, and access all your boards from the Togetha dashboard.",
     openGraph: {
@@ -118,33 +118,62 @@ export const pageMetadata = {
     },
   },
 
-  archive: {
-    title: "Archive - Saved Projects | Togetha",
+  archieve: {
+    title: "Archieved Files | Togetha",
     description:
-      "Find and restore your archived projects and boards anytime with Togetha's organized archive system.",
+      "Find and restore your archieved files anytime with Togetha's organized archieve system.",
     openGraph: {
       type: "website",
       url: "https://www.togetha-app.vercel.app/archive",
-      title: "Archive - Saved Projects | Togetha",
+      title: "archieve - Saved Projects | Togetha",
       description:
-        "Find and restore your archived projects and boards anytime with Togetha's organized archive system.",
+        "Find and restore your archieved projects and boards anytime with Togetha's organized archieve system.",
       images: [
         {
           url: "https://www.togetha-app.vercel.app/og-image.png",
           width: 1200,
           height: 630,
-          alt: "Archive - Saved Projects | Togetha",
+          alt: "archieve - Saved Projects | Togetha",
         },
       ],
     },
     twitter: {
       card: "summary_large_image",
-      title: "Archive - Saved Projects | Togetha",
+      title: "archieve - Saved Projects | Togetha",
       description:
-        "Find and restore your archived projects and boards anytime with Togetha's organized archive system.",
+        "Find and restore your archieved projects and boards anytime with Togetha's organized archieve system.",
       images: ["https://www.togetha-app.vercel.app/twitter-banner.png"],
     },
   },
+
+  getStarted: {
+    title: "Get Started | Togetha",
+    description:
+      "Start collaborating instantly with Togetha. Create your first workspace, invite teammates, and organize your ideas seamlessly in one place.",
+    openGraph: {
+      type: "website",
+      url: "https://www.togetha-app.vercel.app/dashboard/get-started",
+      title: "Get Started | Togetha",
+      description:
+        "Start collaborating instantly with Togetha. Create your first workspace, invite teammates, and organize your ideas seamlessly in one place.",
+      images: [
+        {
+          url: "https://www.togetha-app.vercel.app/og-image.png",
+          width: 1200,
+          height: 630,
+          alt: "Get Started | Togetha",
+        },
+      ],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: "Get Started | Togetha",
+      description:
+        "Start collaborating instantly with Togetha. Create your first workspace, invite teammates, and organize your ideas seamlessly in one place.",
+      images: ["https://www.togetha-app.vercel.app/twitter-banner.png"],
+    },
+  },
+
 };
 
 export interface FAQ {

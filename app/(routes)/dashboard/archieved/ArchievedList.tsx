@@ -29,7 +29,7 @@ export interface FILE {
   _creationTime: number;
 }
 
-const FileList = () => {
+const ArchievedList = () => {
   const { fileList_ } = useContext(TeamContext);
   const [fileList, setFileList] = useState<FILE[]>();
   const { user, isLoading }: any = useKindeBrowserClient();
@@ -37,7 +37,7 @@ const FileList = () => {
   const router = useRouter();
   const pathname = usePathname();
 
-  const addToArchieve = useMutation(api.files.addArchieve);
+  const removeFromArchieve = useMutation(api.files.undoArchieve);
   const convex = useConvex();
   const { setFileList_, activeTeam_ } = useContext(TeamContext);
 
@@ -49,20 +49,20 @@ const FileList = () => {
     setLoadingItem(null);
   }, [pathname]);
 
-  const handleAddArchieve = async (fileId: string) => {
+  const handleRemoveArchieve = async (fileId: string) => {
     toast.promise(
       (async () => {
-        await addToArchieve({
+        await removeFromArchieve({
           _id: fileId as Id<"files">,
-          archieve: true,
+          archieve: false,
         });
         getFiles();
       })(),
       {
-        loading: "Archieving...",
+        loading: "Restoring Archieve...",
         success: () => ({
-          message: "File Archieved!",
-          description: "File archieved successfully!",
+          message: "File Restored!",
+          description: "File unarchieved successfully!",
         }),
         error: (error) => ({
           message: "Error",
@@ -108,7 +108,7 @@ const FileList = () => {
               </tr>
             ) : fileList && fileList.length > 0 ? (
               fileList
-                .filter((file) => file.archieve === false)
+                .filter((file) => file.archieve === true)
                 .map((file) => (
                   <tr
                     key={file._id}
@@ -155,11 +155,11 @@ const FileList = () => {
                             Rename
                           </DropdownMenuItem>
                           <DropdownMenuItem
-                            onClick={() => handleAddArchieve(file._id)}
+                            onClick={() => handleRemoveArchieve(file._id)}
                             className="group p-2 rounded-md hover:bg-accent active:bg-accent/80 hover:text-gray-100! cursor-pointer trans"
                           >
                             <Archive className="group-hover:text-gray-100!" />
-                            Archieve
+                            Undo Archieve
                           </DropdownMenuItem>
                           <DropdownMenuItem className="group p-2 rounded-md hover:bg-red-800! dark:hover:bg-red-900! active:bg-accent/80 hover:text-gray-100! cursor-pointer trans">
                             <Trash2 className="group-hover:text-gray-100!" />
@@ -173,7 +173,7 @@ const FileList = () => {
             ) : (
               <tr className="bg-foreground/5">
                 <td colSpan={5} className="px-3 py-2 text-center">
-                  No files Available
+                  No Archieved files.
                 </td>
               </tr>
             )}
@@ -184,4 +184,4 @@ const FileList = () => {
   );
 };
 
-export default FileList;
+export default ArchievedList;

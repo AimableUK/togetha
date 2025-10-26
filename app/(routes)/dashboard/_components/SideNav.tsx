@@ -5,28 +5,27 @@ import SideNavBottomSection from "./SideNavBottomSection";
 import { useConvex, useMutation } from "convex/react";
 import { api } from "@/convex/_generated/api";
 import { toast } from "sonner";
-import { FileListContext } from "@/app/FilesListContext";
+import { TeamContext } from "@/app/FilesListContext";
 
 const SideNav = () => {
   const { user } = useKindeBrowserClient();
   const createFile = useMutation(api.files.createFile);
   const convex = useConvex();
 
-  const [activeTeam, setActiveTeam] = useState<TEAM>();
   const [totalFiles, setTotalFiles] = useState<number>();
-  const { fileList_, setFileList_, collapseSidebar_ } =
-    useContext(FileListContext);
+  const { setFileList_, collapseSidebar_, activeTeam_, setActiveTeam_ } =
+    useContext(TeamContext);
 
   useEffect(() => {
-    activeTeam && getFiles();
-  }, [activeTeam]);
+    activeTeam_ && getFiles();
+  }, [activeTeam_]);
 
   const onFileCreate = async (fileName: string) => {
     const promise = createFile({
       fileName: fileName,
-      teamId: activeTeam?._id!,
+      teamId: activeTeam_?._id!,
       createdBy: user?.email!,
-      archive: false,
+      archieve: false,
       document: "",
       whiteboard: "",
     });
@@ -35,7 +34,7 @@ const SideNav = () => {
     getFiles();
 
     toast.promise(promise, {
-      loading: "Processing...",
+      loading: "Creating...",
       success: () => ({
         message: "File Created",
         description: `${fileName} created successfully!`,
@@ -50,7 +49,7 @@ const SideNav = () => {
 
   const getFiles = async () => {
     const result = await convex.query(api.files.getFiles, {
-      teamId: activeTeam?._id!,
+      teamId: activeTeam_?._id!,
     });
     setTotalFiles(result?.length);
     setFileList_(result);
@@ -63,7 +62,7 @@ const SideNav = () => {
       <div className="flex-1">
         <SideNavTopSection
           user={user}
-          setActiveTeamInfo={(activeTeam: TEAM) => setActiveTeam(activeTeam)}
+          setActiveTeamInfo={(activeTeam: TEAM) => setActiveTeam_(activeTeam)}
         />
       </div>
 

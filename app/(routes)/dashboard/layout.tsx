@@ -3,12 +3,13 @@
 import { api } from "@/convex/_generated/api";
 import { useKindeBrowserClient } from "@kinde-oss/kinde-auth-nextjs";
 import { useConvex } from "convex/react";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import SideNav from "./_components/SideNav";
-import { FileListContext } from "@/app/FilesListContext";
 import { useIsMobile } from "@/app/hooks/use-mobile";
 import Image from "next/image";
+import Header from "./_components/includes/Header";
+import { TeamContext } from "@/app/FilesListContext";
 
 const DashboardLayout = ({
   children,
@@ -20,7 +21,9 @@ const DashboardLayout = ({
   const router = useRouter();
   const [fileList_, setFileList_] = useState();
   const [collapseSidebar_, setCollapseSidebar_] = useState(false);
+  const [activeTeam_, setActiveTeam_] = useState();
   const isMobile = useIsMobile();
+  const pathname = usePathname();
 
   useEffect(() => {
     if (!isLoading && user?.email) {
@@ -34,7 +37,7 @@ const DashboardLayout = ({
     });
 
     if (!result?.length) {
-      if (!window.location.pathname.includes("teams/create")) {
+      if (!pathname.includes("teams/create")) {
         router.push("/teams/create");
       }
     }
@@ -52,11 +55,13 @@ const DashboardLayout = ({
     );
 
   return (
-    <FileListContext.Provider
+    <TeamContext.Provider
       value={{
         isMobile,
         fileList_,
         setFileList_,
+        activeTeam_,
+        setActiveTeam_,
         collapseSidebar_,
         setCollapseSidebar_,
       }}
@@ -67,7 +72,7 @@ const DashboardLayout = ({
           className={`trans h-screen fixed top-0 left-0 shadow-lg z-50 bg-primary
             ${collapseSidebar_ ? "w-0 hidden" : "w-72"}
             ${!isMobile ? "w-72" : ""} 
-            ${isMobile && !collapseSidebar_ ? "block" : ""}`} 
+            ${isMobile && !collapseSidebar_ ? "block" : ""}`}
         >
           <SideNav />
         </div>
@@ -86,10 +91,11 @@ const DashboardLayout = ({
             isMobile ? "ml-0" : collapseSidebar_ ? "ml-0" : "ml-72"
           }`}
         >
+          <Header />
           {children}
         </div>
       </div>
-    </FileListContext.Provider>
+    </TeamContext.Provider>
   );
 };
 

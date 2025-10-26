@@ -1,5 +1,5 @@
 import { createContext } from "react";
 
-export const FileListContext = createContext<any>(undefined);
+export const TeamContext = createContext<any>(undefined);
 
 
