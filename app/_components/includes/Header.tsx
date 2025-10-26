@@ -51,7 +51,6 @@ const Header = ({ user, isLoading }: SiteProps) => {
               </li>
             </ul>
           </nav>
-
           {/* auth actions */}
           <div className="flex items-center gap-4">
             <div className="hidden md:flex flex-row items-center gap-x-1">
@@ -93,7 +92,7 @@ const Header = ({ user, isLoading }: SiteProps) => {
             {/* nav toogle */}
             <button
               onClick={() => setHeaderCollapse(!headerCollapse)}
-              className="block rounded-sm hover:bg-accent active:scale-90 trans p-1 cursor-pointer md:hidden"
+              className="z-50 block rounded-sm hover:bg-accent active:scale-90 trans p-1 cursor-pointer md:hidden"
             >
               <span className="sr-only">Toggle menu</span>
               <svg
