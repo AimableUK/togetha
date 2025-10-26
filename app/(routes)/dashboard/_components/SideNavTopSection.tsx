@@ -29,6 +29,8 @@ export interface TEAM {
 }
 
 const SideNavTopSection = ({ user, setActiveTeamInfo }: any) => {
+  const [loadingItem, setLoadingItem] = useState<number | null>(null);
+
   const [teamList, setTeamList] = useState<TEAM[]>();
   const [activeTeam, setActiveTeam] = useState<TEAM>();
   const router = useRouter();
@@ -38,7 +40,7 @@ const SideNavTopSection = ({ user, setActiveTeamInfo }: any) => {
 
   const menu = [
     { id: 1, name: "Create Team", path: "teams/create", icon: Users },
-    { id: 2, name: "Settings", path: "", icon: Settings },
+    { id: 2, name: "Settings", path: "/settings", icon: Settings },
   ];
 
   useEffect(() => {
@@ -58,9 +60,12 @@ const SideNavTopSection = ({ user, setActiveTeamInfo }: any) => {
   };
 
   const onMenuClick = (item: any) => {
-    if (item.path) {
-      router.push(item.path);
-    }
+    setLoadingItem(item?.id);
+    router.push(item.path);
+
+    setTimeout(() => {
+      window.location.pathname !== "/dashboard" && setLoadingItem(null);
+    }, 2000);
   };
 
   return (
@@ -97,14 +102,18 @@ const SideNavTopSection = ({ user, setActiveTeamInfo }: any) => {
           {/* menu section */}
           <div className="flex flex-col gap-y-1">
             {menu.map((item, index) => (
-              <h2
-                key={index}
-                className="flex items-center gap-x-1 p-2 cursor-pointer rounded-md hover:bg-gray-300 dark:hover:bg-gray-800 font-semibold trans"
+              <button
                 onClick={() => onMenuClick(item)}
+                disabled={loadingItem !== null}
+                key={index}
+                className="disabled:opacity-65 flex items-center gap-x-1 p-2 cursor-pointer rounded-md hover:bg-gray-300 dark:hover:bg-gray-800 font-semibold trans"
               >
                 <item.icon className="h-5 w-5" />
                 {item.name}
-              </h2>
+                {loadingItem === item.id && (
+                  <span className="loader2 w-5!"></span>
+                )}
+              </button>
             ))}
             <LogoutLink>
               <h2 className="flex items-center gap-x-1 p-2 cursor-pointer rounded-md hover:bg-gray-300 dark:hover:bg-gray-800 font-semibold trans">

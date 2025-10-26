@@ -1,23 +1,34 @@
 import { Heart } from "lucide-react";
 import Image from "next/image";
+import Link from "next/link";
 import React from "react";
 
 const Footer = () => {
+  const handleScroll = (amount: number) => {
+    scrollTo({
+      behavior: "smooth",
+      top: amount,
+    });
+  };
+
   return (
     <footer>
       <div className="mt-5">
         <div className="container px-4 mx-auto">
           <div className="-mx-4 flex flex-col justify-between">
             <div className="px-4 my-4 w-full flex flex-col gap-3 ">
-              <div className="flex flex-row items-center gap-x-2">
-                <Image
-                  src="/logo.png"
-                  alt="Togetha logo"
-                  width={35}
-                  height={35}
-                />
-                <h1 className="font-semibold text-xl">Togetha</h1>
-              </div>
+              <Link href="/">
+                <div className="flex flex-row items-center gap-x-2">
+                  <Image
+                    src="/logo.png"
+                    alt="Togetha logo"
+                    width={35}
+                    height={35}
+                  />
+                  <h1 className="font-semibold text-xl">Togetha</h1>
+                </div>
+              </Link>
+
               <p className="text-justify">
                 Togetha is a simple and intuitive workspace designed to help you
                 capture, organize, and refine your ideas effortlessly. Whether
@@ -37,19 +48,28 @@ const Footer = () => {
               </div>
               <ul className="leading-8">
                 <li>
-                  <a href="#" className="hover:text-accent">
-                    About Us
-                  </a>
+                  <button
+                    onClick={() => handleScroll(100 * 10.5)}
+                    className="trans cursor-pointer hover:text-accent"
+                  >
+                    Product
+                  </button>
                 </li>
                 <li>
-                  <a href="#" className="hover:text-accent">
+                  <button
+                    onClick={() => handleScroll(200 * 12.4)}
+                    className="trans cursor-pointer hover:text-accent"
+                  >
                     Services
-                  </a>
+                  </button>
                 </li>
                 <li>
-                  <a href="#" className="hover:text-accent">
-                    Contact Us
-                  </a>
+                  <button
+                    onClick={() => handleScroll(200 * 19)}
+                    className="trans cursor-pointer hover:text-accent"
+                  >
+                    Solutions
+                  </button>
                 </li>
               </ul>
             </div>

@@ -31,20 +31,22 @@ const Header = ({ user, isLoading }: SiteProps) => {
   return (
     <header className="border-b z-50">
       <div className="mx-auto flex my-3 items-center gap-8 px-3 md:px-4">
-        <div className="flex flex-row items-center gap-x-2">
-          <Image src="/logo.png" alt="Togetha logo" width={35} height={35} />
-          <h1 className="font-semibold text-xl">Togetha</h1>
-        </div>
+        <Link href="/">
+          <div className="flex flex-row items-center gap-x-2">
+            <Image src="/logo.png" alt="Togetha logo" width={35} height={35} />
+            <h1 className="font-semibold text-xl">Togetha</h1>
+          </div>
+        </Link>
 
         {/* desktop nav */}
         <div className="flex flex-1 items-center justify-end md:justify-between">
           {/* nav */}
-          <nav aria-label="Global" className="hidden md:block z-[998]  ">
+          <nav aria-label="Global" className="hidden md:block z-998  ">
             <ul className="flex items-center gap-6">
               <li>
                 <button
                   onClick={() => handleScroll(100 * 10.5)}
-                  className="trans cursor-pointer"
+                  className="trans cursor-pointer hover:text-accent"
                 >
                   Product
                 </button>
@@ -53,7 +55,7 @@ const Header = ({ user, isLoading }: SiteProps) => {
               <li>
                 <button
                   onClick={() => handleScroll(200 * 12.4)}
-                  className="trans cursor-pointer"
+                  className="trans cursor-pointer hover:text-accent"
                 >
                   Services
                 </button>
@@ -62,7 +64,7 @@ const Header = ({ user, isLoading }: SiteProps) => {
               <li>
                 <button
                   onClick={() => handleScroll(200 * 19)}
-                  className="trans cursor-pointer z-10"
+                  className="trans cursor-pointer z-10 hover:text-accent"
                 >
                   Solutions
                 </button>

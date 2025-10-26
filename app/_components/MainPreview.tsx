@@ -1,3 +1,4 @@
+import Image from "next/image";
 import React from "react";
 
 const MainPreview = () => {
@@ -5,10 +6,10 @@ const MainPreview = () => {
     <div className="pt-1 pb-8">
       <div className="mx-auto max-w-2xl px-3 lg:max-w-7xl lg:px-6">
         <h2 className="text-center text-base/7 font-semibold text-accent dark:text-indigo-400">
-          Deploy faster
+          Collaborate Instantly
         </h2>
-        <p className="mx-auto mt-2 max-w-lg text-center text-4xl font-semibold tracking-tight text-balance sm:text-5xl">
-          Everything you need to deploy your app
+        <p className="mx-auto mt-2 max-w-xl text-center text-4xl font-semibold tracking-tight text-balance sm:text-5xl">
+          Brainstorm, design, and create with your team in real time
         </p>
         <div className="mt-10 grid gap-4 sm:mt-16 lg:grid-cols-3 lg:grid-rows-2">
           <div className="relative lg:row-span-2">
@@ -19,8 +20,9 @@ const MainPreview = () => {
                   Mobile friendly
                 </p>
                 <p className="mt-2 max-w-lg text-sm/6 dark:text-gray-400 max-lg:text-center">
-                  Anim aute id magna aliqua ad ad non deserunt sunt. Qui irure
-                  qui lorem cupidatat commodo.
+                  Access Togetha on any device with a fast, responsive
+                  workspace. Plan, brainstorm, and create projects with your
+                  team in real time on mobile, tablet, or desktop.
                 </p>
               </div>
               <div className="@container relative min-h-120 w-full grow max-lg:mx-auto max-lg:max-w-sm">
@@ -43,15 +45,17 @@ const MainPreview = () => {
                   Performance
                 </p>
                 <p className="mt-2 max-w-lg text-sm/6 dark:text-gray-400 max-lg:text-center">
-                  Lorem ipsum, dolor sit amet consectetur adipisicing elit
-                  maiores impedit.
+                  Collaborate anywhere with Togetha. Enjoy fast, responsive, and
+                  real-time project management on mobile, tablet, or desktop.
                 </p>
               </div>
               <div className="flex flex-1 items-center justify-center px-8 max-lg:pt-10 max-lg:pb-12 sm:px-10 lg:pb-2">
-                <img
-                  alt=""
-                  src="https://tailwindcss.com/plus-assets/img/component-images/dark-bento-03-performance.png"
-                  className="w-full max-lg:max-w-xs"
+                <Image
+                  src="performance.svg"
+                  alt="Notes Site Performance"
+                  width={20}
+                  height={20}
+                  className="w-52 max-lg:max-w-xs"
                 />
               </div>
             </div>
@@ -65,8 +69,9 @@ const MainPreview = () => {
                   Security
                 </p>
                 <p className="mt-2 max-w-lg text-sm/6 dark:text-gray-400 max-lg:text-center">
-                  Morbi viverra dui mi arcu sed. Tellus semper adipiscing
-                  suspendisse semper morbi.
+                  Keep your work safe with Togetha's secure platform. All
+                  projects and team data are protected with end-to-end
+                  encryption and advanced security measures.
                 </p>
               </div>
               <div className="@container flex flex-1 items-center max-lg:py-6 lg:pb-2">
@@ -84,11 +89,12 @@ const MainPreview = () => {
             <div className="relative flex h-full flex-col overflow-hidden rounded-[calc(var(--radius-lg)+1px)] max-lg:rounded-b-[calc(2rem+1px)] lg:rounded-r-[calc(2rem+1px)]">
               <div className="px-8 pt-8 pb-3 sm:px-10 sm:pt-10 sm:pb-0">
                 <p className="mt-2 text-lg font-medium tracking-tight max-lg:text-center">
-                  Powerful APIs
+                  Your Creative Playground
                 </p>
                 <p className="mt-2 max-w-lg text-sm/6 dark:text-gray-400 max-lg:text-center">
-                  Sit quis amet rutrum tellus ullamcorper ultricies libero dolor
-                  eget sem sodales gravida.
+                  Experience Togetha's real-time workspace with a collaborative
+                  text editor and interactive canvas. Plan, design, and bring
+                  ideas to life with your team seamlessly.
                 </p>
               </div>
               <div className="relative min-h-120 w-full grow">
@@ -103,9 +109,7 @@ const MainPreview = () => {
                       </div>
                     </div>
                   </div>
-                  <div className="px-6 pt-6 pb-14">
-                    {/* Your code example */}
-                  </div>
+                  <div className="px-6 pt-6 pb-14">{/* Preview example */}</div>
                 </div>
               </div>
             </div>
