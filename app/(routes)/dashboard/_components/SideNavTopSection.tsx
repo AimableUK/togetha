@@ -30,10 +30,11 @@ export interface TEAM {
 
 const SideNavTopSection = ({ user, setActiveTeamInfo }: any) => {
   const [loadingItem, setLoadingItem] = useState<number | null>(null);
-
+  const router = useRouter();
+  
   const [teamList, setTeamList] = useState<TEAM[]>();
   const [activeTeam, setActiveTeam] = useState<TEAM>();
-  const router = useRouter();
+
   const convex = useConvex();
   const { collapseSidebar_, setCollapseSidebar_ } = useContext(FileListContext);
   const isMobile = useIsMobile();

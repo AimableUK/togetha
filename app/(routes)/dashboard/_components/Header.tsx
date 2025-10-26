@@ -29,7 +29,7 @@ const Header = () => {
         <div className="flex gap-2 items-center px-2">
           <Search className="h-4 w-4 absolute ml-2 " />
           <Input
-            placeholder="Search..."
+            placeholder="Search files..."
             className="relative border rounded-md pl-7"
           />
         </div>

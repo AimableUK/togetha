@@ -64,10 +64,10 @@ const DashboardLayout = ({
       <div className="grid grid-cols-4 gap-1 relative">
         {/* Sidebar */}
         <div
-          className={`trans h-screen fixed top-0 left-0 shadow-lg z-50
-            ${collapseSidebar_ ? "w-0" : "w-72"}
+          className={`trans h-screen fixed top-0 left-0 shadow-lg z-50 bg-primary
+            ${collapseSidebar_ ? "w-0 hidden" : "w-72"}
             ${!isMobile ? "w-72" : ""} 
-            ${isMobile && !collapseSidebar_ ? "block" : ""}`}
+            ${isMobile && !collapseSidebar_ ? "block" : ""}`} 
         >
           <SideNav />
         </div>
@@ -75,7 +75,7 @@ const DashboardLayout = ({
         {/* Overlay mobile */}
         {isMobile && !collapseSidebar_ && (
           <div
-            className="fixed inset-0 bg-black/60 opacity-70 z-40"
+            className="fixed inset-0 bg-black/60 opacity-70 z-40 "
             onClick={() => setCollapseSidebar_(true)}
           />
         )}

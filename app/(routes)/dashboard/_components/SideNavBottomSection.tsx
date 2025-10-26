@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Archive, FilePlus2, Flag, Github } from "lucide-react";
+import { Archive, FilePlus2, Files, Flag } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -15,6 +15,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import Constant from "@/app/_constant/Constant";
 import PricingDialog from "./PricingDialog";
+import { useRouter } from "next/navigation";
 
 type SideNavBottomProps = {
   onFileCreate: (fileInput: string) => void;
@@ -25,19 +26,33 @@ const SideNavBottomSection = ({
   onFileCreate,
   totalFiles,
 }: SideNavBottomProps) => {
+  const [loadingItem, setLoadingItem] = useState<number | null>(null);
+  const router = useRouter();
+
   const [fileInput, setFileInput] = useState("");
   const menuList = [
-    { id: 0, name: "Getting Started", icon: Flag, path: "" },
-    { id: 1, name: "Github", icon: Github, path: "" },
-    { id: 2, name: "Archive", icon: Archive, path: "" },
+    { id: 0, name: "Getting Started", icon: Flag, path: "/dashboard/getstarted" },
+    { id: 1, name: "Files", icon: Files, path: "/dashboard" },
+    { id: 2, name: "Archived", icon: Archive, path: "/dashboard/achieved" },
   ];
+
+  const onBottomMenuClick = (item: any) => {
+    if (window.location.pathname === item.path) return;
+    setLoadingItem(item?.id);
+    router.push(item.path);
+
+    setTimeout(() => {
+      window.location.pathname === item.path && setLoadingItem(null);
+    }, 2000);
+  };
 
   return (
     <div>
       {menuList.map((menu, index) => (
-        <h2
+        <button
           key={index}
-          className="flex gap-2 p-2 text-xs  cursor-pointer rounded-md hover:bg-gray-300 dark:hover:bg-gray-800 font-semibold trans"
+          onClick={() => onBottomMenuClick(menu)}
+          className={`${window.location.pathname === menu.path && "bg-secondary"} w-full flex gap-2 p-2 text-xs  cursor-pointer rounded-md hover:bg-gray-300 dark:hover:bg-gray-800 font-semibold trans`}
         >
           {typeof menu.icon === "string" ? (
             <img src={menu.icon} alt={menu.name} className="w-5 h-5" />
@@ -45,7 +60,8 @@ const SideNavBottomSection = ({
             <menu.icon className="w-5 h-5" />
           )}
           {menu.name}
-        </h2>
+          {loadingItem === menu.id && <span className="loader2 w-5!"></span>}
+        </button>
       ))}
 
       <Dialog>

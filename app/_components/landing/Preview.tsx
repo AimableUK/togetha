@@ -1,6 +1,6 @@
 import { LoginLink } from "@kinde-oss/kinde-auth-nextjs";
 import React from "react";
-import { useIsMobile } from "../hooks/use-mobile";
+import { useIsMobile } from "../../hooks/use-mobile";
 
 const Preview = () => {
   const isMobile = useIsMobile();
