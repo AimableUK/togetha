@@ -93,7 +93,7 @@ const Header = ({ user, isLoading }: SiteProps) => {
                         setTimeout(() => {
                           window.location.pathname === "/dashboard" &&
                             stopLoading("dashboard");
-                        }, 2000);
+                        }, 10);
                       }}
                       disabled={isButtonLoading("dashboard")}
                     >

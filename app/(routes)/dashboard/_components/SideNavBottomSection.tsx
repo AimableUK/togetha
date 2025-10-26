@@ -43,7 +43,7 @@ const SideNavBottomSection = ({
 
     setTimeout(() => {
       window.location.pathname === item.path && setLoadingItem(null);
-    }, 2000);
+    }, 10);
   };
 
   return (

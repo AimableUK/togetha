@@ -66,7 +66,7 @@ const SideNavTopSection = ({ user, setActiveTeamInfo }: any) => {
 
     setTimeout(() => {
       window.location.pathname !== "/dashboard" && setLoadingItem(null);
-    }, 2000);
+    }, 10);
   };
 
   return (
