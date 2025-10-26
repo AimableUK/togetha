@@ -118,7 +118,7 @@ const Header = ({ user, isLoading }: SiteProps) => {
       {headerCollapse && (
         <nav
           aria-label="Global"
-          className="block trans md:hidden py-1 border-t w-full"
+          className="block trans md:hidden py-1 px-2 border-t w-full"
         >
           {/* nav */}
           <ul className="flex flex-col gap-1 w-full">
