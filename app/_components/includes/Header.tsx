@@ -2,6 +2,7 @@
 
 import { ModeToggle } from "@/components/theme/ModeToggle";
 import { Button } from "@/components/ui/button";
+import { useGlobalLoader } from "@/lib/useGlobalLoader";
 import {
   LoginLink,
   LogoutLink,
@@ -18,9 +19,17 @@ type SiteProps = {
 
 const Header = ({ user, isLoading }: SiteProps) => {
   const [headerCollapse, setHeaderCollapse] = useState(false);
+  const { startLoading, stopLoading, isButtonLoading } = useGlobalLoader();
+
+  const handleScroll = (amount: number) => {
+    scrollTo({
+      behavior: "smooth",
+      top: amount,
+    });
+  };
 
   return (
-    <header className="border-b">
+    <header className="border-b z-50">
       <div className="mx-auto flex my-3 items-center gap-8 px-3 md:px-4">
         <div className="flex flex-row items-center gap-x-2">
           <Image src="/logo.png" alt="Togetha logo" width={35} height={35} />
@@ -30,24 +39,33 @@ const Header = ({ user, isLoading }: SiteProps) => {
         {/* desktop nav */}
         <div className="flex flex-1 items-center justify-end md:justify-between">
           {/* nav */}
-          <nav aria-label="Global" className="hidden md:block">
+          <nav aria-label="Global" className="hidden md:block z-[998]  ">
             <ul className="flex items-center gap-6">
               <li>
-                <a className="trans" href="#">
-                  About
-                </a>
+                <button
+                  onClick={() => handleScroll(100 * 10.5)}
+                  className="trans cursor-pointer"
+                >
+                  Product
+                </button>
               </li>
 
               <li>
-                <a className="trans" href="#">
+                <button
+                  onClick={() => handleScroll(200 * 12.4)}
+                  className="trans cursor-pointer"
+                >
                   Services
-                </a>
+                </button>
               </li>
 
               <li>
-                <a className="trans" href="#">
-                  Projects
-                </a>
+                <button
+                  onClick={() => handleScroll(200 * 19)}
+                  className="trans cursor-pointer z-10"
+                >
+                  Solutions
+                </button>
               </li>
             </ul>
           </nav>
@@ -65,7 +83,21 @@ const Header = ({ user, isLoading }: SiteProps) => {
                   </LogoutLink>
 
                   <Link href="/dashboard">
-                    <Button variant="outline" className="cursor-pointer">
+                    <Button
+                      variant="outline"
+                      className="cursor-pointer"
+                      onClick={() => {
+                        startLoading("dashboard");
+                        setTimeout(() => {
+                          window.location.pathname === "/dashboard" &&
+                            stopLoading("dashboard");
+                        }, 2000);
+                      }}
+                      disabled={isButtonLoading("dashboard")}
+                    >
+                      {isButtonLoading("dashboard") && (
+                        <span className="loader2 w-5!"></span>
+                      )}
                       Dashboard
                     </Button>
                   </Link>
@@ -118,57 +150,74 @@ const Header = ({ user, isLoading }: SiteProps) => {
       {headerCollapse && (
         <nav
           aria-label="Global"
-          className="block trans md:hidden py-1 px-2 border-t w-full"
+          className="z-50 block trans md:hidden py-1 px-2 border-t w-full"
         >
           {/* nav */}
           <ul className="flex flex-col gap-1 w-full">
-            <li className="w-full bg-secondary hover:bg-accent rounded-md p-2 px-3 cursor-pointer trans">
-              <a className="transition" href="#">
-                About
-              </a>
+            <li
+              onClick={() => handleScroll(200 * 7.1)}
+              className="z-50 w-full bg-secondary hover:bg-accent rounded-md p-2 px-3 cursor-pointer trans"
+            >
+              Product
             </li>
 
-            <li className="w-full bg-secondary hover:bg-accent rounded-md p-2 px-3 cursor-pointer trans">
-              <a className="transition" href="#">
-                Services
-              </a>
+            <li
+              onClick={() => handleScroll(200 * 22.3)}
+              className="z-50 w-full bg-secondary hover:bg-accent rounded-md p-2 px-3 cursor-pointer trans"
+            >
+              Services
             </li>
 
-            <li className="w-full bg-secondary hover:bg-accent rounded-md p-2 px-3 cursor-pointer trans">
-              <a className="transition" href="#">
-                Products
-              </a>
+            <li
+              onClick={() => handleScroll(200 * 30.3)}
+              className="z-50 w-full bg-secondary hover:bg-accent rounded-md p-2 px-3 cursor-pointer trans"
+            >
+              Solutions
             </li>
           </ul>
 
           {/* auth actions */}
-          <div className="flex flex-row justify-end items-center gap-x-1 w-full mt-5">
+          <div className="z-999 flex flex-row justify-end items-center gap-x-1 w-full mt-5">
             {isLoading ? (
-              <div className="loader2"></div>
+              <div className="loader2 w-5!"></div>
             ) : user ? (
               <>
-                <LogoutLink>
+                <LogoutLink className="z-999">
                   <Button variant="ghost" className="cursor-pointer w-full">
                     Logout
                   </Button>
                 </LogoutLink>
 
-                <Link href="/dashboard">
-                  <Button variant="outline" className="cursor-pointer w-full">
+                <Link href="/dashboard" className="z-999">
+                  <Button
+                    variant="outline"
+                    className="cursor-pointer w-full"
+                    onClick={() => {
+                      startLoading("dashboard");
+                      setTimeout(() => {
+                        window.location.pathname === "/dashboard" &&
+                          stopLoading("dashboard");
+                      }, 2000);
+                    }}
+                    disabled={isButtonLoading("dashboard")}
+                  >
+                    {isButtonLoading("dashboard") && (
+                      <span className="loader2 w-5!"></span>
+                    )}
                     Dashboard
                   </Button>
                 </Link>
               </>
             ) : (
               <>
-                <LoginLink postLoginRedirectURL="/dashboard">
-                  <Button variant="ghost" className="cursor-pointer">
+                <LoginLink postLoginRedirectURL="/dashboard" className="z-999">
+                  <Button variant="ghost" className="z-50 cursor-pointer">
                     Login
                   </Button>
                 </LoginLink>
 
-                <RegisterLink>
-                  <Button variant="outline" className="cursor-pointer">
+                <RegisterLink className="z-999">
+                  <Button variant="outline" className="z-50 cursor-pointer">
                     Register
                   </Button>
                 </RegisterLink>

@@ -185,3 +185,4 @@ export const faqData: FAQ[] = [
       "Togetha works seamlessly across devices - desktop, tablet, and mobile. Offline editing is also supported, so you can write or brainstorm anytime, anywhere, and your content will sync when you're back online.",
   },
 ];
+

@@ -1,3 +1,4 @@
+import { RegisterLink } from "@kinde-oss/kinde-auth-nextjs";
 import {
   CloudUpload,
   FilePenLine,
@@ -316,13 +317,9 @@ const CTA = () => {
             </div>
           </div>
           <div className="mt-10 md:mt-0">
-            <a
-              title="Get quote now"
-              className="inline-flex items-center justify-center py-2 px-3 md:px-9 md:py-3.5 mt-5 text-base font-bold text-gray-900 transition-all duration-200 bg-white border border-transparent focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-white font-pj hover:bg-opacity-90 rounded-xl"
-              href="#support"
-            >
+            <RegisterLink className="inline-flex items-center justify-center py-2 px-3 md:px-9 md:py-3.5 mt-5 text-base font-bold text-gray-900 transition-all duration-200 bg-white border border-transparent focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-white font-pj hover:bg-opacity-90 rounded-xl">
               Register for Free
-            </a>
+            </RegisterLink>
           </div>
         </div>
       </div>
