@@ -65,6 +65,17 @@ export const deleteFile = mutation({
   },
 });
 
+export const renameFile = mutation({
+  args: {
+    _id: v.id("files"),
+    fileName: v.string(),
+  },
+  handler: async (ctx, args) => {
+    const result = await ctx.db.patch(args._id, { fileName: args.fileName });
+    return result;
+  },
+});
+
 export const updateDocument = mutation({
   args: {
     _id: v.id("files"),

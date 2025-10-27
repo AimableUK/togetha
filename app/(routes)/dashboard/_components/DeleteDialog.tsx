@@ -24,7 +24,8 @@ interface DialogProps extends DeleteData {
 const DeleteDialog = ({ id, type, open, setOpen }: DialogProps) => {
   const convex = useConvex();
   const deleteData = useMutation(api.files.deleteFile);
-  const { fileList_, setFileList_, activeTeam_ } = useContext(TeamContext);
+  const { fileList_, setFileList_, activeTeam_, setTotalFiles_ } =
+    useContext(TeamContext);
 
   useEffect(() => {
     fileList_ && setFileList_(fileList_);
@@ -59,6 +60,7 @@ const DeleteDialog = ({ id, type, open, setOpen }: DialogProps) => {
     const result = await convex.query(api.files.getFiles, {
       teamId: activeTeam_?._id!,
     });
+    setTotalFiles_(result?.length);
     setFileList_(result);
   };
 

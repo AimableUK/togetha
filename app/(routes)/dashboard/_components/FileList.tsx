@@ -2,7 +2,13 @@ import React, { useContext, useEffect, useState } from "react";
 import { formatDistanceToNow } from "date-fns";
 import { useKindeBrowserClient } from "@kinde-oss/kinde-auth-nextjs";
 import Image from "next/image";
-import { Archive, FilePenLine, MoreHorizontalIcon, Trash2 } from "lucide-react";
+import {
+  Archive,
+  FilePenLine,
+  MoreHorizontalIcon,
+  Trash2,
+  X,
+} from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -18,6 +24,7 @@ import { api } from "@/convex/_generated/api";
 import { Id } from "@/convex/_generated/dataModel";
 import { TeamContext } from "@/app/FilesListContext";
 import DeleteDialog from "./DeleteDialog";
+import { Input } from "@/components/ui/input";
 
 export interface FILE {
   archieve: boolean;
@@ -41,12 +48,14 @@ const FileList = () => {
 
   const [openDialog, setOpenDialog] = useState(false);
   const [deleteData, setDeleteData] = useState<DeleteData>();
+  const [renameFile, setRenameFIle] = useState<string | null>();
+  const [newFileName, setNewFileName] = useState("");
 
   const convex = useConvex();
   const router = useRouter();
   const pathname = usePathname();
-
   const addToArchieve = useMutation(api.files.addArchieve);
+  const renameFileName = useMutation(api.files.renameFile);
   const { fileList_, setFileList_, activeTeam_ } = useContext(TeamContext);
 
   useEffect(() => {
@@ -99,6 +108,37 @@ const FileList = () => {
     setDeleteData({ id, type });
   };
 
+  const handleRename = (fileId: string) => {
+    setRenameFIle(fileId);
+  };
+
+  const handleRenameFile = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    toast.promise(
+      (async () => {
+        await renameFileName({
+          _id: renameFile as Id<"files">,
+          fileName: newFileName,
+        });
+        getFiles();
+        setRenameFIle(null)
+      })(),
+      {
+        loading: "Renaming file...",
+        success: () => ({
+          message: "File Renamed!",
+          description: "File renamed successfully!",
+        }),
+        error: (error) => ({
+          message: "Error",
+          description:
+            error?.response?.data?.detail ||
+            "Failed to rename your file, Please try again later.",
+        }),
+      }
+    );
+  };
+
   return (
     <div className="mt-6 p-1 px-2 md:p-4">
       <div className="overflow-x-auto">
@@ -142,14 +182,49 @@ const FileList = () => {
                     className="odd:bg-foreground/5 hover:bg-foreground/15"
                   >
                     <td
-                      onClick={() => handleViewFile(file._id)}
-                      className="flex gap-1 px-3 py-2 whitespace-nowrap cursor-pointer"
+                      onClick={() => !renameFile && handleViewFile(file._id)}
+                      className="px-3 py-2 whitespace-nowrap cursor-pointer align-middle"
+                      style={{ width: "1%" }}
                     >
-                      {loadingItem === file._id && (
-                        <div className="loader2 w-6!"></div>
-                      )}
-                      {file.fileName}
+                      <div className="flex items-center gap-2 w-[250px] overflow-hidden">
+                        {loadingItem === file._id && (
+                          <div className="loader2 w-5!" />
+                        )}
+
+                        {renameFile === file._id ? (
+                          <form
+                            autoComplete="off"
+                            className="flex items-center gap-2 w-full"
+                            onSubmit={(e) => handleRenameFile(e)}
+                          >
+                            <Input
+                              placeholder="Rename file"
+                              className="border rounded-md px-2 py-1 text-sm w-full min-w-0"
+                              value={newFileName}
+                              onChange={(e) => setNewFileName(e.target.value)}
+                            />
+                            <button
+                              type="submit"
+                              className="cursor-pointer shrink-0"
+                            >
+                              <FilePenLine className="h-5 w-5 hover:text-accent" />
+                            </button>
+                            <button
+                              type="button"
+                              className="cursor-pointer shrink-0"
+                              onClick={() => setRenameFIle(null)}
+                            >
+                              <X className="h-5 w-5 hover:text-red-500" />
+                            </button>
+                          </form>
+                        ) : (
+                          <span className="truncate w-full">
+                            {file.fileName}
+                          </span>
+                        )}
+                      </div>
                     </td>
+
                     <td className="px-3 py-2 whitespace-nowrap">
                       {formatDistanceToNow(new Date(file._creationTime), {
                         addSuffix: true,
@@ -177,7 +252,13 @@ const FileList = () => {
                         <DropdownMenuContent>
                           <DropdownMenuLabel>Actions</DropdownMenuLabel>
                           <DropdownMenuSeparator />
-                          <DropdownMenuItem className="group p-2 rounded-md hover:bg-accent active:bg-accent/80 hover:text-gray-100! cursor-pointer trans">
+                          <DropdownMenuItem
+                            onClick={() => {
+                              handleRename(file._id);
+                              setNewFileName(file.fileName);
+                            }}
+                            className="group p-2 rounded-md hover:bg-accent active:bg-accent/80 hover:text-gray-100! cursor-pointer trans"
+                          >
                             <FilePenLine className="group-hover:text-gray-100!" />
                             Rename
                           </DropdownMenuItem>

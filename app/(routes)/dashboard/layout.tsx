@@ -23,6 +23,7 @@ const DashboardLayout = ({
   const [fileList_, setFileList_] = useState<FILE[]>();
   const [collapseSidebar_, setCollapseSidebar_] = useState(false);
   const [activeTeam_, setActiveTeam_] = useState();
+  const [totalFiles_, setTotalFiles_] = useState<number>();
   const isMobile = useIsMobile();
   const pathname = usePathname();
 
@@ -65,6 +66,8 @@ const DashboardLayout = ({
         setActiveTeam_,
         collapseSidebar_,
         setCollapseSidebar_,
+        totalFiles_,
+        setTotalFiles_,
       }}
     >
       <div className="grid grid-cols-4 gap-1 relative">
