@@ -55,6 +55,16 @@ export const undoArchieve = mutation({
   },
 });
 
+export const deleteFile = mutation({
+  args: {
+    _id: v.id("files"),
+  },
+  handler: async (ctx, args) => {
+    const result = await ctx.db.delete(args._id);
+    return result;
+  },
+});
+
 export const updateDocument = mutation({
   args: {
     _id: v.id("files"),

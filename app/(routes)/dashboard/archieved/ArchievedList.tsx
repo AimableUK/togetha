@@ -17,6 +17,8 @@ import { useConvex, useMutation } from "convex/react";
 import { api } from "@/convex/_generated/api";
 import { Id } from "@/convex/_generated/dataModel";
 import { TeamContext } from "@/app/FilesListContext";
+import { DeleteData } from "../_components/FileList";
+import DeleteDialog from "../_components/DeleteDialog";
 
 export interface FILE {
   archieve: boolean;
@@ -31,18 +33,20 @@ export interface FILE {
 
 const ArchievedList = () => {
   const { fileList_ } = useContext(TeamContext);
-  const [fileList, setFileList] = useState<FILE[]>();
   const { user, isLoading }: any = useKindeBrowserClient();
   const [loadingItem, setLoadingItem] = useState<string | null>();
   const router = useRouter();
   const pathname = usePathname();
+
+  const [openDialog, setOpenDialog] = useState(false);
+  const [deleteData, setDeleteData] = useState<DeleteData>();
 
   const removeFromArchieve = useMutation(api.files.undoArchieve);
   const convex = useConvex();
   const { setFileList_, activeTeam_ } = useContext(TeamContext);
 
   useEffect(() => {
-    fileList_ && setFileList(fileList_);
+    fileList_ && setFileList_(fileList_);
   }, [fileList_]);
 
   useEffect(() => {
@@ -62,12 +66,13 @@ const ArchievedList = () => {
         loading: "Restoring Archieve...",
         success: () => ({
           message: "File Restored!",
-          description: "File unarchieved successfully!",
+          description: "File restored successfully!",
         }),
         error: (error) => ({
           message: "Error",
           description:
-            error?.response?.data?.detail || "Failed to process your request.",
+            error?.response?.data?.detail ||
+            "Failed to Restore file, Please try again later.",
         }),
       }
     );
@@ -83,6 +88,11 @@ const ArchievedList = () => {
   const handleViewFile = (fileId: string) => {
     setLoadingItem(fileId);
     router.push("/workspace/" + fileId);
+  };
+
+  const handleOpenDialog = (id: string, type: "file" | "team") => {
+    setOpenDialog(true);
+    setDeleteData({ id, type });
   };
 
   return (
@@ -106,10 +116,23 @@ const ArchievedList = () => {
                   <span className="loader1"></span>
                 </td>
               </tr>
-            ) : fileList && fileList.length > 0 ? (
-              fileList
-                .filter((file) => file.archieve === true)
-                .map((file) => (
+            ) : fileList_ && fileList_.length > 0 ? (
+              (() => {
+                const archievedFiles = fileList_.filter(
+                  (file: { archieve: boolean }) => file.archieve === true
+                );
+
+                if (archievedFiles.length === 0) {
+                  return (
+                    <tr className="bg-foreground/5">
+                      <td colSpan={5} className="px-3 py-2 text-center">
+                        No archieved files (all files are active)
+                      </td>
+                    </tr>
+                  );
+                }
+
+                return archievedFiles.map((file: any) => (
                   <tr
                     key={file._id}
                     className="odd:bg-foreground/5 hover:bg-foreground/15"
@@ -148,7 +171,7 @@ const ArchievedList = () => {
                           <MoreHorizontalIcon className="rounded-md cursor-pointer" />
                         </DropdownMenuTrigger>
                         <DropdownMenuContent>
-                          <DropdownMenuLabel>My Account</DropdownMenuLabel>
+                          <DropdownMenuLabel>Actions</DropdownMenuLabel>
                           <DropdownMenuSeparator />
                           <DropdownMenuItem className="group p-2 rounded-md hover:bg-accent active:bg-accent/80 hover:text-gray-100! cursor-pointer trans">
                             <FilePenLine className="group-hover:text-gray-100!" />
@@ -159,9 +182,12 @@ const ArchievedList = () => {
                             className="group p-2 rounded-md hover:bg-accent active:bg-accent/80 hover:text-gray-100! cursor-pointer trans"
                           >
                             <Archive className="group-hover:text-gray-100!" />
-                            Undo Archieve
+                            Restore
                           </DropdownMenuItem>
-                          <DropdownMenuItem className="group p-2 rounded-md hover:bg-red-800! dark:hover:bg-red-900! active:bg-accent/80 hover:text-gray-100! cursor-pointer trans">
+                          <DropdownMenuItem
+                            onClick={() => handleOpenDialog(file._id, "file")}
+                            className="group p-2 rounded-md hover:bg-red-800! dark:hover:bg-red-900! active:bg-accent/80 hover:text-gray-100! cursor-pointer trans"
+                          >
                             <Trash2 className="group-hover:text-gray-100!" />
                             Delete
                           </DropdownMenuItem>
@@ -169,17 +195,26 @@ const ArchievedList = () => {
                       </DropdownMenu>
                     </td>
                   </tr>
-                ))
+                ));
+              })()
             ) : (
               <tr className="bg-foreground/5">
                 <td colSpan={5} className="px-3 py-2 text-center">
-                  No Archieved files.
+                  No files available
                 </td>
               </tr>
             )}
           </tbody>
         </table>
       </div>
+      {openDialog && deleteData && (
+        <DeleteDialog
+          id={deleteData?.id!}
+          type={deleteData?.type!}
+          open={openDialog}
+          setOpen={setOpenDialog}
+        />
+      )}
     </div>
   );
 };

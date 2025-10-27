@@ -10,6 +10,7 @@ import { useIsMobile } from "@/app/hooks/use-mobile";
 import Image from "next/image";
 import Header from "./_components/includes/Header";
 import { TeamContext } from "@/app/FilesListContext";
+import { FILE } from "./_components/FileList";
 
 const DashboardLayout = ({
   children,
@@ -19,7 +20,7 @@ const DashboardLayout = ({
   const convex = useConvex();
   const { user, isLoading }: any = useKindeBrowserClient();
   const router = useRouter();
-  const [fileList_, setFileList_] = useState();
+  const [fileList_, setFileList_] = useState<FILE[]>();
   const [collapseSidebar_, setCollapseSidebar_] = useState(false);
   const [activeTeam_, setActiveTeam_] = useState();
   const isMobile = useIsMobile();

@@ -159,7 +159,8 @@ const Editor = ({
         error: (error) => ({
           message: "Error",
           description:
-            error?.response?.data?.detail || "Failed to process your request.",
+            error?.response?.data?.detail ||
+            "Failed to Save Document, Please Try again later.",
         }),
       }
     );

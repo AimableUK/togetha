@@ -42,7 +42,8 @@ const SideNav = () => {
       error: (error) => ({
         message: "Error",
         description:
-          error?.response?.data?.detail || "Failed to process your request.",
+          error?.response?.data?.detail ||
+          "Failed to Create file, Please Try again later.",
       }),
     });
   };

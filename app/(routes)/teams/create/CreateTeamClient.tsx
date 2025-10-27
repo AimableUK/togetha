@@ -38,7 +38,8 @@ const CreateTeamClient = () => {
       error: (error) => ({
         message: "Error",
         description:
-          error?.response?.data?.detail || "Failed to process your request.",
+          error?.response?.data?.detail ||
+          "Failed to Create team, Please Try again later.",
       }),
     });
 

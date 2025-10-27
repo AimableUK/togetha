@@ -1,16 +1,14 @@
 import React from "react";
 import {
-  Dialog,
   DialogContent,
   DialogDescription,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
 } from "@/components/ui/dialog";
 
 const PricingDialog = () => {
   return (
-      <DialogContent className="!max-w-4xl">
+      <DialogContent className="max-w-4xl!">
         <DialogHeader>
           <DialogTitle>Create New</DialogTitle>
           <DialogDescription>
