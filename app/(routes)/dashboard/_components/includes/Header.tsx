@@ -30,11 +30,15 @@ const Header = () => {
           <ListCollapse className="trans cursor-pointer active:scale-75" />
         )}
         {pathname === "/dashboard" ? (
-          <h2 className="font-semibold text-2xl">Files List</h2>
+          <h2 className="hidden md:block font-semibold text-2xl">Files List</h2>
         ) : pathname === "/dashboard/archieved" ? (
-          <h2 className="font-semibold text-2xl">Archieved Files</h2>
+          <h2 className="hidden md:block font-semibold text-2xl">
+            Archieved Files
+          </h2>
         ) : (
-          <h2 className="font-semibold text-2xl">Getting Started</h2>
+          <h2 className="hidden md:block font-semibold text-2xl">
+            Getting Started
+          </h2>
         )}
       </div>
       <div className="flex items-center gap-2">

@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { Archive, FilePlus2, Files, Flag } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
@@ -18,6 +18,8 @@ import { Label } from "@/components/ui/label";
 import Constant from "@/app/_constant/Constant";
 import PricingDialog from "./PricingDialog";
 import { usePathname, useRouter } from "next/navigation";
+import { useIsMobile } from "@/app/hooks/use-mobile";
+import { TeamContext } from "@/app/FilesListContext";
 
 type SideNavBottomProps = {
   onFileCreate: (fileInput: string) => void;

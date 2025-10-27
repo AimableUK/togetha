@@ -183,7 +183,9 @@ const ArchievedList = () => {
                       className="px-3 py-2 whitespace-nowrap cursor-pointer align-middle"
                       style={{ width: "1%" }}
                     >
-                      <div className="flex items-center gap-2 w-[250px] overflow-hidden">
+                      <div
+                        className={`${!renameFile ? "w-[150px]" : "w-[250px]"} flex items-center gap-2 md:w-[250px] overflow-hidden`}
+                      >
                         {loadingItem === file._id && (
                           <div className="loader2 w-5!" />
                         )}

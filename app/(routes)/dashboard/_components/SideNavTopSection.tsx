@@ -41,7 +41,7 @@ const SideNavTopSection = ({ user, setActiveTeamInfo }: any) => {
   const isMobile = useIsMobile();
 
   const menu = [
-    { id: 1, name: "Create Team", path: "teams/create", icon: Users },
+    { id: 1, name: "Create Team", path: "/teams/create", icon: Users },
     { id: 2, name: "Settings", path: "/settings", icon: Settings },
   ];
 

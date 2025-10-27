@@ -18,14 +18,14 @@ const DashboardLayout = ({
   children: React.ReactNode;
 }>) => {
   const convex = useConvex();
+  const isMobile = useIsMobile();
+  const pathname = usePathname();
   const { user, isLoading }: any = useKindeBrowserClient();
   const router = useRouter();
   const [fileList_, setFileList_] = useState<FILE[]>();
   const [collapseSidebar_, setCollapseSidebar_] = useState(false);
   const [activeTeam_, setActiveTeam_] = useState();
   const [totalFiles_, setTotalFiles_] = useState<number>();
-  const isMobile = useIsMobile();
-  const pathname = usePathname();
 
   useEffect(() => {
     if (!isLoading && user?.email) {

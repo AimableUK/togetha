@@ -83,7 +83,7 @@ const CreateTeamClient = () => {
         <h3 className="text-gray-700 dark:text-gray-100!">
           You&apos;ll be able to update this later from Settings.
         </h3>
-        <div className="mt-3 md:mt-7 w-2/5">
+        <div className="mt-3 md:mt-7 w-4/5 md:w-2/5">
           <label htmlFor="" className="text-gray-700 dark:text-gray-100!">
             Team Name
           </label>
