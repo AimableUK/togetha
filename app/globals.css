@@ -98,6 +98,8 @@
   --sidebar-border: oklch(0.92 0.004 286.32);
   --sidebar-ring: oklch(0.705 0.015 286.067);
 
+  --ce-button: oklch(0.2404 0 0) !important;
+  --ce-bg: oklch(90.67% 0.0001 271.152);
 }
 
 .dark {
@@ -132,6 +134,9 @@
   --sidebar-accent-foreground: oklch(0.985 0 0);
   --sidebar-border: oklch(1 0 0 / 10%);
   --sidebar-ring: oklch(0.552 0.016 285.938);
+
+  --ce-button: oklch(0.9511 0 0) !important;
+  --ce-bg: oklch(31.714% 0.00004 271.152);
 }
 
 @layer base {
@@ -178,6 +183,56 @@ h6.ce-header {
   margin-left: 70px !important;
   margin-right: 70px !important;
   padding: 0 1rem;
+}
+
+.ce-popover-item {
+  color: var(--primary);
+}
+
+/* .ce-popover-item:hover {
+  color: var(--ce-bg);
+} */
+
+.ce-toolbar__plus,
+.ce-toolbar__settings-btn {
+  color: var(--ce-button);
+}
+
+.ce-toolbar__plus:hover,
+.ce-toolbar__settings-btn:hover {
+  color: #282828;
+}
+
+.ce-toolbar__actions {
+  color: var(--ce-button);
+}
+
+
+.ce-popover-item__icon {
+  color: var(--primary) !important;
+}
+
+.ce-popover-item:hover div{
+  color: #282828 !important;
+}
+
+.ce-popover__container {
+  background-color: var(--ce-bg) !important;
+  border: none !important;
+}
+
+.ce-popover-item__icon--tool,
+.cdx-search-field__input {
+  color: var(--primary) !important;
+}
+
+/* .ce-popover-item__icon, */
+.ce-popover__search {
+  background-color: var(--secondary) !important;
+}
+
+.cdx-search-field__input {
+  background-color: var(--secondary) !important;
 }
 
 @media (max-width: 650px) {
