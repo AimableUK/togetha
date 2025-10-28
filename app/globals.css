@@ -1,6 +1,26 @@
 @import "tailwindcss";
 @import "tw-animate-css";
 
+::-webkit-scrollbar {
+  width: 7px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+  background: var(--background);
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+  background: #888;
+  border-radius: 8px;
+}
+
+/* Handle on Hover */
+::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}
+
 @custom-variant dark (&:is(.dark *));
 
 @theme inline {
@@ -150,6 +170,26 @@ h5.ce-header {
 
 h6.ce-header {
   @apply text-base font-semibold
+}
+
+.ce-block__content,
+.ce-toolbar__content {
+  max-width: 100% !important;
+  margin-left: 70px !important;
+  margin-right: 70px !important;
+  padding: 0 1rem;
+}
+
+@media (max-width: 650px) {
+
+  .ce-block__content,
+  .ce-toolbar__content {
+    max-width: 100% !important;
+    margin-left: 10px !important;
+    margin-right: 10px !important;
+    margin-top: 5px !important;
+    padding: 0 1rem;
+  }
 }
 
 .custom-styles .excalidraw {

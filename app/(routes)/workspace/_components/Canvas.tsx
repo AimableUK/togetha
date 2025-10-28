@@ -6,52 +6,27 @@ import Image from "next/image";
 import { FILE } from "../../dashboard/_components/FileList";
 import { useMutation } from "convex/react";
 import { api } from "@/convex/_generated/api";
-import { toast } from "sonner";
 
-const Canvas = ({
-  onSaveTrigger,
-  fileId,
-  fileData,
-}: {
-  onSaveTrigger: any;
-  fileId: any;
-  fileData: FILE;
-}) => {
+const Canvas = ({ fileId, fileData }: { fileId: any; fileData: FILE }) => {
   const { theme } = useTheme();
   const [whiteBoardData, setWhiteBoardData] = useState("");
-
   const updateWhiteboard = useMutation(api.files.updateWhiteboard);
 
   useEffect(() => {
-    if (onSaveTrigger > 0) saveWhiteBoard();
-  }, [onSaveTrigger]);
+    setTimeout(() => {
+      saveWhiteBoard();
+    }, 1000);
+  }, [whiteBoardData]);
 
   const saveWhiteBoard = async () => {
-    toast.promise(
-      (async () => {
-        await updateWhiteboard({
-          _id: fileId,
-          whiteboard: whiteBoardData,
-        });
-      })(),
-      {
-        loading: "Saving...",
-        success: () => ({
-          message: "Canvas Updated!",
-          description: "Canvas saved successfully!",
-        }),
-        error: (error) => ({
-          message: "Error",
-          description:
-            error?.response?.data?.detail ||
-            "Failed to Save Canvas, Please Try again later.",
-        }),
-      }
-    );
+    await updateWhiteboard({
+      _id: fileId,
+      whiteboard: whiteBoardData,
+    });
   };
 
   return (
-    <div style={{ height: "680px" }} className="custom-styles ">
+    <div className="custom-styles h-[calc(100vh-53px)]">
       {fileData && (
         <Excalidraw
           initialData={{

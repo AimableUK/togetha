@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef } from "react";
 import EditorJS, { ToolConstructable } from "@editorjs/editorjs";
 import Header from "@editorjs/header";
 import EditorjsList from "@editorjs/list";
@@ -11,9 +11,7 @@ import Delimiter from "@editorjs/delimiter";
 import CodeTool from "@editorjs/code";
 import { useMutation } from "convex/react";
 import { api } from "@/convex/_generated/api";
-import { toast } from "sonner";
 import { FILE } from "../../dashboard/_components/FileList";
-// import Embed from "@editorjs/embed";
 
 const rawDocument = {
   time: Date.now(),
@@ -22,65 +20,28 @@ const rawDocument = {
       type: "header",
       id: "1",
       data: {
-        text: "📄 Project Documentation",
+        text: "📄 Document Heading",
         level: 2,
-      },
-    },
-    {
-      type: "header",
-      id: "2",
-      data: {
-        text: "Overview",
-        level: 3,
       },
     },
     {
       type: "paragraph",
       id: "3",
       data: {
-        text: "This document outlines the core features, goals, and implementation steps of the project.",
-      },
-    },
-    {
-      type: "header",
-      id: "4",
-      data: {
-        text: "Features",
-        level: 3,
-      },
-    },
-    {
-      type: "list",
-      id: "5",
-      data: {
-        style: "unordered",
-        items: ["User Authentication", "Data Visualization", "Offline Support"],
+        text: "Type your document or notes here, with your preferred styles... or type (/) to get started",
       },
     },
   ],
   version: "2.8.1",
 };
 
-const Editor = ({
-  onSaveTrigger,
-  fileId,
-  fileData,
-}: {
-  onSaveTrigger: any;
-  fileId: any;
-  fileData: FILE;
-}) => {
+const Editor = ({ fileId, fileData }: { fileId: any; fileData: FILE }) => {
   const ref = useRef<EditorJS | null>(null);
-  const [document, setDocument] = useState(rawDocument);
   const updateDocument = useMutation(api.files.updateDocument);
 
   useEffect(() => {
     fileData && initEditor();
   }, [fileData]);
-
-  useEffect(() => {
-    if (onSaveTrigger > 0) onSaveDocument();
-  }, [onSaveTrigger]);
 
   const initEditor = () => {
     const editor = new EditorJS({
@@ -131,7 +92,15 @@ const Editor = ({
           },
         },
       },
-
+      onChange: async () => {
+        setTimeout(async () => {
+          const outputData = await editor.save();
+          await updateDocument({
+            _id: fileId,
+            document: JSON.stringify(outputData),
+          });
+        }, 1000);
+      },
       holder: "editorjs",
       data: fileData?.document ? JSON.parse(fileData.document) : rawDocument,
     });
@@ -139,36 +108,9 @@ const Editor = ({
     ref.current = editor;
   };
 
-  const onSaveDocument = async () => {
-    if (!ref.current) return;
-
-    toast.promise(
-      (async () => {
-        const outputData = await ref.current!.save();
-        await updateDocument({
-          _id: fileId,
-          document: JSON.stringify(outputData),
-        });
-      })(),
-      {
-        loading: "Saving...",
-        success: () => ({
-          message: "Document Updated!",
-          description: "Document saved successfully!",
-        }),
-        error: (error) => ({
-          message: "Error",
-          description:
-            error?.response?.data?.detail ||
-            "Failed to Save Document, Please Try again later.",
-        }),
-      }
-    );
-  };
-
   return (
     <div>
-      <div id="editorjs" className="ml-3"></div>
+      <div id="editorjs"></div>
     </div>
   );
 };

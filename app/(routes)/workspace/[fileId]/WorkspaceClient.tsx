@@ -9,21 +9,40 @@ import { Id } from "@/convex/_generated/dataModel";
 import { FILE } from "../../dashboard/_components/FileList";
 import Canvas from "../_components/Canvas";
 import Image from "next/image";
+import { useIsMobile } from "@/app/hooks/use-mobile";
 
 type WorkspaceClientProps = {
   fileId: string;
 };
 
 const WorkspaceClient = ({ fileId }: WorkspaceClientProps) => {
-  const [saveDocTrigger, setSaveDocTrigger] = useState(0);
-  const [saveCanvasTrigger, setSaveCanvasTrigger] = useState(0);
-
-  const handleSaveDoc = () => setSaveDocTrigger((prev) => prev + 1);
-  const handleSaveCanvas = () => setSaveCanvasTrigger((prev) => prev + 1);
-
+  const [workspaceViewMode, setWorkspaceViewMode] = useState<string>("both");
   const [fileData, setFileData] = useState<FILE | any>();
 
   const convex = useConvex();
+  const isMobile = useIsMobile();
+
+  useEffect(() => {
+    isMobile && convertWorkspaceviewMode();
+  }, [isMobile]);
+
+  const convertWorkspaceviewMode = () => {
+    if (workspaceViewMode === "both") {
+      setWorkspaceViewMode("editor");
+    } else {
+      setWorkspaceViewMode("both");
+    }
+  };
+
+  const handleWorkspaceViewMode = (viewMode: string) => {
+    if (viewMode === "editor") {
+      setWorkspaceViewMode("editor");
+    } else if (viewMode === "canvas") {
+      setWorkspaceViewMode("canvas");
+    } else {
+      setWorkspaceViewMode("both");
+    }
+  };
 
   const getFileData = async () => {
     const result = await convex.query(api.files.getFileById, {
@@ -38,7 +57,7 @@ const WorkspaceClient = ({ fileId }: WorkspaceClientProps) => {
 
   useEffect(() => {
     if (fileData?.fileName) {
-      document.title = `${fileData.fileName} Workspace`;
+      document.title = `${fileData.fileName} Workspace - Togetha`;
     }
   }, [fileData]);
 
@@ -57,32 +76,32 @@ const WorkspaceClient = ({ fileId }: WorkspaceClientProps) => {
     );
 
   return (
-    <div>
+    <div className="h-screen flex flex-col">
       <WorkspaceHeader
-        onSaveDoc={handleSaveDoc}
-        onSaveCanvas={handleSaveCanvas}
         fileData={fileData}
+        workspaceViewMode={workspaceViewMode}
+        handleWorkspaceViewMode={handleWorkspaceViewMode}
       />
-
       {/*   workspace layout */}
-      <div className="grid grid-cols-1 md:grid-cols-2">
+      <div
+        className={`flex-1 grid ${
+          workspaceViewMode === "both"
+            ? "grid-cols-1 md:grid-cols-2"
+            : "grid-cols-1"
+        } pt-14 h-full overflow-hidden`}
+      >
         {/* Doc */}
-        <div className="h-screen">
-          <Editor
-            onSaveTrigger={saveDocTrigger}
-            fileData={fileData}
-            fileId={fileId}
-          />
-        </div>
-
+        {(workspaceViewMode === "both" || workspaceViewMode === "editor") && (
+          <div className="h-full overflow-y-auto">
+            <Editor fileData={fileData} fileId={fileId} />
+          </div>
+        )}
         {/* board/canvas */}
-        <div className="h-screen border-l">
-          <Canvas
-            onSaveTrigger={saveCanvasTrigger}
-            fileData={fileData}
-            fileId={fileId}
-          />
-        </div>
+        {(workspaceViewMode === "both" || workspaceViewMode === "canvas") && (
+          <div className="h-3/4 border-l">
+            <Canvas fileData={fileData} fileId={fileId} />
+          </div>
+        )}
       </div>
     </div>
   );

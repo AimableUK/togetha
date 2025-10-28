@@ -12,20 +12,22 @@ import {
 } from "@/components/ui/tooltip";
 import { useRouter } from "next/navigation";
 import { FILE } from "../../dashboard/_components/FileList";
+import { useIsMobile } from "@/app/hooks/use-mobile";
 
 const WorkspaceHeader = ({
-  onSaveDoc,
-  onSaveCanvas,
   fileData,
+  workspaceViewMode,
+  handleWorkspaceViewMode,
 }: {
-  onSaveDoc: () => void;
-  onSaveCanvas: () => void;
   fileData: FILE;
+  workspaceViewMode: string;
+  handleWorkspaceViewMode: (viewMode: string) => void;
 }) => {
   const router = useRouter();
+  const isMobile = useIsMobile();
 
   return (
-    <div className="px-3 border-b flex items-center justify-between p-2">
+    <div className="px-3 border-b flex items-center justify-between p-2 fixed w-full z-50 bg-background">
       <div className="flex flex-row w-fit items-center gap-x-2 rounded-md">
         <Tooltip>
           <TooltipTrigger>
@@ -45,24 +47,32 @@ const WorkspaceHeader = ({
           {fileData?.fileName}
         </h2>
       </div>
+      <div className="flex border rounded-[3px]">
+        <button
+          onClick={() => handleWorkspaceViewMode("editor")}
+          className={`${workspaceViewMode === "editor" && "bg-secondary"} border-r py-1 px-3 hover:bg-secondary rounded-l-[3px] cursor-pointer`}
+        >
+          Document
+        </button>
+        {!isMobile && (
+          <button
+            onClick={() => handleWorkspaceViewMode("both")}
+            className={`${workspaceViewMode === "both" && "bg-secondary"} border-r py-1 px-3 md:px-8 hover:bg-secondary cursor-pointer`}
+          >
+            Both
+          </button>
+        )}
+        <button
+          onClick={() => handleWorkspaceViewMode("canvas")}
+          className={`${workspaceViewMode === "canvas" && "bg-secondary"} hover:bg-secondary rounded-l cursor-pointer px-3 rounded-r-[3px]`}
+        >
+          Canvas
+        </button>
+      </div>
       <div className="flex gap-1 items-center">
-        <Button
-          onClick={() => onSaveDoc()}
-          className="bg-[#fc7d74] hover:bg-[#fc7d74]/80 dark:hover:bg-[#fc7d74]/60 active:bg-[#fc7d74]/65 dark:text-foreground/90 cursor-pointer trans"
-        >
-          <Save />
-          Save Doc
-        </Button>
-        <Button
-          onClick={() => onSaveCanvas()}
-          className="bg-[#fc7d74] hover:bg-[#fc7d74]/80 dark:hover:bg-[#fc7d74]/60 active:bg-[#fc7d74]/65 dark:text-foreground/90 cursor-pointer trans"
-        >
-          <Save />
-          Save Canvas
-        </Button>
         <Button className="bg-accent hover:bg-accent/80 dark:hover:bg-accent/60 active:bg-accent/65 dark:text-foreground/90 cursor-pointer trans">
           <Link />
-          Share
+          {!isMobile && "Share"}
         </Button>
         <ModeToggle />
       </div>
