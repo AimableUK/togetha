@@ -15,15 +15,23 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import { validateName } from "@/app/Schema/schema";
 
 const CreateTeamClient = () => {
   const [teamName, setTeamName] = useState("");
+  const [errorMsg, setErrorMsg] = useState("");
 
   const createTeam = useMutation(api.teams.createTeam);
   const { user }: any = useKindeBrowserClient();
   const router = useRouter();
 
   const createNewTeam = () => {
+    const error = validateName(teamName);
+    if (error) {
+      setErrorMsg(error);
+      return;
+    }
+    
     const promise = createTeam({
       teamName: teamName,
       createdBy: user?.email,
@@ -42,6 +50,7 @@ const CreateTeamClient = () => {
           "Failed to Create team, Please Try again later.",
       }),
     });
+    setErrorMsg("");
 
     promise.then(() => {
       router.push("/dashboard");
@@ -92,9 +101,14 @@ const CreateTeamClient = () => {
             className="mt-3"
             onChange={(e) => setTeamName(e.target.value)}
           />
+          {errorMsg && (
+            <p className="text-red-300 font-semibold text-sm mt-2">
+              {errorMsg}
+            </p>
+          )}
         </div>
         <Button
-          disabled={!(teamName && teamName?.length > 0)}
+          disabled={!(teamName && teamName?.length > 1)}
           className="bg-accent dark:text-gray-100 hover:bg-[#0742a2] cursor-pointer"
           onClick={() => createNewTeam()}
         >

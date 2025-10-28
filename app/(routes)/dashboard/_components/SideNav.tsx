@@ -1,4 +1,6 @@
-import React, { useContext, useEffect } from "react";
+"use client";
+
+import React, { useContext, useEffect, useState } from "react";
 import SideNavTopSection, { TEAM } from "./SideNavTopSection";
 import { useKindeBrowserClient } from "@kinde-oss/kinde-auth-nextjs";
 import SideNavBottomSection from "./SideNavBottomSection";
@@ -6,11 +8,14 @@ import { useConvex, useMutation } from "convex/react";
 import { api } from "@/convex/_generated/api";
 import { toast } from "sonner";
 import { TeamContext } from "@/app/FilesListContext";
+import { validateName } from "@/app/Schema/schema";
 
 const SideNav = () => {
   const { user } = useKindeBrowserClient();
   const createFile = useMutation(api.files.createFile);
   const convex = useConvex();
+  const [errorMsg, setErrorMsg] = useState("");
+
   const {
     setFileList_,
     collapseSidebar_,
@@ -25,6 +30,12 @@ const SideNav = () => {
   }, [activeTeam_]);
 
   const onFileCreate = async (fileName: string) => {
+    const error = validateName(fileName);
+    if (error) {
+      setErrorMsg(error);
+      return;
+    }
+
     const promise = createFile({
       fileName: fileName,
       teamId: activeTeam_?._id!,
@@ -75,6 +86,7 @@ const SideNav = () => {
         <SideNavBottomSection
           onFileCreate={onFileCreate}
           totalFiles={totalFiles_}
+          errorMsg={errorMsg}
         />
       </div>
     </div>

@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useContext, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Archive, FilePlus2, Files, Flag } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
@@ -18,17 +18,17 @@ import { Label } from "@/components/ui/label";
 import Constant from "@/app/_constant/Constant";
 import PricingDialog from "./PricingDialog";
 import { usePathname, useRouter } from "next/navigation";
-import { useIsMobile } from "@/app/hooks/use-mobile";
-import { TeamContext } from "@/app/FilesListContext";
 
 type SideNavBottomProps = {
   onFileCreate: (fileInput: string) => void;
   totalFiles?: number;
+  errorMsg: string
 };
 
 const SideNavBottomSection = ({
   onFileCreate,
   totalFiles,
+  errorMsg
 }: SideNavBottomProps) => {
   const [loadingItem, setLoadingItem] = useState<number | null>(null);
   const router = useRouter();
@@ -100,6 +100,11 @@ const SideNavBottomSection = ({
                 className="mt-2"
                 onChange={(e) => setFileInput(e.target.value)}
               />
+              {errorMsg && (
+                <p className="text-red-300 font-semibold text-sm mt-2">
+                  {errorMsg}
+                </p>
+              )}
             </div>
             <DialogFooter>
               <DialogClose asChild>
