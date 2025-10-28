@@ -16,7 +16,6 @@ import { useIsMobile } from "@/app/hooks/use-mobile";
 import {
   DropdownMenu,
   DropdownMenuContent,
-  DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 

@@ -9,7 +9,6 @@ import { api } from "@/convex/_generated/api";
 import { toast } from "sonner";
 import { TeamContext } from "@/app/FilesListContext";
 import { validateName } from "@/app/Schema/schema";
-import Image from "next/image";
 
 const SideNav = () => {
   const { user } = useKindeBrowserClient();
@@ -63,7 +62,7 @@ const SideNav = () => {
 
   return (
     <div
-      className={`${collapseSidebar_ && "-translate-x-72"} trans flex flex-col bg-sidebar border h-screen fixed w-72 border-r py-5 px-3`}
+      className={`${collapseSidebar_ && "-translate-x-72"} trans flex flex-col bg-sidebar border h-full fixed w-72 border-r py-5 px-3`}
     >
       <div className="flex-1">
         <SideNavTopSection
