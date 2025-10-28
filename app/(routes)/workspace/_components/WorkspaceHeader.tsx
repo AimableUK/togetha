@@ -111,13 +111,13 @@ const WorkspaceHeader = ({
             <div className="flex flex-col gap-y-1">
               <Button
                 onClick={() => handleWorkspaceViewMode("editor")}
-                className={`${workspaceViewMode === "editor" && "bg-accent/30"} text-primary bg-secondary hover:bg-accent/20 cursor-pointer trans`}
+                className={`${workspaceViewMode === "editor" && "bg-accent/30"} text-primary bg-secondary hover:bg-accent/20 active:bg-accent/30 cursor-pointer trans`}
               >
                 Document
               </Button>
               <Button
                 onClick={() => handleWorkspaceViewMode("canvas")}
-                className={`${workspaceViewMode === "canvas" && "bg-accent/30"} text-primary bg-secondary hover:bg-accent/20 cursor-pointer trans`}
+                className={`${workspaceViewMode === "canvas" && "bg-accent/30"} text-primary bg-secondary hover:bg-accent/20 active:bg-accent/30 cursor-pointer trans`}
               >
                 Canvas
               </Button>

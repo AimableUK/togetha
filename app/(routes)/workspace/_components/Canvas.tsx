@@ -6,11 +6,13 @@ import Image from "next/image";
 import { FILE } from "../../dashboard/_components/FileList";
 import { useMutation } from "convex/react";
 import { api } from "@/convex/_generated/api";
+import { useIsMobile } from "@/app/hooks/use-mobile";
 
 const Canvas = ({ fileId, fileData }: { fileId: any; fileData: FILE }) => {
   const { theme } = useTheme();
   const [whiteBoardData, setWhiteBoardData] = useState("");
   const updateWhiteboard = useMutation(api.files.updateWhiteboard);
+  const isMobile = useIsMobile();
 
   useEffect(() => {
     setTimeout(() => {
@@ -26,7 +28,9 @@ const Canvas = ({ fileId, fileData }: { fileId: any; fileData: FILE }) => {
   };
 
   return (
-    <div className="custom-styles h-[calc(100vh-53px)]">
+    <div
+      className={`${isMobile && "mt-[53px]"} custom-styles h-[calc(100vh-53px)]`}
+    >
       {fileData && (
         <Excalidraw
           initialData={{

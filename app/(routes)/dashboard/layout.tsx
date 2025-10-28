@@ -33,6 +33,10 @@ const DashboardLayout = ({
     }
   }, [user, isLoading]);
 
+  useEffect(() => {
+    isMobile && setCollapseSidebar_(true);
+  }, [isMobile]);
+
   const checkTeam = async () => {
     const result = await convex.query(api.teams.getTeam, {
       email: user?.email,
