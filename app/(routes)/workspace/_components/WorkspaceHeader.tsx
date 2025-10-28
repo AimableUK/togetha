@@ -4,7 +4,7 @@ import { ModeToggle } from "@/components/theme/ModeToggle";
 import { Button } from "@/components/ui/button";
 import { CircleArrowLeft, Link, Save } from "lucide-react";
 import Image from "next/image";
-import React from "react";
+import React, { useState } from "react";
 import {
   Tooltip,
   TooltipContent,
@@ -13,6 +13,12 @@ import {
 import { useRouter } from "next/navigation";
 import { FILE } from "../../dashboard/_components/FileList";
 import { useIsMobile } from "@/app/hooks/use-mobile";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 const WorkspaceHeader = ({
   fileData,
@@ -25,6 +31,7 @@ const WorkspaceHeader = ({
 }) => {
   const router = useRouter();
   const isMobile = useIsMobile();
+  const [headerCollapse, setHeaderCollapse] = useState(false);
 
   return (
     <div className="px-3 border-b flex items-center justify-between p-2 fixed w-full z-50 bg-background">
@@ -47,7 +54,7 @@ const WorkspaceHeader = ({
           {fileData?.fileName}
         </h2>
       </div>
-      <div className="flex border rounded-[3px]">
+      <div className="hidden md:flex border rounded-[3px]">
         <button
           onClick={() => handleWorkspaceViewMode("editor")}
           className={`${workspaceViewMode === "editor" && "bg-secondary"} border-r py-1 px-3 hover:bg-secondary rounded-l-[3px] cursor-pointer`}
@@ -69,12 +76,62 @@ const WorkspaceHeader = ({
           Canvas
         </button>
       </div>
-      <div className="flex gap-1 items-center">
+      <div className="hidden md:flex gap-1 items-center">
         <Button className="bg-accent hover:bg-accent/80 dark:hover:bg-accent/60 active:bg-accent/65 dark:text-foreground/90 cursor-pointer trans">
           <Link />
-          {!isMobile && "Share"}
+          Share
         </Button>
         <ModeToggle />
+      </div>
+      <div className="flex md:hidden">
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <button
+              onClick={() => setHeaderCollapse(!headerCollapse)}
+              className="z-50 block rounded-sm hover:bg-accent/40 active:scale-90 trans p-1 cursor-pointer md:hidden"
+            >
+              <span className="sr-only">Toggle menu</span>
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                className="size-6"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+                strokeWidth="3"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M4 6h16M4 12h16M4 18h16"
+                />
+              </svg>
+            </button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end">
+            <div className="flex flex-col gap-y-1">
+              <Button
+                onClick={() => handleWorkspaceViewMode("editor")}
+                className={`${workspaceViewMode === "editor" && "bg-accent/30"} text-primary bg-secondary hover:bg-accent/20 cursor-pointer trans`}
+              >
+                Document
+              </Button>
+              <Button
+                onClick={() => handleWorkspaceViewMode("canvas")}
+                className={`${workspaceViewMode === "canvas" && "bg-accent/30"} text-primary bg-secondary hover:bg-accent/20 cursor-pointer trans`}
+              >
+                Canvas
+              </Button>
+              <Button className="text-primary bg-secondary hover:bg-accent/20 cursor-pointer trans">
+                <Link />
+                Share
+              </Button>
+              {/* <span className="rounded-md flex justify-between items-center px-2 whitespace-nowrap text-primary "> */}
+                {/* Theme */}
+                <ModeToggle />
+              {/* </span> */}
+            </div>
+          </DropdownMenuContent>
+        </DropdownMenu>
       </div>
     </div>
   );

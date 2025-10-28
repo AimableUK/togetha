@@ -127,7 +127,7 @@ const Header = ({ user, isLoading }: SiteProps) => {
             {/* nav toogle */}
             <button
               onClick={() => setHeaderCollapse(!headerCollapse)}
-              className="z-50 block rounded-sm hover:bg-accent active:scale-90 trans p-1 cursor-pointer md:hidden"
+              className="z-50 block rounded-sm hover:bg-accent/40 active:scale-90 trans p-1 cursor-pointer md:hidden"
             >
               <span className="sr-only">Toggle menu</span>
               <svg

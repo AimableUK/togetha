@@ -186,25 +186,21 @@ h6.ce-header {
 }
 
 .ce-popover-item {
-  color: var(--primary);
+  color: var(--primary) !important;
 }
-
-/* .ce-popover-item:hover {
-  color: var(--ce-bg);
-} */
 
 .ce-toolbar__plus,
 .ce-toolbar__settings-btn {
-  color: var(--ce-button);
+  color: var(--ce-button) !important;
 }
 
 .ce-toolbar__plus:hover,
 .ce-toolbar__settings-btn:hover {
-  color: #282828;
+  color: #282828 !important;
 }
 
 .ce-toolbar__actions {
-  color: var(--ce-button);
+  color: var(--ce-button) !important;
 }
 
 
@@ -243,7 +239,7 @@ h6.ce-header {
     margin-left: 10px !important;
     margin-right: 10px !important;
     margin-top: 5px !important;
-    padding: 0 1rem;
+    padding: 0 1rem !important;
   }
 }
 
