@@ -88,7 +88,7 @@ const WorkspaceClient = ({ fileId }: WorkspaceClientProps) => {
           workspaceViewMode === "both"
             ? "grid-cols-1 md:grid-cols-2"
             : "grid-cols-1"
-        } pt-14 h-full overflow-hidden`}
+        } pt-[53.5px] h-full overflow-hidden`}
       >
         {/* Doc */}
         {(workspaceViewMode === "both" || workspaceViewMode === "editor") && (
@@ -98,7 +98,7 @@ const WorkspaceClient = ({ fileId }: WorkspaceClientProps) => {
         )}
         {/* board/canvas */}
         {(workspaceViewMode === "both" || workspaceViewMode === "canvas") && (
-          <div className="h-3/4 border-l">
+          <div className="h-3/4 ">
             <Canvas fileData={fileData} fileId={fileId} />
           </div>
         )}
