@@ -1,33 +1,34 @@
 "use client";
 
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useState } from "react";
 import SideNavTopSection, { TEAM } from "./SideNavTopSection";
 import { useKindeBrowserClient } from "@kinde-oss/kinde-auth-nextjs";
 import SideNavBottomSection from "./SideNavBottomSection";
-import { useConvex, useMutation } from "convex/react";
+import { useMutation, useQuery } from "convex/react";
 import { api } from "@/convex/_generated/api";
 import { toast } from "sonner";
 import { TeamContext } from "@/app/FilesListContext";
 import { validateName } from "@/app/Schema/schema";
+import Image from "next/image";
 
 const SideNav = () => {
   const { user } = useKindeBrowserClient();
   const createFile = useMutation(api.files.createFile);
-  const convex = useConvex();
   const [errorMsg, setErrorMsg] = useState("");
+  const { collapseSidebar_, activeTeam_, setActiveTeam_, totalFiles_ } =
+    useContext(TeamContext);
 
-  const {
-    setFileList_,
-    collapseSidebar_,
-    activeTeam_,
-    setActiveTeam_,
-    totalFiles_,
-    setTotalFiles_,
-  } = useContext(TeamContext);
-
-  useEffect(() => {
-    activeTeam_ && getFiles();
-  }, [activeTeam_]);
+  const files = useQuery(
+    api.files.getFiles,
+    activeTeam_ ? { teamId: activeTeam_._id } : "skip"
+  );
+  
+  if (files === undefined)
+    return (
+      <div className="fixed inset-0 bg-secondary flex flex-col items-center justify-center z-[9998]">
+        <div className="loader2"></div>
+      </div>
+    );
 
   const onFileCreate = async (fileName: string) => {
     const error = validateName(fileName);
@@ -45,9 +46,6 @@ const SideNav = () => {
       whiteboard: "",
     });
 
-    await promise;
-    getFiles();
-
     toast.promise(promise, {
       loading: "Creating...",
       success: () => ({
@@ -61,14 +59,6 @@ const SideNav = () => {
           "Failed to Create file, Please Try again later.",
       }),
     });
-  };
-
-  const getFiles = async () => {
-    const result = await convex.query(api.files.getFiles, {
-      teamId: activeTeam_?._id!,
-    });
-    setTotalFiles_(result?.length);
-    setFileList_(result);
   };
 
   return (

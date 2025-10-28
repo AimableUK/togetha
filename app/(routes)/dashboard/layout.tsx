@@ -2,7 +2,7 @@
 
 import { api } from "@/convex/_generated/api";
 import { useKindeBrowserClient } from "@kinde-oss/kinde-auth-nextjs";
-import { useConvex } from "convex/react";
+import { useQuery } from "convex/react";
 import { usePathname, useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import SideNav from "./_components/SideNav";
@@ -10,46 +10,39 @@ import { useIsMobile } from "@/app/hooks/use-mobile";
 import Image from "next/image";
 import Header from "./_components/includes/Header";
 import { TeamContext } from "@/app/FilesListContext";
-import { FILE } from "./_components/FileList";
+import { TEAM } from "./_components/SideNavTopSection";
 
 const DashboardLayout = ({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) => {
-  const convex = useConvex();
   const isMobile = useIsMobile();
   const pathname = usePathname();
   const { user, isLoading }: any = useKindeBrowserClient();
   const router = useRouter();
-  const [fileList_, setFileList_] = useState<FILE[]>();
   const [collapseSidebar_, setCollapseSidebar_] = useState(false);
-  const [activeTeam_, setActiveTeam_] = useState();
   const [totalFiles_, setTotalFiles_] = useState<number>();
-
-  useEffect(() => {
-    if (!isLoading && user?.email) {
-      checkTeam();
-    }
-  }, [user, isLoading]);
+  const [activeTeam_, setActiveTeam_] = useState(null);
+  const [teamList_, setTeamList_] = useState<TEAM[] | null>(null);
 
   useEffect(() => {
     isMobile && setCollapseSidebar_(true);
   }, [isMobile]);
 
-  const checkTeam = async () => {
-    const result = await convex.query(api.teams.getTeam, {
-      email: user?.email,
-    });
+  const email = user?.email ?? "";
+  const teams = useQuery(api.teams.getTeam, email ? { email } : "skip");
 
-    if (!result?.length) {
-      if (!pathname.includes("teams/create")) {
-        router.push("/teams/create");
-      }
+  useEffect(() => {
+    if (teams?.length) {
+      setActiveTeam_(teams[0]);
+      setTeamList_(teams);
+    } else if (teams && !teams.length && !pathname.includes("teams/create")) {
+      router.push("/teams/create");
     }
-  };
+  }, [teams, pathname, router]);
 
-  if (isLoading)
+  if (isLoading || !user || teams === undefined) {
     return (
       <div className="flex flex-col items-center gap-5 absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 ">
         <div className="flex gap-1 items-center">
@@ -59,13 +52,13 @@ const DashboardLayout = ({
         <div className="loader1"></div>
       </div>
     );
+  }
 
   return (
     <TeamContext.Provider
       value={{
         isMobile,
-        fileList_,
-        setFileList_,
+        teamList_,
         activeTeam_,
         setActiveTeam_,
         collapseSidebar_,

@@ -15,8 +15,6 @@ import {
 } from "@/components/ui/popover";
 import { LogoutLink } from "@kinde-oss/kinde-auth-nextjs";
 import { Separator } from "@/components/ui/separator";
-import { useConvex } from "convex/react";
-import { api } from "@/convex/_generated/api";
 import { usePathname, useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { useIsMobile } from "@/app/hooks/use-mobile";
@@ -33,11 +31,13 @@ const SideNavTopSection = ({ user, setActiveTeamInfo }: any) => {
   const router = useRouter();
   const pathname = usePathname();
 
-  const [teamList, setTeamList] = useState<TEAM[]>();
-
-  const convex = useConvex();
-  const { collapseSidebar_, setCollapseSidebar_, activeTeam_, setActiveTeam_ } =
-    useContext(TeamContext);
+  const {
+    collapseSidebar_,
+    setCollapseSidebar_,
+    teamList_,
+    activeTeam_,
+    setActiveTeam_,
+  } = useContext(TeamContext);
   const isMobile = useIsMobile();
 
   const menu = [
@@ -46,20 +46,19 @@ const SideNavTopSection = ({ user, setActiveTeamInfo }: any) => {
   ];
 
   useEffect(() => {
-    user && getTeamList();
-  }, [user]);
-
-  useEffect(() => {
     activeTeam_ && setActiveTeamInfo(activeTeam_);
   }, [activeTeam_]);
 
-  const getTeamList = async () => {
-    const result = await convex.query(api.teams.getTeam, {
-      email: user?.email,
-    });
-    setTeamList(result);
-    setActiveTeam_(result[0]);
-  };
+  if (activeTeam_ === undefined)
+    return (
+      <div className="flex flex-col items-center gap-5 absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 ">
+        <div className="flex gap-1 items-center">
+          <Image src="/logo.png" alt="togetha logo" width={40} height={40} />
+          <h3 className="font-bold text-2xl">Togetha</h3>
+        </div>
+        <div className="loader1"></div>
+      </div>
+    );
 
   const onMenuClick = (item: any) => {
     setLoadingItem(item?.id);
@@ -90,13 +89,13 @@ const SideNavTopSection = ({ user, setActiveTeamInfo }: any) => {
         <PopoverContent className="md:ml-5 p-2">
           {/* Team section */}
           <div className="px-2">
-            {teamList?.map((team, index) => (
+            {teamList_?.map((team: TEAM) => (
               <h2
-                key={index}
+                key={team._id}
                 className={`${activeTeam_?._id == team._id && "bg-accent text-foreground/90"}  p-2 rounded-md hover:bg-accent active:bg-accent/80 hover:text-gray-100 cursor-pointer trans`}
                 onClick={() => setActiveTeam_(team)}
               >
-                {team.teamName ?? "Team Name"}
+                {team?.teamName! ?? "Team Name"}
               </h2>
             ))}
           </div>

@@ -19,7 +19,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { usePathname, useRouter } from "next/navigation";
 import { toast } from "sonner";
-import { useConvex, useMutation } from "convex/react";
+import { useMutation, useQuery } from "convex/react";
 import { api } from "@/convex/_generated/api";
 import { Id } from "@/convex/_generated/dataModel";
 import { TeamContext } from "@/app/FilesListContext";
@@ -39,7 +39,6 @@ export interface FILE {
 }
 
 const ArchievedList = () => {
-  const { fileList_ } = useContext(TeamContext);
   const { user, isLoading }: any = useKindeBrowserClient();
   const [loadingItem, setLoadingItem] = useState<string | null>();
   const router = useRouter();
@@ -52,16 +51,29 @@ const ArchievedList = () => {
 
   const removeFromArchieve = useMutation(api.files.undoArchieve);
   const renameFileName = useMutation(api.files.renameFile);
-  const convex = useConvex();
-  const { setFileList_, activeTeam_ } = useContext(TeamContext);
-
-  useEffect(() => {
-    fileList_ && setFileList_(fileList_);
-  }, [fileList_]);
+  const { activeTeam_ } = useContext(TeamContext);
 
   useEffect(() => {
     setLoadingItem(null);
   }, [pathname]);
+
+  const files = useQuery(
+    api.files.getFiles,
+    activeTeam_ ? { teamId: activeTeam_._id } : "skip"
+  );
+  if (files === undefined)
+    return (
+      <div className="fixed inset-0 flex flex-col gap-5 bg-secondary items-center justify-center z-[9999]">
+        <div className="flex gap-1 items-center">
+          <Image src="/logo.png" alt="togetha logo" width={40} height={40} />
+          <div>
+            <h3 className="font-bold text-2xl">Togetha</h3>
+            <h4 className="font-semibold">Loading Files</h4>
+          </div>
+        </div>
+        <div className="loader1"></div>
+      </div>
+    );
 
   const handleRemoveArchieve = async (fileId: string) => {
     toast.promise(
@@ -70,7 +82,6 @@ const ArchievedList = () => {
           _id: fileId as Id<"files">,
           archieve: false,
         });
-        getFiles();
       })(),
       {
         loading: "Restoring Archieve...",
@@ -86,13 +97,6 @@ const ArchievedList = () => {
         }),
       }
     );
-  };
-
-  const getFiles = async () => {
-    const result = await convex.query(api.files.getFiles, {
-      teamId: activeTeam_?._id!,
-    });
-    setFileList_(result);
   };
 
   const handleViewFile = (fileId: string) => {
@@ -117,7 +121,6 @@ const ArchievedList = () => {
           _id: renameFile as Id<"files">,
           fileName: newFileName,
         });
-        getFiles();
         setRenameFIle(null);
       })(),
       {
@@ -157,9 +160,9 @@ const ArchievedList = () => {
                   <span className="loader1"></span>
                 </td>
               </tr>
-            ) : fileList_ && fileList_.length > 0 ? (
+            ) : files && files.length > 0 ? (
               (() => {
-                const archievedFiles = fileList_.filter(
+                const archievedFiles = files.filter(
                   (file: { archieve: boolean }) => file.archieve === true
                 );
 

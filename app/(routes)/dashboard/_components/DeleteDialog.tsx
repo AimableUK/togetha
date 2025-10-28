@@ -1,4 +1,4 @@
-import React, { useContext, useEffect } from "react";
+import React from "react";
 import {
   Dialog,
   DialogClose,
@@ -13,8 +13,7 @@ import { DeleteData } from "./FileList";
 import { api } from "@/convex/_generated/api";
 import { toast } from "sonner";
 import { Id } from "@/convex/_generated/dataModel";
-import { useConvex, useMutation } from "convex/react";
-import { TeamContext } from "@/app/FilesListContext";
+import { useMutation } from "convex/react";
 
 interface DialogProps extends DeleteData {
   open: boolean;
@@ -22,14 +21,7 @@ interface DialogProps extends DeleteData {
 }
 
 const DeleteDialog = ({ id, type, open, setOpen }: DialogProps) => {
-  const convex = useConvex();
   const deleteData = useMutation(api.files.deleteFile);
-  const { fileList_, setFileList_, activeTeam_, setTotalFiles_ } =
-    useContext(TeamContext);
-
-  useEffect(() => {
-    fileList_ && setFileList_(fileList_);
-  }, [fileList_]);
 
   const handleDelete = async () => {
     toast.promise(
@@ -37,7 +29,6 @@ const DeleteDialog = ({ id, type, open, setOpen }: DialogProps) => {
         await deleteData({
           _id: id as Id<"files">,
         });
-        getFiles();
       })(),
       {
         loading: `Deleting ${type}...`,
@@ -54,14 +45,6 @@ const DeleteDialog = ({ id, type, open, setOpen }: DialogProps) => {
       }
     );
     setOpen(false);
-  };
-
-  const getFiles = async () => {
-    const result = await convex.query(api.files.getFiles, {
-      teamId: activeTeam_?._id!,
-    });
-    setTotalFiles_(result?.length);
-    setFileList_(result);
   };
 
   return (

@@ -15,8 +15,6 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import Constant from "@/app/_constant/Constant";
-import PricingDialog from "./PricingDialog";
 import { usePathname, useRouter } from "next/navigation";
 
 type SideNavBottomProps = {
@@ -82,7 +80,7 @@ const SideNavBottomSection = ({
             New file
           </Button>
         </DialogTrigger>
-        {totalFiles! < Constant.MAX_FREE_FILES ? (
+        {/* {totalFiles! < Constant.MAX_FREE_FILES ? ( */}
           <DialogContent>
             <DialogHeader>
               <DialogTitle>Create New</DialogTitle>
@@ -122,12 +120,10 @@ const SideNavBottomSection = ({
               </Button>
             </DialogFooter>
           </DialogContent>
-        ) : (
-          <PricingDialog />
-        )}
+        {/* )  */}
       </Dialog>
 
-      <div className="h-3 w-full bg-foreground/20 dark:bg-foreground/50 rounded-full mt-4">
+      {/* <div className="h-3 w-full bg-foreground/20 dark:bg-foreground/50 rounded-full mt-4">
         <div
           className={`h-3 rounded-full transition-all duration-700 ease-in-out`}
           style={{
@@ -135,15 +131,15 @@ const SideNavBottomSection = ({
             backgroundColor: totalFiles! >= 5 ? "#fd0d25" : "#1d64ba",
           }}
         ></div>
-      </div>
+      </div> */}
 
-      <div className="text-xs mt-3">
+      {/* <div className="text-xs mt-3">
         <h2>
           <strong>{totalFiles}</strong> Out of{" "}
           <strong>{Constant.MAX_FREE_FILES}</strong> files used
         </h2>
         <h2>Upgrade your plan for unlimited access.</h2>
-      </div>
+      </div> */}
     </div>
   );
 };
