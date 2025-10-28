@@ -25,7 +25,7 @@ const SideNav = () => {
   
   if (files === undefined)
     return (
-      <div className="fixed inset-0 bg-secondary flex flex-col items-center justify-center z-[9998]">
+      <div className="fixed inset-0 bg-background flex flex-col items-center justify-center z-[9998]">
         <div className="loader2"></div>
       </div>
     );
@@ -63,7 +63,7 @@ const SideNav = () => {
 
   return (
     <div
-      className={`${collapseSidebar_ && "-translate-x-72"} trans flex flex-col bg-sidebar border h-screen fixed w-72 border-r p-6`}
+      className={`${collapseSidebar_ && "-translate-x-72"} trans flex flex-col bg-sidebar border h-screen fixed w-72 border-r py-5 px-3`}
     >
       <div className="flex-1">
         <SideNavTopSection

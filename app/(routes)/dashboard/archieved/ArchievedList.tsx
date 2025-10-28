@@ -63,7 +63,7 @@ const ArchievedList = () => {
   );
   if (files === undefined)
     return (
-      <div className="fixed inset-0 flex flex-col gap-5 bg-secondary items-center justify-center z-[9999]">
+      <div className="fixed inset-0 flex flex-col gap-5 bg-background items-center justify-center z-[9999]">
         <div className="flex gap-1 items-center">
           <Image src="/logo.png" alt="togetha logo" width={40} height={40} />
           <div>
