@@ -67,8 +67,8 @@ const WorkspaceClient = ({ fileId }: WorkspaceClientProps) => {
         <div className="flex gap-1 items-center">
           <Image src="/logo.png" alt="togetha logo" width={40} height={40} />
           <div>
-            <h3 className="font-bold text-2xl">Togetha</h3>
-            <h4 className="font-semibold">Loading Workspace</h4>
+            <h3 className="font-bold text-xl md:text-2xl">Togetha</h3>
+            <h4 className="font-semibold text-xs">Loading Workspace</h4>
           </div>
         </div>
         <div className="loader1"></div>
@@ -76,7 +76,7 @@ const WorkspaceClient = ({ fileId }: WorkspaceClientProps) => {
     );
 
   return (
-    <div className={`${isMobile ? "h-full" : "h-screen"} flex flex-col`}>
+    <div className="h-screen flex flex-col">
       <WorkspaceHeader
         fileData={fileData}
         workspaceViewMode={workspaceViewMode}
