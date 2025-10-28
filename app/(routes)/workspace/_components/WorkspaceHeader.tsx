@@ -50,7 +50,7 @@ const WorkspaceHeader = ({
           </TooltipContent>
         </Tooltip>
         <Image src="/logo.png" alt="Togetha logo" width={35} height={35} />
-        <h2 className="font-semibold text-xl flex gap-2 items-center whitespace-nowrap truncate max-w-2/4">
+        <h2 className="font-semibold text-xl flex gap-2 items-center whitespace-nowrap truncate max-w-3/4">
           {fileData?.fileName}
         </h2>
       </div>
