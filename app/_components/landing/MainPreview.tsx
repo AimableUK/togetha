@@ -1,7 +1,11 @@
+import { Button } from "@/components/ui/button";
+import { LoginLink } from "@kinde-oss/kinde-auth-nextjs";
 import Image from "next/image";
-import React from "react";
+import React, { useState } from "react";
 
 const MainPreview = () => {
+  const [preview, setPreview] = useState("editor");
+
   return (
     <div className="pt-1 pb-8">
       <div className="mx-auto max-w-2xl px-3 lg:max-w-7xl lg:px-6">
@@ -27,9 +31,11 @@ const MainPreview = () => {
               </div>
               <div className="@container relative min-h-120 w-full grow max-lg:mx-auto max-lg:max-w-sm">
                 <div className="absolute inset-x-10 top-10 bottom-0 overflow-hidden rounded-t-[12cqw] border-x-[3cqw] border-t-[3cqw] border-gray-700 bg-gray-900 outline outline-white/20">
-                  <img
-                    alt=""
-                    src="https://tailwindcss.com/plus-assets/img/component-images/bento-03-mobile-friendly.png"
+                  <Image
+                    src="/DahboardMobilePreview.jpg"
+                    alt="togetha image mobile preview"
+                    width={300}
+                    height={300}
                     className="size-full object-cover object-top"
                   />
                 </div>
@@ -101,15 +107,41 @@ const MainPreview = () => {
                 <div className="absolute top-10 right-0 bottom-0 left-10 overflow-hidden rounded-tl-xl bg-gray-900/60 outline outline-white/10">
                   <div className="flex bg-gray-900 outline outline-white/5">
                     <div className="-mb-px flex text-sm/6 font-medium text-gray-400">
-                      <div className="border-r border-b border-r-white/10 border-b-white/20 bg-white/5 px-4 py-2 text-white">
+                      <div
+                        onClick={() => setPreview("editor")}
+                        className={`${preview === "editor" && "bg-white/5"} cursor-pointer border-r border-b border-r-white/10 border-b-white/20 px-4 py-2 text-white`}
+                      >
                         Rich-Text Editor
                       </div>
-                      <div className="border-r border-gray-600/10 px-4 py-2">
+                      <div
+                        onClick={() => setPreview("canvas")}
+                        className={`${preview === "canvas" && "bg-white/5"} cursor-pointer border-r border-gray-600/10 px-4 py-2`}
+                      >
                         Canvas
                       </div>
+                      <LoginLink postLoginRedirectURL="/dashboard">
+                        <div
+                          onClick={() => setPreview("canvas")}
+                          className="hover:bg-white/5 cursor-pointer border-r border-gray-600/10 px-4 py-2"
+                        >
+                          Try Now!
+                        </div>
+                      </LoginLink>
                     </div>
                   </div>
-                  <div className="px-6 pt-6 pb-14">{/* Preview example */}</div>
+                  <div>
+                    <Image
+                      src={
+                        preview === "editor"
+                          ? "/EditorPreview.jpg"
+                          : "/CanvasPreview.jpg"
+                      }
+                      alt="togetha image mobile preview"
+                      width={300}
+                      height={300}
+                      className="size-full object-cover object-top"
+                    />
+                  </div>
                 </div>
               </div>
             </div>

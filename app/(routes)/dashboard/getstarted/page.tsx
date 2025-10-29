@@ -1,9 +1,10 @@
-import React from 'react'
+import { pageMetadata } from "@/lib/utils";
+import React from "react";
+import GetStartedClient from "./GetStartedClient";
 
+export const metadata = pageMetadata.getStarted;
 const page = () => {
-  return (
-    <div>get started</div>
-  )
-}
+  return <GetStartedClient />;
+};
 
-export default page
+export default page;

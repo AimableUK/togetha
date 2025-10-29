@@ -19,6 +19,7 @@ import { usePathname, useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { useIsMobile } from "@/app/hooks/use-mobile";
 import { TeamContext } from "@/app/FilesListContext";
+import Link from "next/link";
 
 export interface TEAM {
   createdBy: string;
@@ -27,7 +28,7 @@ export interface TEAM {
 }
 
 const SideNavTopSection = ({ user, setActiveTeamInfo }: any) => {
-  const [loadingItem, setLoadingItem] = useState<number | null>(null);
+  const [loadingItem, setLoadingItem] = useState<number | string | null>(null);
   const router = useRouter();
   const pathname = usePathname();
 
@@ -69,6 +70,19 @@ const SideNavTopSection = ({ user, setActiveTeamInfo }: any) => {
     }, 2000);
   };
 
+  const onTeamsClick = () => {
+    if (pathname !== "/dashboard/teams") {
+      setLoadingItem("allteams");
+      router.push("/dashboard/teams");
+    } else {
+      setLoadingItem(null);
+    }
+
+    setTimeout(() => {
+      pathname !== "/dashboard/teams" && setLoadingItem(null);
+    }, 2000);
+  };
+
   return (
     <div className="flex flex-col">
       <Popover>
@@ -86,9 +100,9 @@ const SideNavTopSection = ({ user, setActiveTeamInfo }: any) => {
           onClick={() => setCollapseSidebar_(!collapseSidebar_)}
         />
 
-        <PopoverContent className="md:ml-5 p-2">
+        <PopoverContent className="md:ml-5 p-2 max-h-[410px] w-64">
           {/* Team section */}
-          <div className="px-2">
+          <div className="px-2 overflow-y-auto max-h-[160px]">
             {teamList_?.map((team: TEAM) => (
               <h2
                 key={team._id}
@@ -126,19 +140,19 @@ const SideNavTopSection = ({ user, setActiveTeamInfo }: any) => {
           <Separator className="mt-3 mb-1" />
           {/* use info section */}
           {user && (
-            <div className="mt-2 flex gap-2">
+            <div className="mt-2 flex items-center gap-1">
               <Image
                 src={user?.picture ?? "/user.webp"}
                 alt="user Image"
-                width={45}
-                height={45}
-                className="rounded-full"
+                width={40}
+                height={40}
+                className="rounded-full "
               />
-              <div className="flex flex-col">
-                <h2 className="flex flex-col font-bold text-foreground/85">
+              <div className="flex flex-col overflow-hidden">
+                <h2 className="font-bold text-foreground/85 text-sm truncate">
                   {user?.given_name} {user?.family_name}
                 </h2>
-                <h2 className="flex flex-col text-[15px] text-foreground/75">
+                <h2 className="text-[14px] text-foreground/75 truncate max-w-[180px]">
                   {user?.email}
                 </h2>
               </div>
@@ -148,9 +162,11 @@ const SideNavTopSection = ({ user, setActiveTeamInfo }: any) => {
       </Popover>
       {/* all files button */}
       <Button
+        onClick={onTeamsClick}
         variant="outline"
         className="justify-start gap-2 cursor-pointer hover:text-gray-100 dark:hover:text-foreground mt-5"
       >
+        {loadingItem === "allteams" && <span className="loader2 w-5!"></span>}
         <LayoutGridIcon /> All Teams
       </Button>
     </div>
