@@ -6,18 +6,18 @@ import Image from "next/image";
 import { FILE } from "../../dashboard/_components/FileList";
 import { useMutation } from "convex/react";
 import { api } from "@/convex/_generated/api";
-import { useIsMobile } from "@/app/hooks/use-mobile";
 
 const Canvas = ({ fileId, fileData }: { fileId: any; fileData: FILE }) => {
   const { theme } = useTheme();
   const [whiteBoardData, setWhiteBoardData] = useState("");
   const updateWhiteboard = useMutation(api.files.updateWhiteboard);
-  const isMobile = useIsMobile()
 
   useEffect(() => {
-    setTimeout(() => {
+    const timeout = setTimeout(() => {
       saveWhiteBoard();
     }, 1000);
+
+    return () => clearTimeout(timeout);
   }, [whiteBoardData]);
 
   const saveWhiteBoard = async () => {

@@ -12,6 +12,7 @@ import CodeTool from "@editorjs/code";
 import { useMutation } from "convex/react";
 import { api } from "@/convex/_generated/api";
 import { FILE } from "../../dashboard/_components/FileList";
+import { toast } from "sonner";
 
 const rawDocument = {
   time: Date.now(),
@@ -36,14 +37,17 @@ const rawDocument = {
 };
 
 const Editor = ({ fileId, fileData }: { fileId: any; fileData: FILE }) => {
-  const ref = useRef<EditorJS | null>(null);
+  const editorRef = useRef<EditorJS | null>(null);
   const updateDocument = useMutation(api.files.updateDocument);
+  const saveTimeout = useRef<NodeJS.Timeout | null>(null);
 
   useEffect(() => {
-    fileData && initEditor();
-  }, [fileData]);
+    if (!fileId || !fileData) return;
+    if (editorRef.current) return;
 
-  const initEditor = () => {
+    const holder = document.getElementById("editorjs");
+    if (!holder) return;
+
     const editor = new EditorJS({
       tools: {
         header: {
@@ -92,21 +96,37 @@ const Editor = ({ fileId, fileData }: { fileId: any; fileData: FILE }) => {
           },
         },
       },
-      onChange: async () => {
-        setTimeout(async () => {
-          const outputData = await editor.save();
-          await updateDocument({
-            _id: fileId,
-            document: JSON.stringify(outputData),
-          });
-        }, 1000);
+      async onChange() {
+        if (saveTimeout.current) clearTimeout(saveTimeout.current);
+        saveTimeout.current = setTimeout(async () => {
+          try {
+            const data = await editor.save();
+            await updateDocument({
+              _id: fileId,
+              document: JSON.stringify(data),
+            });
+          } catch (err: any) {
+            console.error(
+              "Network error: your changes will be saved when back online"
+            );
+          }
+        }, 100);
+      },
+      onReady() {
+        editorRef.current = editor;
       },
       holder: "editorjs",
       data: fileData?.document ? JSON.parse(fileData.document) : rawDocument,
     });
 
-    ref.current = editor;
-  };
+    return () => {
+      if (editorRef.current) {
+        editorRef.current.destroy();
+        editorRef.current = null;
+      }
+      if (saveTimeout.current) clearTimeout(saveTimeout.current);
+    };
+  }, [fileId]);
 
   return (
     <div>

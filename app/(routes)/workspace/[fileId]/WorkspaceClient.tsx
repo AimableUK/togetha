@@ -3,13 +3,13 @@
 import React, { useEffect, useState } from "react";
 import WorkspaceHeader from "../_components/WorkspaceHeader";
 import Editor from "../_components/Editor";
-import { useConvex } from "convex/react";
 import { api } from "@/convex/_generated/api";
 import { Id } from "@/convex/_generated/dataModel";
 import { FILE } from "../../dashboard/_components/FileList";
 import Canvas from "../_components/Canvas";
 import Image from "next/image";
 import { useIsMobile } from "@/app/hooks/use-mobile";
+import { useQuery } from "convex/react";
 
 type WorkspaceClientProps = {
   fileId: string;
@@ -17,9 +17,6 @@ type WorkspaceClientProps = {
 
 const WorkspaceClient = ({ fileId }: WorkspaceClientProps) => {
   const [workspaceViewMode, setWorkspaceViewMode] = useState<string>("both");
-  const [fileData, setFileData] = useState<FILE | any>();
-
-  const convex = useConvex();
   const isMobile = useIsMobile();
 
   useEffect(() => {
@@ -44,16 +41,9 @@ const WorkspaceClient = ({ fileId }: WorkspaceClientProps) => {
     }
   };
 
-  const getFileData = async () => {
-    const result = await convex.query(api.files.getFileById, {
-      _id: fileId as Id<"files">,
-    });
-    setFileData(result);
-  };
-
-  useEffect(() => {
-    if (fileId) getFileData();
-  }, []);
+  const fileData = useQuery(api.files.getFileById, {
+    _id: fileId as Id<"files">,
+  });
 
   useEffect(() => {
     if (fileData?.fileName) {
@@ -61,7 +51,7 @@ const WorkspaceClient = ({ fileId }: WorkspaceClientProps) => {
     }
   }, [fileData]);
 
-  if (!fileData)
+  if (!fileId || !fileData)
     return (
       <div className="flex flex-col items-center gap-5 absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 ">
         <div className="flex gap-1 items-center">

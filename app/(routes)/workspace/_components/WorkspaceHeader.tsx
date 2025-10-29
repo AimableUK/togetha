@@ -2,7 +2,7 @@
 
 import { ModeToggle } from "@/components/theme/ModeToggle";
 import { Button } from "@/components/ui/button";
-import { CircleArrowLeft, Link, Save } from "lucide-react";
+import { CircleArrowLeft, Link } from "lucide-react";
 import Image from "next/image";
 import React, { useState } from "react";
 import {
