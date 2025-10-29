@@ -12,7 +12,6 @@ import CodeTool from "@editorjs/code";
 import { useMutation } from "convex/react";
 import { api } from "@/convex/_generated/api";
 import { FILE } from "../../dashboard/_components/FileList";
-import { toast } from "sonner";
 
 const rawDocument = {
   time: Date.now(),
@@ -36,7 +35,17 @@ const rawDocument = {
   version: "2.8.1",
 };
 
-const Editor = ({ fileId, fileData }: { fileId: any; fileData: FILE }) => {
+interface EditorProps {
+  fileId: any;
+  fileData: FILE;
+  setSavingWorkspace: React.Dispatch<React.SetStateAction<boolean>>;
+}
+
+const Editor = ({
+  fileId,
+  fileData,
+  setSavingWorkspace,
+}: EditorProps) => {
   const editorRef = useRef<EditorJS | null>(null);
   const updateDocument = useMutation(api.files.updateDocument);
   const saveTimeout = useRef<NodeJS.Timeout | null>(null);
@@ -100,15 +109,18 @@ const Editor = ({ fileId, fileData }: { fileId: any; fileData: FILE }) => {
         if (saveTimeout.current) clearTimeout(saveTimeout.current);
         saveTimeout.current = setTimeout(async () => {
           try {
+            setSavingWorkspace(true);
             const data = await editor.save();
             await updateDocument({
               _id: fileId,
               document: JSON.stringify(data),
             });
+            setSavingWorkspace(false);
           } catch (err: any) {
             console.error(
               "Network error: your changes will be saved when back online"
             );
+            setSavingWorkspace(false);
           }
         }, 100);
       },

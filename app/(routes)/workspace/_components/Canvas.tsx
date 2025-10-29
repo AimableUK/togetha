@@ -7,7 +7,13 @@ import { FILE } from "../../dashboard/_components/FileList";
 import { useMutation } from "convex/react";
 import { api } from "@/convex/_generated/api";
 
-const Canvas = ({ fileId, fileData }: { fileId: any; fileData: FILE }) => {
+interface CanvasProps {
+  fileId: any;
+  fileData: FILE;
+  setSavingWorkspace: React.Dispatch<React.SetStateAction<boolean>>;
+}
+
+const Canvas = ({ fileId, fileData, setSavingWorkspace }: CanvasProps) => {
   const { theme } = useTheme();
   const [whiteBoardData, setWhiteBoardData] = useState("");
   const updateWhiteboard = useMutation(api.files.updateWhiteboard);
@@ -21,10 +27,12 @@ const Canvas = ({ fileId, fileData }: { fileId: any; fileData: FILE }) => {
   }, [whiteBoardData]);
 
   const saveWhiteBoard = async () => {
+    setSavingWorkspace(true);
     await updateWhiteboard({
       _id: fileId,
       whiteboard: whiteBoardData,
     });
+    setSavingWorkspace(false);
   };
 
   return (

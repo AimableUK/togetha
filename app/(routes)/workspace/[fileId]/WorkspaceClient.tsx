@@ -18,6 +18,7 @@ type WorkspaceClientProps = {
 const WorkspaceClient = ({ fileId }: WorkspaceClientProps) => {
   const [workspaceViewMode, setWorkspaceViewMode] = useState<string>("both");
   const isMobile = useIsMobile();
+  const [savingWorkspace, setSavingWorkspace] = useState<boolean>(false);
 
   useEffect(() => {
     isMobile && convertWorkspaceviewMode();
@@ -71,6 +72,7 @@ const WorkspaceClient = ({ fileId }: WorkspaceClientProps) => {
         fileData={fileData}
         workspaceViewMode={workspaceViewMode}
         handleWorkspaceViewMode={handleWorkspaceViewMode}
+        savingWorkspace={savingWorkspace}
       />
       {/*   workspace layout */}
       <div
@@ -83,13 +85,21 @@ const WorkspaceClient = ({ fileId }: WorkspaceClientProps) => {
         {/* Doc */}
         {(workspaceViewMode === "both" || workspaceViewMode === "editor") && (
           <div className="h-full overflow-y-auto">
-            <Editor fileData={fileData} fileId={fileId} />
+            <Editor
+              fileData={fileData}
+              fileId={fileId}
+              setSavingWorkspace={setSavingWorkspace}
+            />
           </div>
         )}
         {/* board/canvas */}
         {(workspaceViewMode === "both" || workspaceViewMode === "canvas") && (
           <div className="h-3/4 ">
-            <Canvas fileData={fileData} fileId={fileId} />
+            <Canvas
+              fileData={fileData}
+              fileId={fileId}
+              setSavingWorkspace={setSavingWorkspace}
+            />
           </div>
         )}
       </div>

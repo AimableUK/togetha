@@ -2,7 +2,7 @@
 
 import { ModeToggle } from "@/components/theme/ModeToggle";
 import { Button } from "@/components/ui/button";
-import { CircleArrowLeft, Link } from "lucide-react";
+import { CircleArrowLeft, CloudCheck, CloudUpload, Link } from "lucide-react";
 import Image from "next/image";
 import React, { useState } from "react";
 import {
@@ -23,10 +23,12 @@ const WorkspaceHeader = ({
   fileData,
   workspaceViewMode,
   handleWorkspaceViewMode,
+  savingWorkspace,
 }: {
   fileData: FILE;
   workspaceViewMode: string;
   handleWorkspaceViewMode: (viewMode: string) => void;
+  savingWorkspace: boolean | undefined;
 }) => {
   const router = useRouter();
   const isMobile = useIsMobile();
@@ -76,6 +78,19 @@ const WorkspaceHeader = ({
         </button>
       </div>
       <div className="hidden md:flex gap-1 items-center">
+        <Tooltip>
+          <TooltipTrigger>
+            {savingWorkspace ? (
+              <CloudUpload className="text-orange-400 mr-2" strokeWidth={2.4} />
+            ) : (
+              <CloudCheck className="text-green-400 mr-2" strokeWidth={2.4} />
+            )}
+          </TooltipTrigger>
+          <TooltipContent>
+            <p>{savingWorkspace ? "Saving" : "Saved"}</p>
+          </TooltipContent>
+        </Tooltip>
+
         <Button className="bg-accent hover:bg-accent/80 dark:hover:bg-accent/60 active:bg-accent/65 dark:text-foreground/90 cursor-pointer trans">
           <Link />
           Share
@@ -124,10 +139,30 @@ const WorkspaceHeader = ({
                 <Link />
                 Share
               </Button>
-              {/* <span className="rounded-md flex justify-between items-center px-2 whitespace-nowrap text-primary "> */}
-                {/* Theme */}
+              <div className="flex gap-1 justify-end">
+                <Tooltip>
+                  <TooltipTrigger>
+                    <Button className="bg-secondary hover:bg-accent/20 trans border">
+                      {savingWorkspace ? (
+                      <CloudUpload
+                        className="text-orange-400"
+                        strokeWidth={2.4}
+                      />
+                    ) : (
+                      <CloudCheck
+                        className="text-green-400"
+                        strokeWidth={2.4}
+                      />
+                    )}
+                    </Button>
+                    
+                  </TooltipTrigger>
+                  <TooltipContent>
+                    <p>{savingWorkspace ? "Saving" : "Saved"}</p>
+                  </TooltipContent>
+                </Tooltip>
                 <ModeToggle />
-              {/* </span> */}
+              </div>
             </div>
           </DropdownMenuContent>
         </DropdownMenu>
