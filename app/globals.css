@@ -209,7 +209,7 @@ h6.ce-header {
   color: var(--primary) !important;
 }
 
-.ce-popover-item:hover div{
+.ce-popover-item:hover div {
   color: #282828 !important;
 }
 
@@ -232,6 +232,25 @@ h6.ce-header {
   background-color: var(--secondary) !important;
 }
 
+.ce-popover-item-html,
+.ce-inline-tool {
+  color: var(--primary) !important;
+}
+
+.ce-inline-tool--link {
+  color: var(--primary) !important;
+}
+
+.ce-inline-tool:hover {
+  color: #282828 !important;
+}
+
+.ce-inline-tool--link:hover {
+  color: #282828 !important;
+}
+
+
+
 @media (max-width: 650px) {
 
   .ce-block__content,
@@ -241,6 +260,11 @@ h6.ce-header {
     margin-right: 10px !important;
     margin-top: 5px !important;
     padding: 0 1rem !important;
+  }
+
+  .ce-toolbar__plus,
+  .ce-toolbar__settings-btn {
+    color: #282828 !important;
   }
 }
 
