@@ -5,6 +5,7 @@ import ConvexClientProvider from "./ConvexClientProvider";
 import { Toaster } from "sonner";
 import Head from "next/head";
 import Script from "next/script";
+import { Analytics } from "@vercel/analytics/next";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -121,6 +122,7 @@ export default function RootLayout({
           <ConvexClientProvider>
             {children}
             <Toaster />
+            <Analytics />
           </ConvexClientProvider>
         </ThemeProvider>
       </body>
