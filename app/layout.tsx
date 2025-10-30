@@ -68,6 +68,12 @@ export default function RootLayout({
           name="twitter:title"
           content="Togetha - Collaborative Playground"
         />
+
+        <meta
+          name="google-site-verification"
+          content="hM2GJlAAvVBKeK0_h3W_h6JGd-SvdjbXokergmhYH3o"
+        />
+
         <meta
           name="twitter:description"
           content="Collaborate with teams or work individually in Togetha's real-time workspace."
