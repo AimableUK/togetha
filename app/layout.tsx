@@ -3,7 +3,6 @@ import "./globals.css";
 import { ThemeProvider } from "@/components/theme/theme-provider";
 import ConvexClientProvider from "./ConvexClientProvider";
 import { Toaster } from "sonner";
-import Head from "next/head";
 import Script from "next/script";
 import { Analytics } from "@vercel/analytics/next";
 
@@ -24,7 +23,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <Head>
+      <head>
         {/* Charset & Viewport */}
         <meta charSet="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -103,7 +102,7 @@ export default function RootLayout({
             }),
           }}
         />
-      </Head>
+      </head>
       <Script
         async
         src="https://www.googletagmanager.com/gtag/js?id=G-508WFR8V3H"
