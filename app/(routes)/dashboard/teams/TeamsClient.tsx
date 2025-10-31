@@ -48,7 +48,7 @@ const TeamsClient = () => {
       </div>
 
       <div className="w-full col-span-1 p-5 rounded-md bg-secondary flex flex-col">
-        <h3 className="font-semibold text-primary/80 mb-3">Resent Activity</h3>
+        <h3 className="font-semibold text-primary/80 mb-3">Recent Activity</h3>
         {/* cards */}
         <div className="flex flex-col gap-2">
           <div className="flex items-center justify-between p-3 rounded-md bg-background/60 hover:bg-background/80 transition">
