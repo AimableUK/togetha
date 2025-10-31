@@ -35,6 +35,10 @@ const Header = () => {
           <h2 className="hidden md:block font-semibold text-2xl">
             Archieved Files
           </h2>
+        ) : pathname === "/dashboard/teams" ? (
+          <h2 className="hidden md:block font-semibold text-2xl">
+            Teams Files
+          </h2>
         ) : (
           <h2 className="hidden md:block font-semibold text-2xl">
             Getting Started

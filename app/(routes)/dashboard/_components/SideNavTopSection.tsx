@@ -102,7 +102,7 @@ const SideNavTopSection = ({ user, setActiveTeamInfo }: any) => {
 
         <PopoverContent className="md:ml-5 p-2 max-h-[410px] w-64">
           {/* Team section */}
-          <div className="px-2 overflow-y-auto max-h-[160px]">
+          <div className="px-2 overflow-y-auto max-h-40">
             {teamList_?.map((team: TEAM) => (
               <h2
                 key={team._id}
@@ -161,14 +161,14 @@ const SideNavTopSection = ({ user, setActiveTeamInfo }: any) => {
         </PopoverContent>
       </Popover>
       {/* all files button */}
-      <Button
+      {/* <Button
         onClick={onTeamsClick}
         variant="outline"
         className="justify-start gap-2 cursor-pointer hover:text-gray-100 dark:hover:text-foreground mt-5"
       >
         {loadingItem === "allteams" && <span className="loader2 w-5!"></span>}
         <LayoutGridIcon /> All Teams
-      </Button>
+      </Button> */}
     </div>
   );
 };
