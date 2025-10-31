@@ -4,7 +4,7 @@ import React from "react";
 import { CircularProgressbarWithChildren } from "react-circular-progressbar";
 import "react-circular-progressbar/dist/styles.css";
 
-const TeamsClient = () => {
+const OverviewClient = () => {
   return (
     <div className="grid grid-cols-1 lg:gap-x-4 lg:grid-cols-3 my-5 mx-3">
       <div className="flex flex-col mb-4 lg:mb-0 w-full col-span-2 gap-4">
@@ -122,4 +122,4 @@ const TeamsClient = () => {
   );
 };
 
-export default TeamsClient;
+export default OverviewClient;

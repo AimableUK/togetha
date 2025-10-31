@@ -71,15 +71,15 @@ const SideNavTopSection = ({ user, setActiveTeamInfo }: any) => {
   };
 
   const onTeamsClick = () => {
-    if (pathname !== "/dashboard/teams") {
+    if (pathname !== "/dashboard/overview") {
       setLoadingItem("allteams");
-      router.push("/dashboard/teams");
+      router.push("/dashboard/overview");
     } else {
       setLoadingItem(null);
     }
 
     setTimeout(() => {
-      pathname !== "/dashboard/teams" && setLoadingItem(null);
+      pathname !== "/dashboard/overview" && setLoadingItem(null);
     }, 2000);
   };
 

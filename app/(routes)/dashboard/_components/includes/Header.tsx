@@ -33,15 +33,15 @@ const Header = () => {
           <h2 className="hidden md:block font-semibold text-2xl">Files List</h2>
         ) : pathname === "/dashboard/archieved" ? (
           <h2 className="hidden md:block font-semibold text-2xl">
-            Archieved Files
+            Archieved
           </h2>
-        ) : pathname === "/dashboard/teams" ? (
+        ) : pathname === "/dashboard/overview" ? (
           <h2 className="hidden md:block font-semibold text-2xl">
-            Teams Files
+            Overview
           </h2>
         ) : (
           <h2 className="hidden md:block font-semibold text-2xl">
-            Getting Started
+            Get Started
           </h2>
         )}
       </div>

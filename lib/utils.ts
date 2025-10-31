@@ -174,34 +174,33 @@ export const pageMetadata = {
     },
   },
 
-  allTeams: {
-    title: "All Teams | Togetha",
+  dashboardOverview: {
+    title: "Dashboard Overview - Togetha",
     description:
-      "List of teams your in. Teams your currently in, invite teammates, and organize your ideas seamlessly in one place.",
+      "Get a snapshot of your Togetha workspace — track total teams, shared files, and recent activity all in one unified dashboard.",
     openGraph: {
       type: "website",
-      url: "https://www.togetha-app.vercel.app/dashboard/teams",
-      title: "Get Started | Togetha",
+      url: "https://www.togetha-app.vercel.app/dashboard/overview",
+      title: "Dashboard Overview - Togetha",
       description:
-        "List of teams your in. Teams your currently in, invite teammates, and organize your ideas seamlessly in one place.",
+        "Monitor your teams, files, and collaboration metrics in real time. The Togetha Dashboard keeps your creative workspace organized and insightful.",
       images: [
         {
           url: "https://www.togetha-app.vercel.app/og-image.png",
           width: 1200,
           height: 630,
-          alt: "All Teams | Togetha",
+          alt: "Dashboard Overview - Togetha",
         },
       ],
     },
     twitter: {
       card: "summary_large_image",
-      title: "All Teams | Togetha",
+      title: "Dashboard Overview - Togetha",
       description:
-        "List of teams your in. Teams your currently in, invite teammates, and organize your ideas seamlessly in one place.",
+        "Stay on top of your projects with insights into teams, files, and activities — all visualized in the Togetha Dashboard.",
       images: ["https://www.togetha-app.vercel.app/twitter-banner.png"],
     },
   },
-
 };
 
 export interface FAQ {
