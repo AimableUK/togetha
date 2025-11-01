@@ -109,7 +109,9 @@ const OverviewClient = () => {
           </div>
           <div className="p-5 rounded-md bg-secondary flex flex-row justify-between items-center w-full">
             <div>
-              <h3 className="font-semibold text-primary/80">Total Files</h3>
+              <h3 className="font-semibold text-primary/80">
+                Active Team Files
+              </h3>
               <h3 className="text-4xl font-bold">{files_?.length ?? 0}</h3>
             </div>
             <div style={{ width: 70, height: 70 }}>
@@ -129,7 +131,7 @@ const OverviewClient = () => {
           </div>
         </div>
 
-        <div className="col-span-2 flex flex-col md:flex-row w-full gap-4 h-full">
+        <div className="col-span-2 flex flex-col md:flex-row w-full gap-4 h-full md:mr-4">
           <div className="p-5 rounded-md bg-secondary flex flex-col flex-1 md:w-1/2 gap-3">
             <h3 className="font-semibold text-primary/80">Teams</h3>
             <div className="max-h-60 w-full relative">
