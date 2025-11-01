@@ -29,6 +29,7 @@ import { TeamContext } from "@/app/FilesListContext";
 import { Input } from "@/components/ui/input";
 import DeleteDialog from "../_components/DeleteDialog";
 import { FILE } from "@/lib/utils";
+import { validateName } from "@/app/Schema/schema";
 
 export interface DeleteData {
   id: string;
@@ -108,28 +109,34 @@ const FileList = () => {
 
   const handleRenameFile = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    toast.promise(
-      (async () => {
-        await renameFileName({
-          _id: renameFile as Id<"files">,
-          fileName: newFileName,
-        });
-        setRenameFIle(null);
-      })(),
-      {
-        loading: "Renaming file...",
-        success: () => ({
-          message: "File Renamed!",
-          description: "File renamed successfully!",
-        }),
-        error: (error) => ({
-          message: "Error",
-          description:
-            error?.response?.data?.detail ||
-            "Failed to rename your file, Please try again later.",
-        }),
-      }
-    );
+    const error = validateName(newFileName);
+    if (error) {
+      toast.error(error);
+      return;
+    } else {
+      toast.promise(
+        (async () => {
+          await renameFileName({
+            _id: renameFile as Id<"files">,
+            fileName: newFileName,
+          });
+          setRenameFIle(null);
+        })(),
+        {
+          loading: "Renaming file...",
+          success: () => ({
+            message: "File Renamed!",
+            description: "File renamed successfully!",
+          }),
+          error: (error) => ({
+            message: "Error",
+            description:
+              error?.response?.data?.detail ||
+              "Failed to rename your file, Please try again later.",
+          }),
+        }
+      );
+    }
   };
 
   return (
