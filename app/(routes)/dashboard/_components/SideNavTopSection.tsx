@@ -152,7 +152,7 @@ const SideNavTopSection = ({ user, setActiveTeamInfo }: any) => {
       <div className="flex flex-col">
         <Popover>
           <PopoverTrigger className="w-full relative">
-            <div className="flex items-center gap-x-2 hover:bg-gray-300 dark:hover:bg-gray-800 p-1 md:w-full w-fit rounded-md cursor-pointer">
+            <div className="flex items-center max-w-[80%] md:max-w-fit gap-x-2 hover:bg-gray-300 dark:hover:bg-gray-800 p-1 md:w-full w-fit rounded-md cursor-pointer">
               <Image
                 src="/logo.png"
                 alt="Togetha logo"
@@ -162,7 +162,7 @@ const SideNavTopSection = ({ user, setActiveTeamInfo }: any) => {
 
               {/* Text + Chevron container */}
               <div className="flex items-center justify-between flex-1 min-w-0">
-                <span className="truncate">{activeTeam_?.teamName}</span>
+                <span className="truncate max-w-[70%]">{activeTeam_?.teamName}</span>
                 <ChevronDown className="ml-2 shrink-0" />
               </div>
             </div>

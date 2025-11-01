@@ -85,26 +85,23 @@ const OverviewClient = () => {
     (a, b) => daysOfWeek.indexOf(a.day) - daysOfWeek.indexOf(b.day)
   );
 
-  const category =
-    files_ === null
-      ? null
-      : files_.length >= 2
-        ? "high"
-        : files_.length === 1
-          ? "medium"
-          : "low";
+  const today = new Date().toDateString();
+
+  const filesTodayCount =
+    files_?.filter(
+      (file: CreationItem) =>
+        new Date(file._creationTime).toDateString() === today
+    ).length ?? 0;
+
+  const category: "high" | "medium" | "low" =
+    filesTodayCount >= 2 ? "high" : filesTodayCount === 1 ? "medium" : "low";
 
   return (
     <div className="flex flex-col gap-4 my-5 mx-3">
-      <div className="grid grid-cols-1 md:grid-cols-3 md:gap-4 h-full">
+      <div className="grid grid-cols-1 lg:grid-cols-3 md:gap-4 h-full">
         <div className="col-span-2 bg-secondary rounded-lg px-5 py-3 flex flex-col justify-center trans">
           <h2 className="font-semibold">Welcome Back! {user.family_name}</h2>
-          {category && (
-            <MotivationBanner
-              category={category}
-              fileCount={files_?.length ?? 0}
-            />
-          )}
+          {category && <MotivationBanner category={category} files_={files_} />}
         </div>
         <div className="col-span-1 relative bg-secondary rounded-lg px-5 py-3 mt-4 md:mt-0">
           <div className="flex flex-col gap-3">
@@ -116,13 +113,12 @@ const OverviewClient = () => {
             alt="Upgrade to Pro to get More Togetha features"
             width={200}
             height={200}
-            className="absolute bottom-0 right-0 w-24 md:w-24 lg:w-28"
+            className="absolute bottom-0 right-0 w-24 md:w-20 lg:w-24"
           />
         </div>
       </div>
       <div className="grid grid-cols-1 lg:gap-x-4 lg:grid-cols-3 w-full">
         <div className="flex flex-col mb-4 lg:mb-0 w-full col-span-2 gap-4">
-          {/* this is fine */}
           <div className="col-span-2 flex flex-col md:flex-row w-full gap-4">
             <div className="p-5 rounded-md bg-secondary flex flex-row justify-between items-center w-full">
               <div>
@@ -169,7 +165,6 @@ const OverviewClient = () => {
             </div>
           </div>
 
-          {/* this fuckin one */}
           <div className="col-span-2 flex flex-col md:flex-row w-full gap-4">
             <div className="p-5 rounded-md bg-secondary flex flex-col gap-3 flex-1 min-w-0">
               <h3 className="font-semibold text-primary/80">Teams</h3>
@@ -206,9 +201,6 @@ const OverviewClient = () => {
           <div className="flex flex-col gap-2">
             <div className="flex items-center justify-between p-3 rounded-md bg-background/60 hover:bg-background/80 transition">
               <div className="flex items-center gap-3">
-                <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center text-primary font-semibold">
-                  👤
-                </div>
                 <p className="text-sm text-foreground/80 font-semibold">
                   Alice joined Marketing Team
                 </p>
@@ -219,9 +211,6 @@ const OverviewClient = () => {
             </div>
             <div className="flex items-center justify-between p-3 rounded-md bg-background/60 hover:bg-background/80 transition">
               <div className="flex items-center gap-3">
-                <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center text-primary font-semibold">
-                  👤
-                </div>
                 <p className="text-sm text-foreground/80 font-semibold">
                   Design Team uploaded 3 new files
                 </p>
@@ -232,9 +221,6 @@ const OverviewClient = () => {
             </div>
             <div className="flex items-center justify-between p-3 rounded-md bg-background/60 hover:bg-background/80 transition">
               <div className="flex items-center gap-3">
-                <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center text-primary font-semibold">
-                  👤
-                </div>
                 <p className="text-sm text-foreground/80 font-semibold">
                   You were promoted to Editor in DevOps Team
                 </p>
@@ -245,9 +231,6 @@ const OverviewClient = () => {
             </div>
             <div className="flex items-center justify-between p-3 rounded-md bg-background/60 hover:bg-background/80 transition">
               <div className="flex items-center gap-3">
-                <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center text-primary font-semibold">
-                  👤
-                </div>
                 <p className="text-sm text-foreground/80 font-semibold">
                   Finance Team created a new report
                 </p>
