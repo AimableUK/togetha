@@ -21,7 +21,7 @@ const SideNav = () => {
     api.files.getFiles,
     activeTeam_ ? { teamId: activeTeam_._id } : "skip"
   );
-  
+
   if (files === undefined)
     return (
       <div className="fixed inset-0 bg-background flex flex-col items-center justify-center z-9998">
@@ -58,6 +58,7 @@ const SideNav = () => {
           "Failed to Create file, Please Try again later.",
       }),
     });
+    setErrorMsg("");
   };
 
   return (

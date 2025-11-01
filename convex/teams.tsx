@@ -22,3 +22,24 @@ export const createTeam = mutation({
     return result;
   },
 });
+
+export const renameTeam = mutation({
+  args: {
+    _id: v.id("teams"),
+    teamName: v.string(),
+  },
+  handler: async (ctx, args) => {
+    const result = await ctx.db.patch(args._id, { teamName: args.teamName });
+    return result;
+  },
+});
+
+export const deleteTeam = mutation({
+  args: {
+    _id: v.id("teams"),
+  },
+  handler: async (ctx, args) => {
+    const result = await ctx.db.delete(args._id);
+    return result;
+  },
+});

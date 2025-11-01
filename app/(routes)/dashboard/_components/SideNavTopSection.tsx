@@ -1,10 +1,14 @@
 import {
   ChevronDown,
+  Ellipsis,
+  FilePenLine,
   LayoutGridIcon,
   ListCollapse,
   LogOut,
   Settings,
+  Trash2,
   Users,
+  X,
 } from "lucide-react";
 import Image from "next/image";
 import React, { useContext, useEffect, useState } from "react";
@@ -19,7 +23,21 @@ import { usePathname, useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { useIsMobile } from "@/app/hooks/use-mobile";
 import { TeamContext } from "@/app/FilesListContext";
-import Link from "next/link";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { Input } from "@/components/ui/input";
+import { toast } from "sonner";
+import { useMutation } from "convex/react";
+import { api } from "@/convex/_generated/api";
+import { Id } from "@/convex/_generated/dataModel";
+import DeleteDialog from "./DeleteDialog";
+import { validateName } from "@/app/Schema/schema";
 
 export interface TEAM {
   createdBy: string;
@@ -27,10 +45,21 @@ export interface TEAM {
   _id: string;
 }
 
+export interface DeleteData {
+  id: string;
+  type: "file" | "team";
+}
+
 const SideNavTopSection = ({ user, setActiveTeamInfo }: any) => {
   const [loadingItem, setLoadingItem] = useState<number | string | null>(null);
+  const [renameTeam, setRenameTeam] = useState<string | null>();
+  const [newTeamName, setNewTeamName] = useState("");
+
   const router = useRouter();
   const pathname = usePathname();
+  const renameTeamName = useMutation(api.teams.renameTeam);
+  const [openDialog, setOpenDialog] = useState(false);
+  const [deleteData, setDeleteData] = useState<DeleteData>();
 
   const {
     collapseSidebar_,
@@ -80,96 +109,214 @@ const SideNavTopSection = ({ user, setActiveTeamInfo }: any) => {
 
     setTimeout(() => {
       pathname !== "/dashboard/overview" && setLoadingItem(null);
-    }, 1000);
+    }, 2000);
+  };
+
+  const handleRename = (teamId: string) => {
+    setRenameTeam(teamId);
+  };
+
+  const handleRenameTeam = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    const error = validateName(newTeamName);
+    if (error) {
+      toast.error(error);
+    } else {
+      toast.promise(
+        (async () => {
+          await renameTeamName({
+            _id: renameTeam as Id<"teams">,
+            teamName: newTeamName,
+          });
+          setRenameTeam(null);
+        })(),
+        {
+          loading: "Renaming Team...",
+          success: () => ({
+            message: "Team Renamed!",
+            description: "Team renamed successfully!",
+          }),
+          error: (error) => ({
+            message: "Error",
+            description:
+              error?.response?.data?.detail ||
+              "Failed to rename your file, Please try again later.",
+          }),
+        }
+      );
+    }
+  };
+
+  const handleOpenDialog = (id: string, type: "file" | "team") => {
+    setOpenDialog(true);
+    setDeleteData({ id, type });
   };
 
   return (
-    <div className="flex flex-col">
-      <Popover>
-        <PopoverTrigger className="w-full relative">
-          <div className="flex flex-row items-center gap-x-2 hover:bg-gray-300 dark:hover:bg-gray-800 p-1 md:w-full w-fit rounded-md cursor-pointer">
-            <Image src="/logo.png" alt="Togetha logo" width={35} height={35} />
-            <h2 className="font-semibold justify-between text-xl flex flex-1 items-center">
-              <span>{activeTeam_?.teamName}</span>
-              <ChevronDown />
-            </h2>
-          </div>
-        </PopoverTrigger>
-        <ListCollapse
-          className={`${isMobile ? "absolute" : "hidden"} trans cursor-pointer active:scale-75 justify-end right-6 top-9`}
-          onClick={() => setCollapseSidebar_(!collapseSidebar_)}
-        />
-
-        <PopoverContent className="md:ml-5 p-2 max-h-[410px] w-64">
-          {/* Team section */}
-          <div className="px-2 overflow-y-auto max-h-40">
-            {teamList_?.map((team: TEAM) => (
-              <h2
-                key={team._id}
-                className={`${activeTeam_?._id == team._id && "bg-accent text-foreground/90"}  p-2 rounded-md hover:bg-accent active:bg-accent/80 hover:text-gray-100 cursor-pointer trans`}
-                onClick={() => setActiveTeam_(team)}
-              >
-                {team?.teamName! ?? "Team Name"}
-              </h2>
-            ))}
-          </div>
-          <Separator className="mt-3 mb-1" />
-          {/* menu section */}
-          <div className="flex flex-col gap-y-1">
-            {menu.map((item, index) => (
-              <button
-                onClick={() => onMenuClick(item)}
-                disabled={loadingItem !== null}
-                key={index}
-                className="disabled:opacity-65 flex items-center gap-x-1 p-2 cursor-pointer rounded-md hover:bg-gray-300 dark:hover:bg-gray-800 font-semibold trans"
-              >
-                <item.icon className="h-5 w-5" />
-                {item.name}
-                {loadingItem === item.id && (
-                  <span className="loader2 w-5!"></span>
-                )}
-              </button>
-            ))}
-            <LogoutLink>
-              <h2 className="flex items-center gap-x-1 p-2 cursor-pointer rounded-md hover:bg-gray-300 dark:hover:bg-gray-800 font-semibold trans">
-                <LogOut className="h-5 w-5" />
-                Logout
-              </h2>
-            </LogoutLink>
-          </div>
-          <Separator className="mt-3 mb-1" />
-          {/* use info section */}
-          {user && (
-            <div className="mt-2 flex items-center gap-1">
+    <>
+      <div className="flex flex-col">
+        <Popover>
+          <PopoverTrigger className="w-full relative">
+            <div className="flex items-center gap-x-2 hover:bg-gray-300 dark:hover:bg-gray-800 p-1 md:w-full w-fit rounded-md cursor-pointer">
               <Image
-                src={user?.picture ?? "/user.webp"}
-                alt="user Image"
-                width={40}
-                height={40}
-                className="rounded-full "
+                src="/logo.png"
+                alt="Togetha logo"
+                width={35}
+                height={35}
               />
-              <div className="flex flex-col overflow-hidden">
-                <h2 className="font-bold text-foreground/85 text-sm truncate">
-                  {user?.given_name} {user?.family_name}
-                </h2>
-                <h2 className="text-[14px] text-foreground/75 truncate max-w-[180px]">
-                  {user?.email}
-                </h2>
+
+              {/* Text + Chevron container */}
+              <div className="flex items-center justify-between flex-1 min-w-0">
+                <span className="truncate">{activeTeam_?.teamName}</span>
+                <ChevronDown className="ml-2 shrink-0" />
               </div>
             </div>
-          )}
-        </PopoverContent>
-      </Popover>
-      {/* all files button */}
-      <Button
-        onClick={onTeamsClick}
-        variant="outline"
-        className="justify-start gap-2 cursor-pointer hover:text-gray-100 dark:hover:text-foreground mt-5"
-      >
-        <LayoutGridIcon /> Overview
-        {loadingItem === "overview" && <span className="loader2 w-5!"></span>}
-      </Button>
-    </div>
+          </PopoverTrigger>
+
+          <ListCollapse
+            className={`${isMobile ? "absolute" : "hidden"} trans cursor-pointer active:scale-75 justify-end right-6 top-9`}
+            onClick={() => setCollapseSidebar_(!collapseSidebar_)}
+          />
+
+          <PopoverContent className="md:ml-5 p-2 max-h-[410px] w-64">
+            {/* Team section */}
+            <div className="px-2 overflow-y-auto max-h-40">
+              {teamList_?.map((team: TEAM) => (
+                <div
+                  key={team._id}
+                  className={` ${activeTeam_?._id == team._id && "bg-accent text-foreground/90"} p-2 hover:bg-accent/30 hover:text-gray-100 active:bg-accent/80 rounded-md flex flex-row justify-between`}
+                >
+                  <div className="flex items-center gap-2 w-[250px] overflow-hidden">
+                    {renameTeam === team._id ? (
+                      <form
+                        autoComplete="off"
+                        className="flex items-center gap-2 w-full"
+                        onSubmit={(e) => handleRenameTeam(e)}
+                      >
+                        <Input
+                          placeholder="Rename file"
+                          className="border rounded-md px-2 py-1 text-sm w-full min-w-0"
+                          value={newTeamName}
+                          onChange={(e) => setNewTeamName(e.target.value)}
+                        />
+                        <button
+                          type="submit"
+                          className="cursor-pointer shrink-0"
+                        >
+                          <FilePenLine className="h-5 w-5 hover:text-accent" />
+                        </button>
+                        <button
+                          type="button"
+                          className="cursor-pointer shrink-0"
+                          onClick={() => setRenameTeam(null)}
+                        >
+                          <X className="h-5 w-5 hover:text-red-500" />
+                        </button>
+                      </form>
+                    ) : (
+                      <span
+                        className="block truncate cursor-pointer max-w-[95%] whitespace-nowrap"
+                        onClick={() => setActiveTeam_(team)}
+                      >
+                        {team?.teamName! ?? "Team Name"}
+                      </span>
+                    )}
+                  </div>
+                  <DropdownMenu>
+                    <DropdownMenuTrigger>
+                      {!renameTeam && <Ellipsis className="cursor-pointer" />}
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent>
+                      <DropdownMenuLabel>Actions</DropdownMenuLabel>
+                      <DropdownMenuSeparator />
+                      <DropdownMenuItem
+                        onClick={() => {
+                          handleRename(team._id);
+                          setNewTeamName(team.teamName);
+                        }}
+                        className="group p-2 rounded-md hover:bg-accent active:bg-accent/80 hover:text-gray-100! cursor-pointer trans"
+                      >
+                        <FilePenLine className="group-hover:text-gray-100!" />
+                        Rename
+                      </DropdownMenuItem>
+                      <DropdownMenuItem
+                        onClick={() => handleOpenDialog(team._id, "team")}
+                        className="group p-2 rounded-md hover:bg-red-800! dark:hover:bg-red-900! active:bg-accent/80 hover:text-gray-100! cursor-pointer trans"
+                      >
+                        <Trash2 className="group-hover:text-gray-100!" />
+                        Delete
+                      </DropdownMenuItem>
+                    </DropdownMenuContent>
+                  </DropdownMenu>
+                </div>
+              ))}
+            </div>
+            <Separator className="mt-3 mb-1" />
+            {/* menu section */}
+            <div className="flex flex-col gap-y-1">
+              {menu.map((item, index) => (
+                <button
+                  onClick={() => onMenuClick(item)}
+                  disabled={loadingItem !== null}
+                  key={index}
+                  className="disabled:opacity-65 flex items-center gap-x-1 p-2 cursor-pointer rounded-md hover:bg-gray-300 dark:hover:bg-gray-800 font-semibold trans"
+                >
+                  <item.icon className="h-5 w-5" />
+                  {item.name}
+                  {loadingItem === item.id && (
+                    <span className="loader2 w-5!"></span>
+                  )}
+                </button>
+              ))}
+              <LogoutLink>
+                <h2 className="flex items-center gap-x-1 p-2 cursor-pointer rounded-md hover:bg-gray-300 dark:hover:bg-gray-800 font-semibold trans">
+                  <LogOut className="h-5 w-5" />
+                  Logout
+                </h2>
+              </LogoutLink>
+            </div>
+            <Separator className="mt-3 mb-1" />
+            {/* use info section */}
+            {user && (
+              <div className="mt-2 flex items-center gap-1">
+                <Image
+                  src={user?.picture ?? "/user.webp"}
+                  alt="user Image"
+                  width={40}
+                  height={40}
+                  className="rounded-full "
+                />
+                <div className="flex flex-col overflow-hidden">
+                  <h2 className="font-bold text-foreground/85 text-sm truncate">
+                    {user?.given_name} {user?.family_name}
+                  </h2>
+                  <h2 className="text-[14px] text-foreground/75 truncate max-w-[180px]">
+                    {user?.email}
+                  </h2>
+                </div>
+              </div>
+            )}
+          </PopoverContent>
+        </Popover>
+        {/* dashboard Overview button */}
+        <Button
+          onClick={onTeamsClick}
+          variant="outline"
+          className="justify-start gap-2 cursor-pointer hover:text-gray-100 dark:hover:text-foreground mt-5"
+        >
+          <LayoutGridIcon /> Overview
+          {loadingItem === "overview" && <span className="loader2 w-5!"></span>}
+        </Button>
+      </div>
+      {openDialog && deleteData && (
+        <DeleteDialog
+          id={deleteData?.id!}
+          type={deleteData?.type!}
+          open={openDialog}
+          setOpen={setOpenDialog}
+        />
+      )}
+    </>
   );
 };
 

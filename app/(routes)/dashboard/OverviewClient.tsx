@@ -11,6 +11,17 @@ import {
   STARTER_PLAN_LIMITS,
 } from "@/app/_constant/Constant";
 
+type CreationItem = {
+  _creationTime: number;
+  [key: string]: any;
+};
+
+type GroupedDataItem = {
+  day: string;
+  teams: number;
+  files: number;
+};
+
 const OverviewClient = () => {
   const { teamList_, files_, userPlan_ } = useContext(TeamContext);
 
@@ -32,6 +43,44 @@ const OverviewClient = () => {
   const fileUsagePercent = isFinite(userPlanLimits.files)
     ? Math.min(((files_?.length ?? 0) / userPlanLimits.files) * 100, 100)
     : 100;
+
+  const daysOfWeek = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+
+  const groupedData = daysOfWeek.map((day) => ({
+    day,
+    teams: 0,
+    files: 0,
+  }));
+
+  const countByDay = ({
+    items,
+    key,
+    groupedData,
+  }: {
+    items: CreationItem[];
+    key: "teams" | "files";
+    groupedData: GroupedDataItem[];
+  }) => {
+    items?.forEach((item) => {
+      const date = new Date(item._creationTime);
+      const day = date.toLocaleString("en-US", { weekday: "short" });
+      const found = groupedData.find((d) => d.day === day);
+      if (found) found[key] += 1;
+    });
+  };
+
+  countByDay({ items: teamList_, key: "teams", groupedData });
+  countByDay({ items: files_, key: "files", groupedData });
+
+  daysOfWeek.forEach((day) => {
+    if (!groupedData.find((d) => d.day === day)) {
+      groupedData.push({ day, teams: 0, files: 0 });
+    }
+  });
+
+  groupedData.sort(
+    (a, b) => daysOfWeek.indexOf(a.day) - daysOfWeek.indexOf(b.day)
+  );
 
   return (
     <div className="grid grid-cols-1 lg:gap-x-4 lg:grid-cols-3 my-5 mx-3">
@@ -84,20 +133,34 @@ const OverviewClient = () => {
           <div className="p-5 rounded-md bg-secondary flex flex-col flex-1 md:w-1/2 gap-3">
             <h3 className="font-semibold text-primary/80">Teams</h3>
             <div className="max-h-60 w-full relative">
-              <BarChart type="Teams" chartData={[2, 4, 6, 9, 4, 11, 3]} />
+              <BarChart
+                type="Teams"
+                chartData={groupedData.map(({ day, teams }) => ({
+                  day,
+                  value: teams,
+                }))}
+              />
             </div>
           </div>
           <div className="p-5 rounded-md bg-secondary flex flex-col flex-1 md:w-1/2 gap-3">
             <h3 className="font-semibold text-primary/80">Files</h3>
-            <div className="max-h-60 w-full relative">
-              <BarChart type="Files" chartData={[12, 4, 18, 9, 7, 12, 8]} />
+            <div className="min-h-40 max-h-60 w-full relative">
+              <BarChart
+                type="Files"
+                chartData={groupedData.map(({ day, files }) => ({
+                  day,
+                  value: files,
+                }))}
+              />
             </div>
           </div>
         </div>
       </div>
 
       <div className="w-full col-span-1 p-5 rounded-md bg-secondary flex flex-col">
-        <h3 className="font-semibold text-primary/80 mb-3">Recent Activity</h3>
+        <h3 className="font-semibold text-primary/80 mb-3">
+          Recent Activity (Static Data)
+        </h3>
         {/* cards */}
         <div className="flex flex-col gap-2">
           <div className="flex items-center justify-between p-3 rounded-md bg-background/60 hover:bg-background/80 transition">

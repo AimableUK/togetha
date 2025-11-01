@@ -20,20 +20,24 @@ ChartJS.register(
 
 interface BarChartProps {
   type: string;
-  chartData: number[];
+  chartData: {
+    day: string;
+    value: number;
+  }[];
 }
 
 const BarChart = ({ type, chartData }: BarChartProps) => {
   const data = {
-    labels: ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"],
+    labels: chartData.map((d) => d.day),
     datasets: [
       {
         label: type,
-        data: chartData,
+        data: chartData.map((d) => d.value),
         backgroundColor: "rgba(29, 100, 186, 0.7)",
         borderRadius: 10,
         borderSkipped: false,
         barThickness: 10,
+        minBarLength: 8,
       },
     ],
   };

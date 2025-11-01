@@ -21,29 +21,38 @@ interface DialogProps extends DeleteData {
 }
 
 const DeleteDialog = ({ id, type, open, setOpen }: DialogProps) => {
-  const deleteData = useMutation(api.files.deleteFile);
+  const fileMutation = useMutation(api.files.deleteFile);
+  const teamMutation = useMutation(api.teams.deleteTeam);
 
   const handleDelete = async () => {
-    toast.promise(
-      (async () => {
-        await deleteData({
-          _id: id as Id<"files">,
-        });
-      })(),
-      {
-        loading: `Deleting ${type}...`,
+    if (type === "file") {
+      toast.promise(fileMutation({ _id: id as Id<"files"> }), {
+        loading: `Deleting file...`,
         success: () => ({
-          message: `${type} Deleted`,
-          description: `${type} deleted successfully!`,
+          message: "File Deleted",
+          description: "File deleted successfully!",
         }),
-        error: (error) => ({
+        error: (error: any) => ({
           message: "Error",
           description:
-            error?.response?.data?.detail ||
-            `Failed to Delete ${type}, Please try again later.`,
+            error?.response?.data?.detail || "Failed to delete file.",
         }),
-      }
-    );
+      });
+    } else {
+      toast.promise(teamMutation({ _id: id as Id<"teams"> }), {
+        loading: `Deleting team...`,
+        success: () => ({
+          message: "Team Deleted",
+          description: "Team deleted successfully!",
+        }),
+        error: (error: any) => ({
+          message: "Error",
+          description:
+            error?.response?.data?.detail || "Failed to delete team.",
+        }),
+      });
+    }
+
     setOpen(false);
   };
 
