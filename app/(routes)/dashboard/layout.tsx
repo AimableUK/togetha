@@ -89,8 +89,8 @@ const DashboardLayout = ({
         {/* Sidebar */}
         <div
           className={`trans h-screen fixed top-0 left-0 shadow-lg z-50 bg-primary
-            ${collapseSidebar_ ? "w-0 hidden" : "w-72"}
-            ${!isMobile ? "w-72" : ""} 
+            ${collapseSidebar_ ? "w-0 hidden" : "w-64"}
+            ${!isMobile ? "w-64" : ""} 
             ${isMobile && !collapseSidebar_ ? "block" : ""}`}
         >
           <SideNav />
@@ -107,7 +107,7 @@ const DashboardLayout = ({
         {/* main content */}
         <div
           className={`trans col-span-4 ${
-            isMobile ? "ml-0" : collapseSidebar_ ? "ml-0" : "ml-72"
+            isMobile ? "ml-0" : collapseSidebar_ ? "ml-0" : "ml-64"
           }`}
         >
           <Header />

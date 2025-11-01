@@ -64,7 +64,7 @@ const SideNav = () => {
 
   return (
     <div
-      className={`${collapseSidebar_ && "-translate-x-72"} trans flex flex-col bg-sidebar border h-full fixed w-72 border-r py-5 px-3`}
+      className={`${collapseSidebar_ && "-translate-x-64"} trans flex flex-col bg-sidebar border h-full fixed w-64 border-r py-5 px-3`}
     >
       <div className="flex-1">
         <SideNavTopSection
