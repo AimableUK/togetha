@@ -72,6 +72,7 @@ const DashboardLayout = ({
   return (
     <TeamContext.Provider
       value={{
+        user,
         isMobile,
         teamList_,
         activeTeam_,

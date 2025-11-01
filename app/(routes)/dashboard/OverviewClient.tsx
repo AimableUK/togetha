@@ -10,6 +10,9 @@ import {
   PRO_PLAN_LIMITS,
   STARTER_PLAN_LIMITS,
 } from "@/app/_constant/Constant";
+import { Button } from "@/components/ui/button";
+import Image from "next/image";
+import getDailyMessage from "@/app/hooks/getDailyMessage";
 
 type CreationItem = {
   _creationTime: number;
@@ -23,7 +26,7 @@ type GroupedDataItem = {
 };
 
 const OverviewClient = () => {
-  const { teamList_, files_, userPlan_ } = useContext(TeamContext);
+  const { teamList_, files_, userPlan_, user } = useContext(TeamContext);
 
   const userPlanLimits = useMemo(() => {
     switch (userPlan_) {
@@ -82,140 +85,168 @@ const OverviewClient = () => {
     (a, b) => daysOfWeek.indexOf(a.day) - daysOfWeek.indexOf(b.day)
   );
 
+  const category =
+    files_?.length >= 2 ? "high" : files_?.length === 1 ? "medium" : "low";
+
+  const dailyMotivation = getDailyMessage(category);
+
   return (
-    <div className="grid grid-cols-1 lg:gap-x-4 lg:grid-cols-3 my-5 mx-3">
-      <div className="flex flex-col mb-4 lg:mb-0 w-full col-span-2 gap-4">
-        <div className="col-span-2 flex flex-col md:flex-row w-full gap-4">
-          <div className="p-5 rounded-md bg-secondary flex flex-row justify-between items-center w-full">
-            <div>
-              <h3 className="font-semibold text-primary/80">Total Teams</h3>
-              <h3 className="text-4xl font-bold">{teamList_?.length ?? 0}</h3>
-            </div>
-
-            <div style={{ width: 70, height: 70 }}>
-              <CircularProgressbarWithChildren
-                value={teamUsagePercent}
-                strokeWidth={13}
-              >
-                <div style={{ fontSize: 18, marginTop: 0 }}>
-                  <strong>
-                    {isFinite(userPlanLimits.teams)
-                      ? `${teamList_?.length ?? 0}/${userPlanLimits.teams}`
-                      : `${teamList_?.length ?? 0}`}
-                  </strong>
-                </div>
-              </CircularProgressbarWithChildren>
-            </div>
-          </div>
-          <div className="p-5 rounded-md bg-secondary flex flex-row justify-between items-center w-full">
-            <div>
-              <h3 className="font-semibold text-primary/80">
-                Active Team Files
-              </h3>
-              <h3 className="text-4xl font-bold">{files_?.length ?? 0}</h3>
-            </div>
-            <div style={{ width: 70, height: 70 }}>
-              <CircularProgressbarWithChildren
-                value={fileUsagePercent}
-                strokeWidth={13}
-              >
-                <div style={{ fontSize: 18, marginTop: 0 }}>
-                  <strong>
-                    {isFinite(userPlanLimits.files)
-                      ? `${files_?.length ?? 0}/${userPlanLimits.files}`
-                      : `${files_?.length ?? 0}`}
-                  </strong>
-                </div>
-              </CircularProgressbarWithChildren>
-            </div>
-          </div>
+    <div className="flex flex-col gap-4 my-5 mx-3">
+      <div className="grid grid-cols-1 md:grid-cols-3 md:gap-4 h-full">
+        <div className="col-span-2 bg-secondary rounded-lg px-5 py-3 flex flex-col justify-center">
+          <h2 className="font-semibold">Welcome Back! {user.family_name}</h2>
+          <p className="text-primary/60">{dailyMotivation}</p>
         </div>
-
-        <div className="col-span-2 flex flex-col md:flex-row w-full gap-4 h-full">
-          <div className="p-5 rounded-md bg-secondary flex flex-col flex-1 md:w-1/2 gap-3">
-            <h3 className="font-semibold text-primary/80">Teams</h3>
-            <div className="max-h-60 w-full relative">
-              <BarChart
-                type="Teams"
-                chartData={groupedData.map(({ day, teams }) => ({
-                  day,
-                  value: teams,
-                }))}
-              />
-            </div>
+        <div className="col-span-1 relative bg-secondary rounded-lg px-5 py-3 mt-4 md:mt-0">
+          <div className="flex flex-col gap-3">
+            <h2 className="font-semibold">Upgrade to PRO for more resources</h2>
+            <Button className="w-fit btn-grad">Upgrade Now</Button>
           </div>
-          <div className="p-5 rounded-md bg-secondary flex flex-col flex-1 md:w-1/2 gap-3">
-            <h3 className="font-semibold text-primary/80">Files</h3>
-            <div className="min-h-40 max-h-60 w-full relative">
-              <BarChart
-                type="Files"
-                chartData={groupedData.map(({ day, files }) => ({
-                  day,
-                  value: files,
-                }))}
-              />
-            </div>
-          </div>
+          <Image
+            src="/upgrade-pro.png"
+            alt="Upgrade to Pro to get More Togetha features"
+            width={200}
+            height={200}
+            className="absolute bottom-0 right-0 w-24 md:w-24 lg:w-28"
+          />
         </div>
       </div>
+      <div className="grid grid-cols-1 lg:gap-x-4 lg:grid-cols-3 w-full">
+        <div className="flex flex-col mb-4 lg:mb-0 w-full col-span-2 gap-4">
+          {/* this is fine */}
+          <div className="col-span-2 flex flex-col md:flex-row w-full gap-4">
+            <div className="p-5 rounded-md bg-secondary flex flex-row justify-between items-center w-full">
+              <div>
+                <h3 className="font-semibold text-primary/80">Total Teams</h3>
+                <h3 className="text-4xl font-bold">{teamList_?.length ?? 0}</h3>
+              </div>
 
-      <div className="w-full col-span-1 p-5 rounded-md bg-secondary flex flex-col">
-        <h3 className="font-semibold text-primary/80 mb-3">
-          Recent Activity (Static Data)
-        </h3>
-        {/* cards */}
-        <div className="flex flex-col gap-2">
-          <div className="flex items-center justify-between p-3 rounded-md bg-background/60 hover:bg-background/80 transition">
-            <div className="flex items-center gap-3">
-              <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center text-primary font-semibold">
-                👤
+              <div style={{ width: 70, height: 70 }}>
+                <CircularProgressbarWithChildren
+                  value={teamUsagePercent}
+                  strokeWidth={13}
+                >
+                  <div style={{ fontSize: 18, marginTop: 0 }}>
+                    <strong>
+                      {isFinite(userPlanLimits.teams)
+                        ? `${teamList_?.length ?? 0}/${userPlanLimits.teams}`
+                        : `${teamList_?.length ?? 0}`}
+                    </strong>
+                  </div>
+                </CircularProgressbarWithChildren>
               </div>
-              <p className="text-sm text-foreground/80 font-semibold">
-                Alice joined Marketing Team
-              </p>
             </div>
-            <span className="text-xs text-foreground/50 whitespace-nowrap">
-              5 mins ago
-            </span>
+            <div className="p-5 rounded-md bg-secondary flex flex-row justify-between items-center w-full">
+              <div>
+                <h3 className="font-semibold text-primary/80">
+                  Active Team Files
+                </h3>
+                <h3 className="text-4xl font-bold">{files_?.length ?? 0}</h3>
+              </div>
+              <div style={{ width: 70, height: 70 }}>
+                <CircularProgressbarWithChildren
+                  value={fileUsagePercent}
+                  strokeWidth={13}
+                >
+                  <div style={{ fontSize: 18, marginTop: 0 }}>
+                    <strong>
+                      {isFinite(userPlanLimits.files)
+                        ? `${files_?.length ?? 0}/${userPlanLimits.files}`
+                        : `${files_?.length ?? 0}`}
+                    </strong>
+                  </div>
+                </CircularProgressbarWithChildren>
+              </div>
+            </div>
           </div>
-          <div className="flex items-center justify-between p-3 rounded-md bg-background/60 hover:bg-background/80 transition">
-            <div className="flex items-center gap-3">
-              <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center text-primary font-semibold">
-                👤
+
+          {/* this fuckin one */}
+          <div className="col-span-2 flex flex-col md:flex-row w-full gap-4">
+            <div className="p-5 rounded-md bg-secondary flex flex-col gap-3 flex-1 min-w-0">
+              <h3 className="font-semibold text-primary/80">Teams</h3>
+              <div className="min-h-40 max-h-60 w-full min-w-0">
+                <BarChart
+                  type="Teams"
+                  chartData={groupedData.map(({ day, teams }) => ({
+                    day,
+                    value: teams,
+                  }))}
+                />
               </div>
-              <p className="text-sm text-foreground/80 font-semibold">
-                Design Team uploaded 3 new files
-              </p>
             </div>
-            <span className="text-xs text-foreground/50 whitespace-nowrap">
-              1 hour ago
-            </span>
+            <div className="p-5 rounded-md bg-secondary flex flex-col gap-3 flex-1 min-w-0">
+              <h3 className="font-semibold text-primary/80">Files</h3>
+              <div className="min-h-40 max-h-60 w-full min-w-0">
+                <BarChart
+                  type="Files"
+                  chartData={groupedData.map(({ day, files }) => ({
+                    day,
+                    value: files,
+                  }))}
+                />
+              </div>
+            </div>
           </div>
-          <div className="flex items-center justify-between p-3 rounded-md bg-background/60 hover:bg-background/80 transition">
-            <div className="flex items-center gap-3">
-              <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center text-primary font-semibold">
-                👤
+        </div>
+
+        <div className="w-full col-span-1 p-5 rounded-md bg-secondary flex flex-col">
+          <h3 className="font-semibold text-primary/80 mb-3">
+            Recent Activity (Static Data)
+          </h3>
+          {/* cards */}
+          <div className="flex flex-col gap-2">
+            <div className="flex items-center justify-between p-3 rounded-md bg-background/60 hover:bg-background/80 transition">
+              <div className="flex items-center gap-3">
+                <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center text-primary font-semibold">
+                  👤
+                </div>
+                <p className="text-sm text-foreground/80 font-semibold">
+                  Alice joined Marketing Team
+                </p>
               </div>
-              <p className="text-sm text-foreground/80 font-semibold">
-                You were promoted to Editor in DevOps Team
-              </p>
+              <span className="text-xs text-foreground/50 whitespace-nowrap">
+                5 mins ago
+              </span>
             </div>
-            <span className="text-xs text-foreground/50 whitespace-nowrap">
-              2 hours ago
-            </span>
-          </div>
-          <div className="flex items-center justify-between p-3 rounded-md bg-background/60 hover:bg-background/80 transition">
-            <div className="flex items-center gap-3">
-              <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center text-primary font-semibold">
-                👤
+            <div className="flex items-center justify-between p-3 rounded-md bg-background/60 hover:bg-background/80 transition">
+              <div className="flex items-center gap-3">
+                <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center text-primary font-semibold">
+                  👤
+                </div>
+                <p className="text-sm text-foreground/80 font-semibold">
+                  Design Team uploaded 3 new files
+                </p>
               </div>
-              <p className="text-sm text-foreground/80 font-semibold">
-                Finance Team created a new report
-              </p>
+              <span className="text-xs text-foreground/50 whitespace-nowrap">
+                1 hour ago
+              </span>
             </div>
-            <span className="text-xs text-foreground/50 whitespace-nowrap">
-              2 days ago
-            </span>
+            <div className="flex items-center justify-between p-3 rounded-md bg-background/60 hover:bg-background/80 transition">
+              <div className="flex items-center gap-3">
+                <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center text-primary font-semibold">
+                  👤
+                </div>
+                <p className="text-sm text-foreground/80 font-semibold">
+                  You were promoted to Editor in DevOps Team
+                </p>
+              </div>
+              <span className="text-xs text-foreground/50 whitespace-nowrap">
+                2 hours ago
+              </span>
+            </div>
+            <div className="flex items-center justify-between p-3 rounded-md bg-background/60 hover:bg-background/80 transition">
+              <div className="flex items-center gap-3">
+                <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center text-primary font-semibold">
+                  👤
+                </div>
+                <p className="text-sm text-foreground/80 font-semibold">
+                  Finance Team created a new report
+                </p>
+              </div>
+              <span className="text-xs text-foreground/50 whitespace-nowrap">
+                2 days ago
+              </span>
+            </div>
           </div>
         </div>
       </div>

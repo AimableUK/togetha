@@ -357,3 +357,23 @@ h6.ce-header {
     transform: translateY(-10px)
   }
 }
+
+.btn-grad {
+  background-image: linear-gradient(to right, #52155f 0%, #9733EE 51%, #5f3368 100%)
+}
+
+.btn-grad {
+  margin: 10px;
+  transition: 0.5s;
+  background-size: 200% auto;
+  color: white;
+  border-radius: 10px;
+  display: block;
+  cursor: pointer;
+}
+
+.btn-grad:hover {
+  background-position: right center;
+  color: #fff;
+  text-decoration: none;
+}

@@ -42,13 +42,17 @@ const Header = () => {
         )}
       </div>
       <div className="flex items-center gap-2">
-        <div className="flex gap-2 items-center px-2">
-          <Search className="h-4 w-4 absolute ml-2 " />
-          <Input
-            placeholder="Search files..."
-            className="relative border rounded-md pl-7"
-          />
-        </div>
+        {(pathname === "/dashboard/files" ||
+          pathname === "/dashboard/archieved") && (
+          <div className="flex gap-2 items-center px-2">
+            <Search className="h-4 w-4 absolute ml-2 " />
+            <Input
+              placeholder="Search files..."
+              className="relative border rounded-md pl-7"
+            />
+          </div>
+        )}
+
         <div>
           <Image
             src={user?.picture ?? "/user.webp"}
