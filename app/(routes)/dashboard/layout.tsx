@@ -10,9 +10,8 @@ import { useIsMobile } from "@/app/hooks/use-mobile";
 import Image from "next/image";
 import Header from "./_components/includes/Header";
 import { TeamContext } from "@/app/FilesListContext";
-import { TEAM } from "./_components/SideNavTopSection";
 import { UserSync } from "../UserSync";
-import { FILE } from "@/lib/utils";
+import { FILE, TEAM } from "@/lib/utils";
 
 export type USERPLAN = "FREE" | "STARTER" | "PRO";
 
@@ -28,8 +27,8 @@ const DashboardLayout = ({
   const [collapseSidebar_, setCollapseSidebar_] = useState(false);
 
   const [totalFiles_, setTotalFiles_] = useState<number>();
-  const [files_, setFiles_] = useState<FILE[] | null>(null);
-  const [activeTeam_, setActiveTeam_] = useState<FILE[] | null>(null);
+  const [files_, setFiles_] = useState<FILE[] | null | undefined>(undefined);
+  const [activeTeam_, setActiveTeam_] = useState<TEAM | null>(null);
   const [teamList_, setTeamList_] = useState<TEAM[] | null>(null);
   const [userPlan_, setUserPlan_] = useState<USERPLAN>("PRO");
 
@@ -39,9 +38,9 @@ const DashboardLayout = ({
 
   const email = user?.email ?? "";
   const teams = useQuery(api.teams.getTeam, email ? { email } : "skip");
-  const files: FILE | any = useQuery(
+  const files: FILE[] | undefined = useQuery(
     api.files.getFiles,
-    activeTeam_ ? { teamId: activeTeam_?._id! } : "skip"
+    activeTeam_ ? { teamId: activeTeam_?._id } : "skip"
   );
 
   useEffect(() => {
@@ -54,7 +53,7 @@ const DashboardLayout = ({
   }, [teams, pathname, router]);
 
   useEffect(() => {
-    setFiles_(files);
+    setFiles_(files ?? null);
     setTotalFiles_(files?.length);
   }, [files]);
 

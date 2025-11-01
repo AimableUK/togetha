@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useContext, useState } from "react";
-import SideNavTopSection, { TEAM } from "./SideNavTopSection";
+import SideNavTopSection from "./SideNavTopSection";
 import { useKindeBrowserClient } from "@kinde-oss/kinde-auth-nextjs";
 import SideNavBottomSection from "./SideNavBottomSection";
 import { useMutation, useQuery } from "convex/react";
@@ -9,6 +9,7 @@ import { api } from "@/convex/_generated/api";
 import { toast } from "sonner";
 import { TeamContext } from "@/app/FilesListContext";
 import { validateName } from "@/app/Schema/schema";
+import { TEAM } from "@/lib/utils";
 
 const SideNav = () => {
   const { user } = useKindeBrowserClient();

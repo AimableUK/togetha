@@ -16,6 +16,12 @@ export interface FILE {
   _creationTime: number;
 }
 
+export interface TEAM {
+  createdBy: string;
+  teamName: string;
+  _id: string;
+}
+
 
 export const pageMetadata = {
   landing: {

@@ -38,12 +38,7 @@ import { api } from "@/convex/_generated/api";
 import { Id } from "@/convex/_generated/dataModel";
 import DeleteDialog from "./DeleteDialog";
 import { validateName } from "@/app/Schema/schema";
-
-export interface TEAM {
-  createdBy: string;
-  teamName: string;
-  _id: string;
-}
+import { TEAM } from "@/lib/utils";
 
 export interface DeleteData {
   id: string;
