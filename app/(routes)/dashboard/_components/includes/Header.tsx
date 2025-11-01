@@ -25,9 +25,9 @@ const Header = () => {
         className="flex gap-3 items-center"
       >
         {collapseSidebar_ ? (
-          <TextAlignJustify className="trans cursor-pointer active:scale-75" />
+          <TextAlignJustify className="trans cursor-pointer active:scale-75 hover:text-accent" />
         ) : (
-          <ListCollapse className="trans cursor-pointer active:scale-75" />
+          <ListCollapse className="trans cursor-pointer active:scale-75 hover:text-accent" />
         )}
         {pathname === "/dashboard" ? (
           <h2 className="hidden md:block font-semibold text-2xl">Overview</h2>
