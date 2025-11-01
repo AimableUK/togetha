@@ -11,13 +11,13 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { useRouter } from "next/navigation";
-import { FILE } from "../../dashboard/_components/FileList";
 import { useIsMobile } from "@/app/hooks/use-mobile";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { FILE } from "@/lib/utils";
 
 const WorkspaceHeader = ({
   fileData,

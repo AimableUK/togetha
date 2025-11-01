@@ -71,16 +71,16 @@ const SideNavTopSection = ({ user, setActiveTeamInfo }: any) => {
   };
 
   const onTeamsClick = () => {
-    if (pathname !== "/dashboard/overview") {
-      setLoadingItem("allteams");
-      router.push("/dashboard/overview");
+    if (pathname !== "/dashboard") {
+      setLoadingItem("overview");
+      router.push("/dashboard");
     } else {
       setLoadingItem(null);
     }
 
     setTimeout(() => {
       pathname !== "/dashboard/overview" && setLoadingItem(null);
-    }, 2000);
+    }, 1000);
   };
 
   return (
@@ -161,14 +161,14 @@ const SideNavTopSection = ({ user, setActiveTeamInfo }: any) => {
         </PopoverContent>
       </Popover>
       {/* all files button */}
-      {/* <Button
+      <Button
         onClick={onTeamsClick}
         variant="outline"
         className="justify-start gap-2 cursor-pointer hover:text-gray-100 dark:hover:text-foreground mt-5"
       >
-        {loadingItem === "allteams" && <span className="loader2 w-5!"></span>}
-        <LayoutGridIcon /> All Teams
-      </Button> */}
+        <LayoutGridIcon /> Overview
+        {loadingItem === "overview" && <span className="loader2 w-5!"></span>}
+      </Button>
     </div>
   );
 };

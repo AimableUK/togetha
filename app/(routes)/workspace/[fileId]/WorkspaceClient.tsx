@@ -5,7 +5,6 @@ import WorkspaceHeader from "../_components/WorkspaceHeader";
 import Editor from "../_components/Editor";
 import { api } from "@/convex/_generated/api";
 import { Id } from "@/convex/_generated/dataModel";
-import { FILE } from "../../dashboard/_components/FileList";
 import Canvas from "../_components/Canvas";
 import Image from "next/image";
 import { useIsMobile } from "@/app/hooks/use-mobile";

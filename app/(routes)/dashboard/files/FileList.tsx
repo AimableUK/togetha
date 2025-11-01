@@ -1,3 +1,5 @@
+"use client";
+
 import React, { useContext, useEffect, useState } from "react";
 import { formatDistanceToNow } from "date-fns";
 import { useKindeBrowserClient } from "@kinde-oss/kinde-auth-nextjs";
@@ -19,23 +21,14 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { usePathname, useRouter } from "next/navigation";
 import { toast } from "sonner";
-import { useMutation, useQuery } from "convex/react";
+import { useMutation } from "convex/react";
 import { api } from "@/convex/_generated/api";
 import { Id } from "@/convex/_generated/dataModel";
 import { TeamContext } from "@/app/FilesListContext";
-import DeleteDialog from "./DeleteDialog";
-import { Input } from "@/components/ui/input";
 
-export interface FILE {
-  archieve: boolean;
-  createdBy: string;
-  document: string;
-  fileName: string;
-  teamId: string;
-  whiteboard: string;
-  _id: string;
-  _creationTime: number;
-}
+import { Input } from "@/components/ui/input";
+import DeleteDialog from "../_components/DeleteDialog";
+import { FILE } from "@/lib/utils";
 
 export interface DeleteData {
   id: string;
@@ -55,20 +48,15 @@ const FileList = () => {
   const pathname = usePathname();
   const addToArchieve = useMutation(api.files.addArchieve);
   const renameFileName = useMutation(api.files.renameFile);
-  const { activeTeam_ } = useContext(TeamContext);
+  const { files_ } = useContext(TeamContext);
 
   useEffect(() => {
     setLoadingItem(null);
   }, [pathname]);
 
-  const files = useQuery(
-    api.files.getFiles,
-    activeTeam_ ? { teamId: activeTeam_._id } : "skip"
-  );
-
-  if (files === undefined)
+  if (files_ === undefined)
     return (
-      <div className="fixed inset-0 flex flex-col gap-5 bg-background items-center justify-center z-[9999]">
+      <div className="fixed inset-0 flex flex-col gap-5 bg-background items-center justify-center z-9999">
         <div className="flex gap-1 items-center">
           <Image src="/logo.png" alt="togetha logo" width={40} height={40} />
           <div>
@@ -165,10 +153,10 @@ const FileList = () => {
                   <span className="loader1"></span>
                 </td>
               </tr>
-            ) : files && files.length > 0 ? (
+            ) : files_ && files_.length > 0 ? (
               (() => {
-                const activeFiles = files.filter(
-                  (file) => file.archieve === false
+                const activeFiles = files_.filter(
+                  (files_: FILE) => files_.archieve === false
                 );
 
                 if (activeFiles.length === 0) {

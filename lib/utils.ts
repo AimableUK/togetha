@@ -5,6 +5,18 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
 }
 
+export interface FILE {
+  archieve: boolean;
+  createdBy: string;
+  document: string;
+  fileName: string;
+  teamId: string;
+  whiteboard: string;
+  _id: string;
+  _creationTime: number;
+}
+
+
 export const pageMetadata = {
   landing: {
     title: "Togetha - Think, Create & Collaborate",
@@ -90,7 +102,7 @@ export const pageMetadata = {
     },
   },
 
-  dashboard: {
+  files: {
     title: "Files - Manage Your Projects | Togetha",
     description:
       "Track progress, manage teams, and access all your boards from the Togetha dashboard.",

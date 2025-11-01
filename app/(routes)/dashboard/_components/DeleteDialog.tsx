@@ -9,11 +9,11 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import { DeleteData } from "./FileList";
 import { api } from "@/convex/_generated/api";
 import { toast } from "sonner";
 import { Id } from "@/convex/_generated/dataModel";
 import { useMutation } from "convex/react";
+import { DeleteData } from "../files/FileList";
 
 interface DialogProps extends DeleteData {
   open: boolean;

@@ -1,8 +1,8 @@
 import { pageMetadata } from "@/lib/utils";
-import ArchievedClient from "./ArchievedClient";
+import ArchievedList from "./ArchievedList";
 
 export const metadata = pageMetadata.archieve;
 
 export default function DashboardPage() {
-  return <ArchievedClient />;
+  return <ArchievedList />;
 }

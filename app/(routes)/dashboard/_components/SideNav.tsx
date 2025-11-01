@@ -24,7 +24,7 @@ const SideNav = () => {
   
   if (files === undefined)
     return (
-      <div className="fixed inset-0 bg-background flex flex-col items-center justify-center z-[9998]">
+      <div className="fixed inset-0 bg-background flex flex-col items-center justify-center z-9998">
         <div className="loader2"></div>
       </div>
     );

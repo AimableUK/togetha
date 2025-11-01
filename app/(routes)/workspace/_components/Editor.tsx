@@ -11,7 +11,7 @@ import Delimiter from "@editorjs/delimiter";
 import CodeTool from "@editorjs/code";
 import { useMutation } from "convex/react";
 import { api } from "@/convex/_generated/api";
-import { FILE } from "../../dashboard/_components/FileList";
+import { FILE } from "@/lib/utils";
 
 const rawDocument = {
   time: Date.now(),

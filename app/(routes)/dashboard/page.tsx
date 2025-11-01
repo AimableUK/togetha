@@ -1,8 +1,8 @@
 import { pageMetadata } from "@/lib/utils";
-import DashboardClient from "./DashboardClient";
+import OverviewClient from "./OverviewClient";
 
-export const metadata = pageMetadata.dashboard;
+export const metadata = pageMetadata.dashboardOverview;
 
 export default function DashboardPage() {
-  return <DashboardClient />;
+  return <OverviewClient />;
 }

@@ -20,13 +20,13 @@ import { usePathname, useRouter } from "next/navigation";
 type SideNavBottomProps = {
   onFileCreate: (fileInput: string) => void;
   totalFiles?: number;
-  errorMsg: string
+  errorMsg: string;
 };
 
 const SideNavBottomSection = ({
   onFileCreate,
   totalFiles,
-  errorMsg
+  errorMsg,
 }: SideNavBottomProps) => {
   const [loadingItem, setLoadingItem] = useState<number | null>(null);
   const router = useRouter();
@@ -40,7 +40,7 @@ const SideNavBottomSection = ({
       icon: Flag,
       path: "/dashboard/getstarted",
     },
-    { id: 1, name: "Files", icon: Files, path: "/dashboard" },
+    { id: 1, name: "Files", icon: Files, path: "/dashboard/files" },
     { id: 2, name: "Archieved", icon: Archive, path: "/dashboard/archieved" },
   ];
 
@@ -81,45 +81,45 @@ const SideNavBottomSection = ({
           </Button>
         </DialogTrigger>
         {/* {totalFiles! < Constant.MAX_FREE_FILES ? ( */}
-          <DialogContent>
-            <DialogHeader>
-              <DialogTitle>Create New</DialogTitle>
-              <DialogDescription>
-                Create a new file in the space provided below
-              </DialogDescription>
-            </DialogHeader>
-            <div className="flex-1 gap-2">
-              <Label htmlFor="fileName" className="sr-only">
-                Link
-              </Label>
-              <Input
-                id="fileName"
-                placeholder="Enter File Name"
-                className="mt-2"
-                onChange={(e) => setFileInput(e.target.value)}
-              />
-              {errorMsg && (
-                <p className="text-red-300 font-semibold text-sm mt-2">
-                  {errorMsg}
-                </p>
-              )}
-            </div>
-            <DialogFooter>
-              <DialogClose asChild>
-                <Button type="button" variant="secondary">
-                  Close
-                </Button>
-              </DialogClose>
-              <Button
-                type="submit"
-                className="flex bg-accent hover:bg-accent/80 dark:hover:bg-accent/60 active:bg-accent/80 dark:text-foreground/90 cursor-pointer trans"
-                disabled={!(fileInput && fileInput.length > 2)}
-                onClick={() => onFileCreate(fileInput)}
-              >
-                Create
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Create New</DialogTitle>
+            <DialogDescription>
+              Create a new file in the space provided below
+            </DialogDescription>
+          </DialogHeader>
+          <div className="flex-1 gap-2">
+            <Label htmlFor="fileName" className="sr-only">
+              Link
+            </Label>
+            <Input
+              id="fileName"
+              placeholder="Enter File Name"
+              className="mt-2"
+              onChange={(e) => setFileInput(e.target.value)}
+            />
+            {errorMsg && (
+              <p className="text-red-300 font-semibold text-sm mt-2">
+                {errorMsg}
+              </p>
+            )}
+          </div>
+          <DialogFooter>
+            <DialogClose asChild>
+              <Button type="button" variant="secondary">
+                Close
               </Button>
-            </DialogFooter>
-          </DialogContent>
+            </DialogClose>
+            <Button
+              type="submit"
+              className="flex bg-accent hover:bg-accent/80 dark:hover:bg-accent/60 active:bg-accent/80 dark:text-foreground/90 cursor-pointer trans"
+              disabled={!(fileInput && fileInput.length > 2)}
+              onClick={() => onFileCreate(fileInput)}
+            >
+              Create
+            </Button>
+          </DialogFooter>
+        </DialogContent>
         {/* )  */}
       </Dialog>
 

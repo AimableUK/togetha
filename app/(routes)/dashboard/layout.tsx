@@ -11,6 +11,10 @@ import Image from "next/image";
 import Header from "./_components/includes/Header";
 import { TeamContext } from "@/app/FilesListContext";
 import { TEAM } from "./_components/SideNavTopSection";
+import { UserSync } from "../UserSync";
+import { FILE } from "@/lib/utils";
+
+export type USERPLAN = "FREE" | "STARTER" | "PRO";
 
 const DashboardLayout = ({
   children,
@@ -22,9 +26,12 @@ const DashboardLayout = ({
   const { user, isLoading }: any = useKindeBrowserClient();
   const router = useRouter();
   const [collapseSidebar_, setCollapseSidebar_] = useState(false);
+
   const [totalFiles_, setTotalFiles_] = useState<number>();
-  const [activeTeam_, setActiveTeam_] = useState(null);
+  const [files_, setFiles_] = useState<FILE[] | null>(null);
+  const [activeTeam_, setActiveTeam_] = useState<FILE[] | null>(null);
   const [teamList_, setTeamList_] = useState<TEAM[] | null>(null);
+  const [userPlan_, setUserPlan_] = useState<USERPLAN>("PRO");
 
   useEffect(() => {
     isMobile && setCollapseSidebar_(true);
@@ -32,6 +39,10 @@ const DashboardLayout = ({
 
   const email = user?.email ?? "";
   const teams = useQuery(api.teams.getTeam, email ? { email } : "skip");
+  const files: FILE | any = useQuery(
+    api.files.getFiles,
+    activeTeam_ ? { teamId: activeTeam_?._id! } : "skip"
+  );
 
   useEffect(() => {
     if (teams?.length) {
@@ -41,6 +52,11 @@ const DashboardLayout = ({
       router.push("/teams/create");
     }
   }, [teams, pathname, router]);
+
+  useEffect(() => {
+    setFiles_(files);
+    setTotalFiles_(files?.length);
+  }, [files]);
 
   if (isLoading || !user || teams === undefined) {
     return (
@@ -64,9 +80,12 @@ const DashboardLayout = ({
         collapseSidebar_,
         setCollapseSidebar_,
         totalFiles_,
+        files_,
         setTotalFiles_,
+        userPlan_,
       }}
     >
+      <UserSync />
       <div className="grid grid-cols-4 gap-1 relative">
         {/* Sidebar */}
         <div

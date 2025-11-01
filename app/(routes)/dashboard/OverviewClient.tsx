@@ -1,10 +1,38 @@
 "use client";
 
-import React from "react";
 import { CircularProgressbarWithChildren } from "react-circular-progressbar";
 import "react-circular-progressbar/dist/styles.css";
+import BarChart from "./_components/BarChart";
+import { useContext, useMemo } from "react";
+import { TeamContext } from "@/app/FilesListContext";
+import {
+  FREE_PLAN_LIMITS,
+  PRO_PLAN_LIMITS,
+  STARTER_PLAN_LIMITS,
+} from "@/app/_constant/Constant";
 
 const OverviewClient = () => {
+  const { teamList_, files_, userPlan_ } = useContext(TeamContext);
+
+  const userPlanLimits = useMemo(() => {
+    switch (userPlan_) {
+      case "PRO":
+        return PRO_PLAN_LIMITS;
+      case "STARTER":
+        return STARTER_PLAN_LIMITS;
+      default:
+        return FREE_PLAN_LIMITS;
+    }
+  }, [userPlan_]);
+
+  const teamUsagePercent = isFinite(userPlanLimits.teams)
+    ? Math.min(((teamList_?.length ?? 0) / userPlanLimits.teams) * 100, 100)
+    : 100;
+
+  const fileUsagePercent = isFinite(userPlanLimits.files)
+    ? Math.min(((files_?.length ?? 0) / userPlanLimits.files) * 100, 100)
+    : 100;
+
   return (
     <div className="grid grid-cols-1 lg:gap-x-4 lg:grid-cols-3 my-5 mx-3">
       <div className="flex flex-col mb-4 lg:mb-0 w-full col-span-2 gap-4">
@@ -12,12 +40,20 @@ const OverviewClient = () => {
           <div className="p-5 rounded-md bg-secondary flex flex-row justify-between items-center w-full">
             <div>
               <h3 className="font-semibold text-primary/80">Total Teams</h3>
-              <h3 className="text-4xl font-bold">27</h3>
+              <h3 className="text-4xl font-bold">{teamList_?.length ?? 0}</h3>
             </div>
+
             <div style={{ width: 70, height: 70 }}>
-              <CircularProgressbarWithChildren value={66} strokeWidth={13}>
-                <div style={{ fontSize: 20, marginTop: -5 }}>
-                  <strong>66%</strong>
+              <CircularProgressbarWithChildren
+                value={teamUsagePercent}
+                strokeWidth={13}
+              >
+                <div style={{ fontSize: 18, marginTop: 0 }}>
+                  <strong>
+                    {isFinite(userPlanLimits.teams)
+                      ? `${teamList_?.length ?? 0}/${userPlanLimits.teams}`
+                      : `${teamList_?.length ?? 0}`}
+                  </strong>
                 </div>
               </CircularProgressbarWithChildren>
             </div>
@@ -25,12 +61,19 @@ const OverviewClient = () => {
           <div className="p-5 rounded-md bg-secondary flex flex-row justify-between items-center w-full">
             <div>
               <h3 className="font-semibold text-primary/80">Total Files</h3>
-              <h3 className="text-4xl font-bold">84</h3>
+              <h3 className="text-4xl font-bold">{files_?.length ?? 0}</h3>
             </div>
             <div style={{ width: 70, height: 70 }}>
-              <CircularProgressbarWithChildren value={66} strokeWidth={13}>
-                <div style={{ fontSize: 20, marginTop: -5 }}>
-                  <strong>74%</strong>
+              <CircularProgressbarWithChildren
+                value={fileUsagePercent}
+                strokeWidth={13}
+              >
+                <div style={{ fontSize: 18, marginTop: 0 }}>
+                  <strong>
+                    {isFinite(userPlanLimits.files)
+                      ? `${files_?.length ?? 0}/${userPlanLimits.files}`
+                      : `${files_?.length ?? 0}`}
+                  </strong>
                 </div>
               </CircularProgressbarWithChildren>
             </div>
@@ -38,11 +81,17 @@ const OverviewClient = () => {
         </div>
 
         <div className="col-span-2 flex flex-col md:flex-row w-full gap-4 h-full">
-          <div className="p-5 rounded-md bg-secondary flex flex-col w-full">
-            <h3 className="font-semibold text-primary/80">Teams Activity</h3>
+          <div className="p-5 rounded-md bg-secondary flex flex-col flex-1 md:w-1/2 gap-3">
+            <h3 className="font-semibold text-primary/80">Teams</h3>
+            <div className="max-h-60 w-full relative">
+              <BarChart type="Teams" chartData={[2, 4, 6, 9, 4, 11, 3]} />
+            </div>
           </div>
-          <div className="p-5 rounded-md bg-secondary flex flex-col w-full">
-            <h3 className="font-semibold text-primary/80">Files Activity</h3>
+          <div className="p-5 rounded-md bg-secondary flex flex-col flex-1 md:w-1/2 gap-3">
+            <h3 className="font-semibold text-primary/80">Files</h3>
+            <div className="max-h-60 w-full relative">
+              <BarChart type="Files" chartData={[12, 4, 18, 9, 7, 12, 8]} />
+            </div>
           </div>
         </div>
       </div>
@@ -101,19 +150,6 @@ const OverviewClient = () => {
             </div>
             <span className="text-xs text-foreground/50 whitespace-nowrap">
               2 days ago
-            </span>
-          </div>
-          <div className="flex items-center justify-between p-3 rounded-md bg-background/60 hover:bg-background/80 transition">
-            <div className="flex items-center gap-3">
-              <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center text-primary font-semibold">
-                👤
-              </div>
-              <p className="text-sm text-foreground/80 font-semibold">
-                Phocus added new file to DBMS GROUP
-              </p>
-            </div>
-            <span className="flex-start text-xs text-foreground/50 whitespace-nowrap">
-              1 min ago
             </span>
           </div>
         </div>

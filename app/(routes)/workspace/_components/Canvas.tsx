@@ -3,9 +3,9 @@ import { Excalidraw, MainMenu, WelcomeScreen } from "@excalidraw/excalidraw";
 import "@excalidraw/excalidraw/index.css";
 import { useTheme } from "next-themes";
 import Image from "next/image";
-import { FILE } from "../../dashboard/_components/FileList";
 import { useMutation } from "convex/react";
 import { api } from "@/convex/_generated/api";
+import { FILE } from "@/lib/utils";
 
 interface CanvasProps {
   fileId: any;
