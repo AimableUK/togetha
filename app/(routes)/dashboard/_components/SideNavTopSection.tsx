@@ -152,7 +152,7 @@ const SideNavTopSection = ({ user, setActiveTeamInfo }: any) => {
       <div className="flex flex-col">
         <Popover>
           <PopoverTrigger className="w-full relative">
-            <div className="flex items-center w-fit max-w-[88%] md:max-w-full gap-x-2 hover:bg-gray-300 dark:hover:bg-gray-800 p-1 md:w-full rounded-md cursor-pointer">
+            <div className="flex items-center md:w-fit max-w-[88%] md:max-w-full gap-x-2 hover:bg-gray-300 dark:hover:bg-gray-800 p-1 md:w-full rounded-md cursor-pointer">
               <Image
                 src="/logo.png"
                 alt="Togetha logo"
