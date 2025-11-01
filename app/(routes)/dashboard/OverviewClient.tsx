@@ -12,7 +12,7 @@ import {
 } from "@/app/_constant/Constant";
 import { Button } from "@/components/ui/button";
 import Image from "next/image";
-import getDailyMessage from "@/app/hooks/getDailyMessage";
+import MotivationBanner from "./_components/MotivationBanner";
 
 type CreationItem = {
   _creationTime: number;
@@ -86,16 +86,25 @@ const OverviewClient = () => {
   );
 
   const category =
-    files_?.length >= 2 ? "high" : files_?.length === 1 ? "medium" : "low";
-
-  const dailyMotivation = getDailyMessage(category);
+    files_ === null
+      ? null
+      : files_.length >= 2
+        ? "high"
+        : files_.length === 1
+          ? "medium"
+          : "low";
 
   return (
     <div className="flex flex-col gap-4 my-5 mx-3">
       <div className="grid grid-cols-1 md:grid-cols-3 md:gap-4 h-full">
-        <div className="col-span-2 bg-secondary rounded-lg px-5 py-3 flex flex-col justify-center">
+        <div className="col-span-2 bg-secondary rounded-lg px-5 py-3 flex flex-col justify-center trans">
           <h2 className="font-semibold">Welcome Back! {user.family_name}</h2>
-          <p className="text-primary/60">{dailyMotivation}</p>
+          {category && (
+            <MotivationBanner
+              category={category}
+              fileCount={files_?.length ?? 0}
+            />
+          )}
         </div>
         <div className="col-span-1 relative bg-secondary rounded-lg px-5 py-3 mt-4 md:mt-0">
           <div className="flex flex-col gap-3">
