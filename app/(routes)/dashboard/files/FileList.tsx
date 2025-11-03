@@ -267,7 +267,7 @@ const FileList = () => {
                             className="group p-2 rounded-md hover:bg-accent active:bg-accent/80 hover:text-gray-100! cursor-pointer trans"
                           >
                             <Archive className="group-hover:text-gray-100!" />
-                            Archieve
+                            Archive
                           </DropdownMenuItem>
                           <DropdownMenuItem
                             onClick={() => handleOpenDialog(file._id, "file")}

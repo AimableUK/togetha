@@ -41,7 +41,7 @@ const SideNavBottomSection = ({
       path: "/dashboard/getstarted?mode=guide",
     },
     { id: 1, name: "Files", icon: Files, path: "/dashboard/files" },
-    { id: 2, name: "Archieved", icon: Archive, path: "/dashboard/archieved" },
+    { id: 2, name: "Archived", icon: Archive, path: "/dashboard/archieved" },
   ];
 
   useEffect(() => {
