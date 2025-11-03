@@ -38,7 +38,7 @@ const SideNavBottomSection = ({
       id: 0,
       name: "Getting Started",
       icon: Flag,
-      path: "/dashboard/getstarted",
+      path: "/dashboard/getstarted?mode=guide",
     },
     { id: 1, name: "Files", icon: Files, path: "/dashboard/files" },
     { id: 2, name: "Archieved", icon: Archive, path: "/dashboard/archieved" },

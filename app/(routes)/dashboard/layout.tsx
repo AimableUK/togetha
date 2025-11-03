@@ -12,6 +12,7 @@ import Header from "./_components/includes/Header";
 import { TeamContext } from "@/app/FilesListContext";
 import { UserSync } from "../UserSync";
 import { FILE, TEAM } from "@/lib/utils";
+import { useLocation } from "react-router-dom";
 
 export type USERPLAN = "FREE" | "STARTER" | "PRO";
 
@@ -48,7 +49,7 @@ const DashboardLayout = ({
       setActiveTeam_(teams[0]);
       setTeamList_(teams);
     } else if (teams && !teams.length && !pathname.includes("teams/create")) {
-      router.push("/teams/create");
+      router.push("/dashboard/getstarted?mode=onboarding");
     }
   }, [teams, pathname, router]);
 
@@ -69,6 +70,10 @@ const DashboardLayout = ({
     );
   }
 
+  // Routes that should NOT show layout
+  const noLayoutRoutes = ["/dashboard/getstarted"];
+  const hideLayout = noLayoutRoutes.some((route) => pathname.startsWith(route));
+
   return (
     <TeamContext.Provider
       value={{
@@ -86,35 +91,40 @@ const DashboardLayout = ({
       }}
     >
       <UserSync />
-      <div className="grid grid-cols-4 gap-1 relative">
-        {/* Sidebar */}
-        <div
-          className={`trans h-screen fixed top-0 left-0 shadow-lg z-50 bg-primary
+
+      {hideLayout ? (
+        <>{children}</>
+      ) : (
+        <div className="grid grid-cols-4 gap-1 relative">
+          {/* Sidebar */}
+          <div
+            className={`trans h-screen fixed top-0 left-0 shadow-lg z-50 bg-primary
             ${collapseSidebar_ ? "w-0 hidden" : "w-60"}
             ${!isMobile ? "w-60" : ""} 
             ${isMobile && !collapseSidebar_ ? "block" : ""}`}
-        >
-          <SideNav />
-        </div>
+          >
+            <SideNav />
+          </div>
 
-        {/* Overlay mobile */}
-        {isMobile && !collapseSidebar_ && (
+          {/* Overlay mobile */}
+          {isMobile && !collapseSidebar_ && (
+            <div
+              className="fixed inset-0 bg-black/60 opacity-70 z-40 "
+              onClick={() => setCollapseSidebar_(true)}
+            />
+          )}
+
+          {/* main content */}
           <div
-            className="fixed inset-0 bg-black/60 opacity-70 z-40 "
-            onClick={() => setCollapseSidebar_(true)}
-          />
-        )}
-
-        {/* main content */}
-        <div
-          className={`trans col-span-4 ${
-            isMobile ? "ml-0" : collapseSidebar_ ? "ml-0" : "ml-60"
-          }`}
-        >
-          <Header />
-          {children}
+            className={`trans col-span-4 ${
+              isMobile ? "ml-0" : collapseSidebar_ ? "ml-0" : "ml-60"
+            }`}
+          >
+            <Header />
+            {children}
+          </div>
         </div>
-      </div>
+      )}
     </TeamContext.Provider>
   );
 };
