@@ -90,7 +90,7 @@ const SideNavBottomSection = ({
           </DialogHeader>
           <div className="flex-1 gap-2">
             <Label htmlFor="fileName" className="sr-only">
-              Link
+              Enter file Name
             </Label>
             <Input
               id="fileName"

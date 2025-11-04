@@ -17,7 +17,7 @@ export const UserSync = () => {
       const existing = await convex.query(api.user.getUser, {
         email: user.email!,
       });
-      if (!existing?.length) {
+      if (!existing) {
         await createUser({
           name: `${user.given_name} ${user.family_name}`,
           email: user.email!,

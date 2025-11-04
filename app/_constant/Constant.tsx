@@ -16,3 +16,4 @@ export const PRO_PLAN_LIMITS = {
   teams: Infinity,
   files: Infinity,
 };
+
