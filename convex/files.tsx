@@ -9,6 +9,7 @@ export const createFile = mutation({
     archieve: v.boolean(),
     document: v.string(),
     whiteboard: v.string(),
+    editedAt: v.number(),
   },
 
   handler: async (ctx, args) => {
@@ -29,6 +30,16 @@ export const getFiles = query({
       .order("desc")
       .collect();
 
+    return result;
+  },
+});
+
+export const getFileById = query({
+  args: {
+    _id: v.id("files"),
+  },
+  handler: async (ctx, args) => {
+    const result = await ctx.db.get(args._id);
     return result;
   },
 });
@@ -80,19 +91,13 @@ export const updateDocument = mutation({
   args: {
     _id: v.id("files"),
     document: v.string(),
+    editedAt: v.number(),
   },
   handler: async (ctx, args) => {
-    const result = await ctx.db.patch(args._id, { document: args.document });
-    return result;
-  },
-});
-
-export const getFileById = query({
-  args: {
-    _id: v.id("files"),
-  },
-  handler: async (ctx, args) => {
-    const result = await ctx.db.get(args._id);
+    const result = await ctx.db.patch(args._id, {
+      document: args.document,
+      editedAt: args.editedAt,
+    });
     return result;
   },
 });
@@ -101,10 +106,12 @@ export const updateWhiteboard = mutation({
   args: {
     _id: v.id("files"),
     whiteboard: v.string(),
+    editedAt: v.number(),
   },
   handler: async (ctx, args) => {
     const result = await ctx.db.patch(args._id, {
       whiteboard: args.whiteboard,
+      editedAt: args.editedAt,
     });
     return result;
   },

@@ -41,11 +41,7 @@ interface EditorProps {
   setSavingWorkspace: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-const Editor = ({
-  fileId,
-  fileData,
-  setSavingWorkspace,
-}: EditorProps) => {
+const Editor = ({ fileId, fileData, setSavingWorkspace }: EditorProps) => {
   const editorRef = useRef<EditorJS | null>(null);
   const updateDocument = useMutation(api.files.updateDocument);
   const saveTimeout = useRef<NodeJS.Timeout | null>(null);
@@ -114,6 +110,7 @@ const Editor = ({
             await updateDocument({
               _id: fileId,
               document: JSON.stringify(data),
+              editedAt: Date.now(),
             });
             setSavingWorkspace(false);
           } catch (err: any) {

@@ -44,6 +44,7 @@ const SideNav = () => {
       archieve: false,
       document: "",
       whiteboard: "",
+      editedAt: Date.now()
     });
 
     toast.promise(promise, {

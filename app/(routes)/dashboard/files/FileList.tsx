@@ -231,9 +231,11 @@ const FileList = () => {
                       })}
                     </td>
                     <td className="px-3 py-2 whitespace-nowrap">
-                      {formatDistanceToNow(new Date(file._creationTime), {
-                        addSuffix: true,
-                      })}
+                      {file.editedAt
+                        ? formatDistanceToNow(new Date(file.editedAt), {
+                            addSuffix: true,
+                          })
+                        : "-"}
                     </td>
                     <td className="px-3 py-2 whitespace-nowrap">
                       <Image

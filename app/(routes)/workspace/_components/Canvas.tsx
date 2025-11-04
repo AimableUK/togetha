@@ -31,6 +31,7 @@ const Canvas = ({ fileId, fileData, setSavingWorkspace }: CanvasProps) => {
     await updateWhiteboard({
       _id: fileId,
       whiteboard: whiteBoardData,
+      editedAt: Date.now(),
     });
     setSavingWorkspace(false);
   };
