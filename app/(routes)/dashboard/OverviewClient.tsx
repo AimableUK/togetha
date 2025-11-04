@@ -99,7 +99,10 @@ const OverviewClient = () => {
   return (
     <div className="flex flex-col gap-4 my-5 mx-3">
       <div className="grid grid-cols-1 lg:grid-cols-3 md:gap-4 h-full">
-        <div className="col-span-2 bg-secondary rounded-lg px-5 py-3 flex flex-col justify-center trans">
+        <div className="relative col-span-2 bg-secondary rounded-lg px-5 py-3 flex flex-col justify-center trans">
+          <div className="rounded-2xl flex whitespace-nowrap px-3 bg-secondary border border-accent w-fit absolute -top-3 right-3 font-semibold">
+            Daily Check-In
+          </div>
           <h2 className="font-semibold">Welcome Back! {user.family_name}</h2>
           {category && <MotivationBanner category={category} files_={files_} />}
         </div>

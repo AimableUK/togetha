@@ -39,7 +39,7 @@ const SideNav = () => {
 
     const promise = createFile({
       fileName: fileName,
-      teamId: activeTeam_?._id!,
+      teamId: activeTeam_?._id! as string,
       createdBy: user?.email!,
       archieve: false,
       document: "",
