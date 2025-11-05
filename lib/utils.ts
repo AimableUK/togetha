@@ -20,6 +20,9 @@ export interface TEAM {
   createdBy: string;
   teamName: string;
   _id: string;
+  collaboratorEmail?: string;
+  collaboratorName?: string;
+  collaboratorImage?: string;
 }
 
 
@@ -219,6 +222,34 @@ export const pageMetadata = {
       images: ["https://www.togetha-app.vercel.app/twitter-banner.png"],
     },
   },
+
+  notifications: {
+    title: "notifications - View your notifications, updates.",
+    description:
+      "Togetha is a modern playground for teams and individuals to brainstorm, design, and build ideas together in real time.",
+    openGraph: {
+      type: "website",
+      url: "https://www.togetha-app.vercel.app/",
+      title: "notifications - View your notifications, updates.",
+      description:
+        "Togetha is a modern playground for teams and individuals to brainstorm, design, and build ideas together in real time.",
+      images: [
+        {
+          url: "https://www.togetha-app.vercel.app/og-image.png",
+          width: 1200,
+          height: 630,
+          alt: "notifications - View your notifications, updates.",
+        },
+      ],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: "notifications - View your notifications, updates.",
+      description:
+        "Togetha is a modern playground for teams and individuals to brainstorm, design, and build ideas together in real time.",
+      images: ["https://www.togetha-app.vercel.app/twitter-banner.png"],
+    },
+  },
 };
 
 export interface FAQ {
@@ -260,3 +291,18 @@ export const faqData: FAQ[] = [
   },
 ];
 
+
+export interface TEAMINVITES {
+  _id: string;
+  teamId: string;
+  email: string;
+  invitedBy: string;
+  status: "pending" | "accepted" | "declined";
+  invitedAt: number;
+  acceptedAt?: number;
+
+  // Added from enrichment
+  inviterName: string;
+  inviterImage: string;
+  teamName: string;
+}

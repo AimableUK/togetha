@@ -30,7 +30,7 @@ import { Input } from "@/components/ui/input";
 import { DeleteData } from "../files/FileList";
 
 const ArchievedList = () => {
-  const { user, isLoading }: any = useKindeBrowserClient();
+  const { isLoading }: any = useKindeBrowserClient();
   const [loadingItem, setLoadingItem] = useState<string | null>();
   const router = useRouter();
   const pathname = usePathname();
@@ -42,7 +42,7 @@ const ArchievedList = () => {
 
   const removeFromArchieve = useMutation(api.files.undoArchieve);
   const renameFileName = useMutation(api.files.renameFile);
-  const { files_ } = useContext(TeamContext);
+  const { user, files_ } = useContext(TeamContext);
 
   useEffect(() => {
     setLoadingItem(null);
@@ -143,8 +143,8 @@ const ArchievedList = () => {
           <tbody className="divide-y">
             {isLoading ? (
               <tr>
-                <td className="flex py-3">
-                  <span className="loader1"></span>
+                <td className="flex py-3 items-center justify-center">
+                  <span className="loader2"></span>
                 </td>
               </tr>
             ) : files_ && files_.length > 0 ? (

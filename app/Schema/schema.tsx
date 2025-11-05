@@ -9,3 +9,17 @@ export const validateName = (name: string) => {
 
   return null;
 };
+
+export const validateEmail = (email: string) => {
+  const trimmed = email.trim();
+
+  if (!trimmed) return "Email is required";
+  if (trimmed.length > 100) return "Email must be less than 100 characters";
+
+  // Basic RFC 5322-compatible email pattern
+  const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+  if (!emailPattern.test(trimmed)) return "Please enter a valid email address";
+
+  return null;
+};

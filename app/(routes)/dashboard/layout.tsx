@@ -11,8 +11,7 @@ import Image from "next/image";
 import Header from "./_components/includes/Header";
 import { TeamContext } from "@/app/FilesListContext";
 import { UserSync } from "../UserSync";
-import { FILE, TEAM } from "@/lib/utils";
-import { useLocation } from "react-router-dom";
+import { FILE, TEAM, TEAMINVITES } from "@/lib/utils";
 
 export type USERPLAN = "FREE" | "STARTER" | "PRO";
 
@@ -32,6 +31,7 @@ const DashboardLayout = ({
   const [activeTeam_, setActiveTeam_] = useState<TEAM | null>(null);
   const [teamList_, setTeamList_] = useState<TEAM[] | null>(null);
   const [userPlan_, setUserPlan_] = useState<USERPLAN>("PRO");
+  const [updates_, setUpdates_] = useState<TEAMINVITES[]>([]);
 
   useEffect(() => {
     isMobile && setCollapseSidebar_(true);
@@ -58,7 +58,7 @@ const DashboardLayout = ({
     setTotalFiles_(files?.length);
   }, [files]);
 
-  if (isLoading || !user || teams === undefined) {
+  if (isLoading || !user || teams === undefined || updates_ === undefined) {
     return (
       <div className="flex flex-col items-center gap-5 absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 ">
         <div className="flex gap-1 items-center">
@@ -88,6 +88,8 @@ const DashboardLayout = ({
         files_,
         setTotalFiles_,
         userPlan_,
+        updates_,
+        setUpdates_,
       }}
     >
       <UserSync />

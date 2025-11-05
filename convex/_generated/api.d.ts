@@ -9,6 +9,7 @@
  */
 
 import type * as files from "../files.js";
+import type * as teamInvites from "../teamInvites.js";
 import type * as teams from "../teams.js";
 import type * as user from "../user.js";
 
@@ -28,6 +29,7 @@ import type {
  */
 declare const fullApi: ApiFromModules<{
   files: typeof files;
+  teamInvites: typeof teamInvites;
   teams: typeof teams;
   user: typeof user;
 }>;

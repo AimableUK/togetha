@@ -13,6 +13,8 @@ import {
 import { Button } from "@/components/ui/button";
 import Image from "next/image";
 import MotivationBanner from "./_components/MotivationBanner";
+import { formatDistanceToNow } from "date-fns";
+import { Separator } from "@/components/ui/separator";
 
 type CreationItem = {
   _creationTime: number;
@@ -26,7 +28,8 @@ type GroupedDataItem = {
 };
 
 const OverviewClient = () => {
-  const { teamList_, files_, userPlan_, user } = useContext(TeamContext);
+  const { teamList_, files_, userPlan_, user } =
+    useContext(TeamContext);
 
   const userPlanLimits = useMemo(() => {
     switch (userPlan_) {
@@ -198,51 +201,20 @@ const OverviewClient = () => {
 
         <div className="w-full col-span-1 p-5 rounded-md bg-secondary flex flex-col">
           <h3 className="font-semibold text-primary/80 mb-3">
-            Recent Activity (Static Data)
+            Recent Activity
           </h3>
+
           {/* cards */}
           <div className="flex flex-col gap-2">
-            <div className="flex items-center justify-between p-3 rounded-md bg-background/60 hover:bg-background/80 transition">
+            <div className="flex items-center p-3 rounded-md bg-background/60 hover:bg-background/80 transition">
               <div className="flex items-center gap-3">
                 <p className="text-sm text-foreground/80 font-semibold">
-                  Alice joined Marketing Team
+                  No Updates available
                 </p>
               </div>
-              <span className="text-xs text-foreground/50 whitespace-nowrap">
-                5 mins ago
-              </span>
-            </div>
-            <div className="flex items-center justify-between p-3 rounded-md bg-background/60 hover:bg-background/80 transition">
-              <div className="flex items-center gap-3">
-                <p className="text-sm text-foreground/80 font-semibold">
-                  Design Team uploaded 3 new files
-                </p>
-              </div>
-              <span className="text-xs text-foreground/50 whitespace-nowrap">
-                1 hour ago
-              </span>
-            </div>
-            <div className="flex items-center justify-between p-3 rounded-md bg-background/60 hover:bg-background/80 transition">
-              <div className="flex items-center gap-3">
-                <p className="text-sm text-foreground/80 font-semibold">
-                  You were promoted to Editor in DevOps Team
-                </p>
-              </div>
-              <span className="text-xs text-foreground/50 whitespace-nowrap">
-                2 hours ago
-              </span>
-            </div>
-            <div className="flex items-center justify-between p-3 rounded-md bg-background/60 hover:bg-background/80 transition">
-              <div className="flex items-center gap-3">
-                <p className="text-sm text-foreground/80 font-semibold">
-                  Finance Team created a new report
-                </p>
-              </div>
-              <span className="text-xs text-foreground/50 whitespace-nowrap">
-                2 days ago
-              </span>
             </div>
           </div>
+          {/* end updates */}
         </div>
       </div>
     </div>

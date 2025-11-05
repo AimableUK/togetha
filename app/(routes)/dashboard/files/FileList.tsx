@@ -37,7 +37,7 @@ export interface DeleteData {
 }
 
 const FileList = () => {
-  const { user, isLoading }: any = useKindeBrowserClient();
+  const { isLoading }: any = useKindeBrowserClient();
   const [loadingItem, setLoadingItem] = useState<string | null>();
 
   const [openDialog, setOpenDialog] = useState(false);
@@ -49,7 +49,7 @@ const FileList = () => {
   const pathname = usePathname();
   const addToArchieve = useMutation(api.files.addArchieve);
   const renameFileName = useMutation(api.files.renameFile);
-  const { files_ } = useContext(TeamContext);
+  const { user, files_ } = useContext(TeamContext);
 
   useEffect(() => {
     setLoadingItem(null);
@@ -156,8 +156,8 @@ const FileList = () => {
           <tbody className="divide-y">
             {isLoading ? (
               <tr>
-                <td className="flex py-3">
-                  <span className="loader1"></span>
+                <td className="flex py-3 items-center justify-center">
+                  <span className="loader2"></span>
                 </td>
               </tr>
             ) : files_ && files_.length > 0 ? (

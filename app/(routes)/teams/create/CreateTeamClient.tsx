@@ -5,7 +5,7 @@ import { Input } from "@/components/ui/input";
 import { api } from "@/convex/_generated/api";
 import { useKindeBrowserClient } from "@kinde-oss/kinde-auth-nextjs";
 import { useMutation } from "convex/react";
-import { CircleArrowLeft, UserPlus } from "lucide-react";
+import { CircleArrowLeft, UserPlus, X } from "lucide-react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import React, { useState } from "react";
@@ -15,7 +15,7 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { validateName } from "@/app/Schema/schema";
+import { validateEmail, validateName } from "@/app/Schema/schema";
 import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
 
@@ -26,7 +26,9 @@ const CreateTeamClient = () => {
   const createTeam = useMutation(api.teams.createTeam);
   const { user }: any = useKindeBrowserClient();
   const router = useRouter();
+
   const [emailInput, setEmailInput] = useState("");
+  const [invitedEmails, setInvitedEmails] = useState<string[]>([]);
 
   const createNewTeam = () => {
     const error = validateName(teamName);
@@ -35,9 +37,15 @@ const CreateTeamClient = () => {
       return;
     }
 
+    console.log("team Name: ", teamName);
+    console.log("invitedEmails: ", invitedEmails);
+    setInvitedEmails([]);
+    setTeamName("");
+
     const promise = createTeam({
       teamName: teamName,
       createdBy: user?.email,
+      collaborators: invitedEmails,
     });
 
     toast.promise(promise, {
@@ -58,6 +66,45 @@ const CreateTeamClient = () => {
     promise.then(() => {
       router.push("/dashboard");
     });
+  };
+
+  const handleAddInvite = () => {
+    const trimmed = emailInput.trim().toLowerCase();
+    const error = validateEmail(trimmed);
+    if (error) {
+      setErrorMsg(error);
+      return;
+    }
+
+    if (emailInput === user.email) {
+      setErrorMsg("You can't Invite your self");
+      return;
+    }
+
+    const current = Array.isArray(invitedEmails)
+      ? invitedEmails
+      : // fallback: try to coerce
+        typeof invitedEmails === "string"
+        ? [invitedEmails]
+        : Array.isArray(Object.values(invitedEmails || {}))
+          ? Object.values(invitedEmails as any).map(String)
+          : [];
+
+    // Prevent duplicates
+    if (current.includes(trimmed)) {
+      setErrorMsg("This email is already invited");
+      return;
+    }
+
+    // Push the new email & update state
+    const next = [...current, trimmed];
+    setInvitedEmails(next);
+    setEmailInput("");
+    setErrorMsg("");
+  };
+
+  const handleRemoveInvite = (emailToRemove: string) => {
+    setInvitedEmails((prev) => prev.filter((email) => email !== emailToRemove));
   };
 
   const handleGoBack = () => {
@@ -96,6 +143,13 @@ const CreateTeamClient = () => {
           You&apos;ll be able to raname this later.
         </h3>
         <div className="mt-3 md:mt-7 w-4/5 md:w-2/5 flex flex-col space-y-3">
+          {errorMsg && (
+            <div className="rounded-md py-2 px-3 bg-secondary flex items-center border border-red-400">
+              <p className="text-red-300 font-semibold text-sm text-center">
+                {errorMsg}
+              </p>
+            </div>
+          )}
           {/* Add team name */}
           <div>
             <label
@@ -110,11 +164,6 @@ const CreateTeamClient = () => {
               className="mt-1"
               onChange={(e) => setTeamName(e.target.value)}
             />
-            {errorMsg && (
-              <p className="text-red-300 font-semibold text-sm mt-2">
-                {errorMsg}
-              </p>
-            )}
           </div>
 
           {/* Add Collaborators */}
@@ -125,42 +174,47 @@ const CreateTeamClient = () => {
             </Label>
             <div className="flex relative">
               <Input
-                id="fileName"
+                id="inviteEmail"
+                value={emailInput}
                 placeholder="Invite via Email address"
-                className="mt-2 relative h-11 py-2 "
+                className="mt-2 h-11 py-2"
                 onChange={(e) => setEmailInput(e.target.value)}
               />
-              <Button className="absolute right-1 top-3 bottom-1 rounded-md bg-accent text-white hover:bg-accent/80 active:bg-accent/60 cursor-pointer">
-                <UserPlus /> Add
+              <Button
+                onClick={handleAddInvite}
+                disabled={!!validateEmail(emailInput)}
+                className="cursor-pointer disabled:cursor-none absolute right-1 top-3 bottom-1 rounded-md bg-accent text-white hover:bg-accent/80 active:bg-accent/60"
+              >
+                <UserPlus className="h-4 w-4 mr-1" /> Add
               </Button>
             </div>
-
-            {errorMsg && (
-              <p className="text-red-300 font-semibold text-sm mt-2">
-                {errorMsg}
-              </p>
-            )}
           </div>
 
           {/* Currently added */}
-          <div className="flex flex-col border rounded-l-md py-2 px-3 max-h-28 overflow-y-auto">
-            <h2>Currently Added</h2>
-            <Separator />
-            <div className="flex flex-col space-y-1">
-              <h3 className="text-[14px] text-foreground/75 truncate max-w-[180px]">
-                bugingo@gmail.com
-              </h3>
-              <h3 className="text-[14px] text-foreground/75 truncate max-w-[180px]">
-                bugingo@gmail.com
-              </h3>
-              <h3 className="text-[14px] text-foreground/75 truncate max-w-[180px]">
-                bugingo@gmail.com
-              </h3>
-               <h3 className="text-[14px] text-foreground/75 truncate max-w-[180px]">
-                bugingo@gmail.com
-              </h3>
+          {invitedEmails.length > 0 && (
+            <div className="flex flex-col border rounded-md py-2 px-3 max-h-32 overflow-y-auto">
+              <h2 className="text-sm font-semibold mb-1">Currently Added</h2>
+              <Separator className="mb-2" />
+              <div className="flex flex-col space-y-1">
+                {invitedEmails.map((email) => (
+                  <div
+                    key={email}
+                    className="flex justify-between items-center text-[14px] text-foreground/75 truncate"
+                  >
+                    <span className="truncate max-w-[180px]">{email}</span>
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      onClick={() => handleRemoveInvite(email)}
+                      className="cursor-pointer"
+                    >
+                      <X className="h-4 w-4 text-gray-500 hover:text-red-500" />
+                    </Button>
+                  </div>
+                ))}
+              </div>
             </div>
-          </div>
+          )}
         </div>
 
         <Button

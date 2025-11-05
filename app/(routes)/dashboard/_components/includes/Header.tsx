@@ -1,8 +1,8 @@
 import { TeamContext } from "@/app/FilesListContext";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { useKindeBrowserClient } from "@kinde-oss/kinde-auth-nextjs";
 import {
+  Bell,
   ListCollapse,
   Search,
   SendHorizontal,
@@ -12,13 +12,20 @@ import Image from "next/image";
 import { usePathname } from "next/navigation";
 import React, { useContext, useState } from "react";
 import TeamInvite from "../TeamInvite";
+import { Badge } from "@/components/ui/badge";
+import Link from "next/link";
+import { TEAM } from "@/lib/utils";
 
 const Header = () => {
-  const { user }: any = useKindeBrowserClient();
-  const { collapseSidebar_, setCollapseSidebar_, isMobile } =
-    useContext(TeamContext);
+  const {
+    user,
+    collapseSidebar_,
+    setCollapseSidebar_,
+    isMobile,
+    updates_,
+    activeTeam_,
+  } = useContext(TeamContext);
   const pathname = usePathname();
-
   const [openInviteDialog, setOpenInviteDialog] = useState(false);
 
   return (
@@ -59,14 +66,50 @@ const Header = () => {
             </div>
           )}
 
-          <div>
-            <Image
-              src={user?.picture ?? "/user.webp"}
-              alt="user profile"
-              width={30}
-              height={30}
-              className="rounded-full cursor-pointer"
-            />
+          <div className="flex flex-row gap-x-3 items-center">
+            <Link href="/dashboard/notifications" className="relative">
+              <Bell className="cursor-pointer relative" />
+              {updates_ && (
+                <Badge
+                  className="-top-3 -right-2 h-5 min-w-5 bg-secondary rounded-full px-1 font-mono tabular-nums absolute"
+                  variant="outline"
+                >
+                  {updates_.length ?? 0}
+                </Badge>
+              )}
+            </Link>
+
+            <div className="flex items-end relative">
+              {/* Owner */}
+              <div className="z-20">
+                <Image
+                  src={user?.picture ?? "/user.webp"}
+                  alt="Owner"
+                  width={36}
+                  height={36}
+                  className="rounded-full border-2 border-inherit shadow-sm"
+                />
+              </div>
+
+              {activeTeam_?.collaboratorsData.length > 1 &&
+                activeTeam_.collaboratorsData
+                  ?.filter((c: TEAM) => c.collaboratorEmail !== user?.email)
+                  .slice(0, 2)
+                  .map(({ c, idx }: TEAM) => (
+                    <div
+                      key={c.collaboratorEmail}
+                      className={`-ml-4 z-${10 - idx}`}
+                    >
+                      <Image
+                        src={c.collaboratorImage ?? "/user.webp"}
+                        alt={c.collaboratorName ?? "Unknown User"}
+                        width={36}
+                        height={36}
+                        className="rounded-full border-2 border-inherit shadow-sm"
+                      />
+                    </div>
+                  ))}
+            </div>
           </div>
           {isMobile ? (
             <SendHorizontal

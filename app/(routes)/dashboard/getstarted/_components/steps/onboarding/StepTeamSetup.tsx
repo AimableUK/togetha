@@ -15,7 +15,6 @@ export default function StepTeamSetup() {
 
   const createTeam = useMutation(api.teams.createTeam);
   const { user }: any = useKindeBrowserClient();
-
   const createNewTeam = () => {
     const error = validateName(teamName);
     if (error) {
