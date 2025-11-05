@@ -142,7 +142,7 @@ const CreateTeamClient = () => {
         <h3 className="text-gray-700 dark:text-gray-100!">
           You&apos;ll be able to raname this later.
         </h3>
-        <div className="mt-3 md:mt-7 w-4/5 md:w-2/5 flex flex-col space-y-3">
+        <div className="mt-3 md:mt-7 w-full md:w-2/5 flex flex-col space-y-3">
           {errorMsg && (
             <div className="rounded-md py-2 px-3 bg-secondary flex items-center border border-red-400">
               <p className="text-red-300 font-semibold text-sm text-center">
@@ -185,7 +185,7 @@ const CreateTeamClient = () => {
                 disabled={!!validateEmail(emailInput)}
                 className="cursor-pointer disabled:cursor-none absolute right-1 top-3 bottom-1 rounded-md bg-accent text-white hover:bg-accent/80 active:bg-accent/60"
               >
-                <UserPlus className="h-4 w-4 mr-1" /> Add
+                <UserPlus className="h-4 w-4 md:mr-1" /> Add
               </Button>
             </div>
           </div>
