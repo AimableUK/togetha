@@ -87,7 +87,7 @@ const Header = () => {
                   alt="Owner"
                   width={36}
                   height={36}
-                  className="rounded-full border-2 border-inherit shadow-sm"
+                  className="rounded-full border-2 border-background shadow-sm"
                 />
               </div>
 
@@ -95,7 +95,7 @@ const Header = () => {
                 activeTeam_.collaboratorsData
                   ?.filter((c: TEAM) => c.collaboratorEmail !== user?.email)
                   .slice(0, 2)
-                  .map(({ c, idx }: TEAM) => (
+                  .map((c: TEAM, idx: number) => (
                     <div
                       key={c.collaboratorEmail}
                       className={`-ml-4 z-${10 - idx}`}
@@ -105,7 +105,7 @@ const Header = () => {
                         alt={c.collaboratorName ?? "Unknown User"}
                         width={36}
                         height={36}
-                        className="rounded-full border-2 border-inherit shadow-sm"
+                        className="rounded-full border-2 border-background shadow-sm"
                       />
                     </div>
                   ))}
