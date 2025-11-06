@@ -57,13 +57,17 @@ const Header = () => {
         <div className="flex items-center gap-2">
           {(pathname === "/dashboard/files" ||
             pathname === "/dashboard/archieved") && (
-            <div className="flex gap-2 items-center px-2">
-              <Search className="h-4 w-4 absolute ml-2 " />
+            <div className="hidden md:flex gap-2 items-center md:px-2">
+              <Search className="h-4 w-4 absolute ml-2" />
               <Input
                 placeholder="Search files..."
                 className="relative border rounded-md pl-7"
               />
             </div>
+          )}
+          {(pathname === "/dashboard/files" ||
+            pathname === "/dashboard/archieved") && (
+            <Search className="h-7 w-7 flex md:hidden" />
           )}
 
           <div className="flex flex-row gap-x-3 items-center">

@@ -18,10 +18,10 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { useKindeBrowserClient } from "@kinde-oss/kinde-auth-nextjs";
 import Image from "next/image";
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import { ChevronDown, Link2, LockKeyhole } from "lucide-react";
+import { TeamContext } from "@/app/FilesListContext";
 
 type TeamInviteProps = {
   openInviteDialog: boolean;
@@ -34,11 +34,11 @@ const TeamInvite = ({
 }: TeamInviteProps) => {
   const [emailInput, setEmailInput] = useState("");
   const [errorMsg, setErrorMsg] = useState("");
-  const { user } = useKindeBrowserClient();
+  const { user } = useContext(TeamContext);
 
   return (
     <Dialog open={openInviteDialog} onOpenChange={setOpenInviteDialog}>
-      <DialogContent>
+      <DialogContent className="flex flex-col overflow-hidden px-4">
         <DialogHeader>
           <DialogTitle>Invite People to Amata Team</DialogTitle>
           <DialogDescription className="sr-only">
@@ -49,11 +49,11 @@ const TeamInvite = ({
           <Label htmlFor="fileName" className="sr-only">
             Enter Email
           </Label>
-          <div className="flex relative">
+          <div className="flex relative ">
             <Input
               id="fileName"
               placeholder="Invite via Email address"
-              className="mt-2 relative h-11 py-2 "
+              className="mt-2 relative h-11 py-2 pr-20"
               onChange={(e) => setEmailInput(e.target.value)}
             />
             <Button className="absolute right-1 top-3 bottom-1 rounded-md bg-accent text-white hover:bg-accent/80 cursor-pointer">
@@ -130,12 +130,12 @@ const TeamInvite = ({
               </DropdownMenuContent>
             </DropdownMenu>
           </div>
-          <div className="flex flex-col ">
+          <div className="flex flex-col">
             <h2 className="font-semibold">General access</h2>
-            <div className="mt-2 flex items-center gap-1">
+            <div className="md:mt-2 flex items-center gap-1 w-fit">
               <LockKeyhole className="min-h-5" />
-              <div className="flex flex-row flex-1 justify-between items-center">
-                <div className="flex flex-col overflow-hidden">
+              <div className="flex flex-col md:flex-row flex-1 justify-between md:items-center">
+                <div className="flex flex-col">
                   <DropdownMenu>
                     <DropdownMenuTrigger className="flex flex-start whitespace-nowrap items-center w-fit cursor-pointer hover:bg-secondary rounded-md p-1 px-2">
                       Restricted
@@ -153,7 +153,7 @@ const TeamInvite = ({
                       </DropdownMenuItem>
                     </DropdownMenuContent>
                   </DropdownMenu>
-                  <h2 className="pl-2 text-[14px] text-foreground/75 truncate">
+                  <h2 className="pl-2 text-[14px] text-foreground/75 ">
                     Only people with access can open with the link
                   </h2>
                 </div>
@@ -181,11 +181,11 @@ const TeamInvite = ({
             </div>
           </div>
         </div>
-        <DialogFooter className="flex justify-between">
+        <DialogFooter className="flex flex-row justify-end sm:justify-between">
           <Button
             type="button"
             variant="secondary"
-            className="px-3 py-1 rounded-full border cursor-pointer"
+            className="px-3 py-1 rounded-full border cursor-pointer w-fit"
           >
             <Link2 /> Copy Link
           </Button>
@@ -193,7 +193,7 @@ const TeamInvite = ({
             <Button
               type="button"
               variant="secondary"
-              className="px-5 text-white py-1 rounded-full bg-accent hover:bg-accent/80 cursor-pointer"
+              className="px-5 text-white py-1 rounded-full bg-accent hover:bg-accent/80 cursor-pointer w-fit"
             >
               Done
             </Button>
