@@ -5,24 +5,33 @@ export const createTeam = mutation({
   args: {
     teamName: v.string(),
     createdBy: v.string(),
-    collaborators: v.optional(v.array(v.string())),
+    collaborators: v.optional(
+      v.array(
+        v.object({
+          email: v.string(),
+          role: v.union(v.literal("Editor"), v.literal("Viewer")),
+        })
+      )
+    ),
   },
   handler: async (ctx, args) => {
+    // Create the team
     const team = await ctx.db.insert("teams", {
       teamName: args.teamName,
       createdBy: args.createdBy,
-      collaborators: [args.createdBy],
+      collaborators: [{ email: args.createdBy, role: "Editor" }],
     });
 
-    // Create pending invites for each collaborator email
+    // Send invites if any
     if (args.collaborators?.length) {
-      for (const email of args.collaborators) {
+      for (const collaborator of args.collaborators) {
         await ctx.db.insert("teamInvites", {
           teamId: team,
-          email,
+          email: collaborator.email,
           invitedBy: args.createdBy,
           status: "pending",
           invitedAt: Date.now(),
+          role: collaborator.role,
         });
       }
     }
@@ -34,37 +43,38 @@ export const createTeam = mutation({
 export const getTeam = query({
   args: { email: v.string() },
   handler: async (ctx, args) => {
-    // 1. teams created by this user
     const teams = await ctx.db
       .query("teams")
-      .filter((q) => q.eq(q.field("createdBy"), args.email))
+      .filter((q) =>
+        q.or(
+          q.eq(q.field("createdBy"), args.email),
+          q.eq(q.field("collaborators.email"), args.email)
+        )
+      )
       .collect();
 
-    // 2. add collaborator details
+    // Add collaborator info
     const enrichedTeams = await Promise.all(
       teams.map(async (team) => {
-        const collaboratorsEmails = team.collaborators || [];
+        const collaborators = team.collaborators || [];
 
-        // Fetch user details for each collaborator
         const collaboratorsData = await Promise.all(
-          collaboratorsEmails.map(async (email: string) => {
+          collaborators.map(async (collab: { email: string; role: string }) => {
             const user = await ctx.db
               .query("user")
-              .filter((q) => q.eq(q.field("email"), email))
+              .filter((q) => q.eq(q.field("email"), collab.email))
               .first();
 
             return {
-              collaboratorEmail: email,
+              collaboratorEmail: collab.email,
+              collaboratorRole: collab.role,
               collaboratorName: user?.name || "Unknown User",
               collaboratorImage: user?.image || "/user.webp",
             };
           })
         );
 
-        return {
-          ...team,
-          collaboratorsData,
-        };
+        return { ...team, collaboratorsData };
       })
     );
 
@@ -87,15 +97,22 @@ export const respondToInvite = mutation({
       acceptedAt: args.response === "accepted" ? Date.now() : undefined,
     });
 
-    // If accepted, add to team's collaborator list
+    // If accepted, add collaborator object (email + role)
     if (args.response === "accepted") {
       const team = await ctx.db.get(invite.teamId);
       if (team) {
-        await ctx.db.patch(invite.teamId, {
-          collaborators: [
-            ...new Set([...(team.collaborators || []), invite.email]),
-          ],
-        });
+        const exists = team.collaborators?.some(
+          (c: { email: string }) => c.email === invite.email
+        );
+
+        if (!exists) {
+          await ctx.db.patch(invite.teamId, {
+            collaborators: [
+              ...(team.collaborators || []),
+              { email: invite.email, role: invite.role || "Viewer" },
+            ],
+          });
+        }
       }
     }
 

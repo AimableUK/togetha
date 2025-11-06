@@ -65,8 +65,19 @@ const SideNavTopSection = ({ user, setActiveTeamInfo }: any) => {
   } = useContext(TeamContext);
   const isMobile = useIsMobile();
 
+  useEffect(() => {
+    if (activeTeam_?._id) {
+      localStorage.setItem("activeTeamId", activeTeam_._id);
+    }
+  }, [activeTeam_]);
+
   const menu = [
-    { id: 1, name: "Create Team", path: "/teams/create", icon: Users },
+    {
+      id: 1,
+      name: "Create Team",
+      path: "/dashboard/teams/create",
+      icon: Users,
+    },
     { id: 2, name: "Settings", path: "/settings", icon: Settings },
   ];
 
@@ -162,7 +173,9 @@ const SideNavTopSection = ({ user, setActiveTeamInfo }: any) => {
 
               {/* Text + Chevron container */}
               <div className="flex items-center justify-between flex-1 min-w-0">
-                <span className="truncate w-fit">{activeTeam_?.teamName}</span>
+                <span className="truncate w-fit">
+                  {activeTeam_?.teamName || "Select a Team"}
+                </span>
                 <ChevronDown className="ml-2 shrink-0" />
               </div>
             </div>

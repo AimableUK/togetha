@@ -25,6 +25,22 @@ export interface TEAM {
   collaboratorImage?: string;
 }
 
+export interface TEAMINVITES {
+  _id: string;
+  teamId: string;
+  email: string;
+  invitedBy: string;
+  status: "pending" | "accepted" | "declined";
+  invitedAt: number;
+  acceptedAt?: number;
+  role: "Editor" | "Viewer";
+
+  // Added from enrichment
+  inviterName: string;
+  inviterImage: string;
+  teamName: string;
+}
+
 
 export const pageMetadata = {
   landing: {
@@ -292,17 +308,3 @@ export const faqData: FAQ[] = [
 ];
 
 
-export interface TEAMINVITES {
-  _id: string;
-  teamId: string;
-  email: string;
-  invitedBy: string;
-  status: "pending" | "accepted" | "declined";
-  invitedAt: number;
-  acceptedAt?: number;
-
-  // Added from enrichment
-  inviterName: string;
-  inviterImage: string;
-  teamName: string;
-}

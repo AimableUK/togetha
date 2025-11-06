@@ -45,11 +45,32 @@ const DashboardLayout = ({
   );
 
   useEffect(() => {
-    if (teams?.length) {
-      setActiveTeam_(teams[0]);
+    if (teams === undefined) return;
+    if (teams.length) {
+      const savedTeamId = localStorage.getItem("activeTeamId");
+      let teamToSet = teams[0]; // default fallback
+
+      if (savedTeamId) {
+        const found = teams.find((t) => t._id === savedTeamId);
+        if (found) {
+          teamToSet = found;
+        } else {
+          localStorage.setItem("activeTeamId", teamToSet._id);
+        }
+      } else {
+        localStorage.setItem("activeTeamId", teamToSet._id);
+      }
+
+      setActiveTeam_(teamToSet);
       setTeamList_(teams);
-    } else if (teams && !teams.length && !pathname.includes("teams/create")) {
-      router.push("/dashboard/getstarted?mode=onboarding");
+    } else {
+      localStorage.removeItem("activeTeamId");
+      setActiveTeam_(null);
+      setTeamList_(null);
+
+      if (!pathname.includes("teams/create")) {
+        router.push("/dashboard/getstarted?mode=onboarding");
+      }
     }
   }, [teams, pathname, router]);
 
@@ -71,7 +92,7 @@ const DashboardLayout = ({
   }
 
   // Routes that should NOT show layout
-  const noLayoutRoutes = ["/dashboard/getstarted"];
+  const noLayoutRoutes = ["/dashboard/getstarted", "/dashboard/teams/create"];
   const hideLayout = noLayoutRoutes.some((route) => pathname.startsWith(route));
 
   return (
@@ -80,6 +101,7 @@ const DashboardLayout = ({
         user,
         isMobile,
         teamList_,
+        setTeamList_,
         activeTeam_,
         setActiveTeam_,
         collapseSidebar_,

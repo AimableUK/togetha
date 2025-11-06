@@ -1,12 +1,12 @@
 "use client";
 
+import { TeamContext } from "@/app/FilesListContext";
 import { validateName } from "@/app/Schema/schema";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { api } from "@/convex/_generated/api";
-import { useKindeBrowserClient } from "@kinde-oss/kinde-auth-nextjs";
 import { useMutation } from "convex/react";
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { toast } from "sonner";
 
 export default function StepTeamSetup() {
@@ -14,33 +14,37 @@ export default function StepTeamSetup() {
   const [errorMsg, setErrorMsg] = useState("");
 
   const createTeam = useMutation(api.teams.createTeam);
-  const { user }: any = useKindeBrowserClient();
-  const createNewTeam = () => {
+  const { user, setActiveTeam_, setTeamList_ } = useContext(TeamContext);
+
+  const createNewTeam = async () => {
     const error = validateName(teamName);
     if (error) {
       setErrorMsg(error);
       return;
     }
 
-    const promise = createTeam({
-      teamName: teamName,
-      createdBy: user?.email,
-    });
+    try {
+      const newTeam: any = await createTeam({
+        teamName,
+        createdBy: user?.email,
+      });
+      setTeamName("");
 
-    toast.promise(promise, {
-      loading: "Creating Team...",
-      success: () => ({
-        message: "Team Created",
-        description: `${teamName} created! Click Next to Continue.`,
-      }),
-      error: (error) => ({
-        message: "Error",
-        description:
-          error?.response?.data?.detail ||
-          "Failed to Create team, Please Try again later.",
-      }),
-    });
-    setErrorMsg("");
+      setActiveTeam_(newTeam);
+      localStorage.setItem("activeTeamId", newTeam._id);
+      setTeamList_((prev: any) => (prev ? [...prev, newTeam] : [newTeam]));
+
+      setTeamName("");
+      setErrorMsg("");
+
+      toast.success(`${teamName} Team created successfully!, Click Next`);
+    } catch (err: any) {
+      toast.error(
+        err?.response?.data?.detail ||
+          "Failed to create team, please try again later."
+      );
+      console.error("Create Team Error:", err);
+    }
   };
 
   return (

@@ -1,6 +1,7 @@
 "use client";
 
 import { TeamContext } from "@/app/FilesListContext";
+import { aOrAn } from "@/app/hooks/useReader";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { api } from "@/convex/_generated/api";
@@ -109,8 +110,10 @@ const NotificationsClient = () => {
                   </h2>
                 </div>
                 <p className="text-primary/90">
-                  {update.inviterName} invited you to join{" "}
-                  <strong>{update.teamName}</strong>
+                  {update.inviterName} invited you to join&nbsp;
+                  <strong>{update.teamName}</strong> as {aOrAn(update.role)}
+                  &nbsp;
+                  <strong>{update.role}</strong>
                 </p>
                 <div className="flex flex-row gap-x-1 mt-1">
                   <Button

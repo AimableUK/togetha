@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
@@ -34,6 +34,7 @@ import StepCreateFileReal from "./_components/steps/onboarding/StepCreateFile";
 import StepInviteMembersReal from "./_components/steps/onboarding/StepInviteMembers";
 import StepCollaborateReal from "./_components/steps/onboarding/StepCollaborate";
 import { useRouter, useSearchParams } from "next/navigation";
+import { TeamContext } from "@/app/FilesListContext";
 
 const steps = [
   { title: "Team SetUp", icon: BookUser },
@@ -44,6 +45,7 @@ const steps = [
 
 const GetStarted = () => {
   const [currentStep, setCurrentStep] = useState(1);
+  const { activeTeam_ } = useContext(TeamContext);
 
   const searchParams = useSearchParams();
   const mode = searchParams.get("mode") || "guide";
@@ -152,6 +154,7 @@ const GetStarted = () => {
           <Button
             variant="outline"
             onClick={handleNext}
+            disabled={!activeTeam_}
             className="cursor-pointer"
           >
             {currentStep === steps.length ? "Go to Dashboard" : "Next"}
