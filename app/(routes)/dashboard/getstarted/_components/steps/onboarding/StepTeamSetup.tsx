@@ -6,10 +6,15 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { api } from "@/convex/_generated/api";
 import { useMutation } from "convex/react";
+import { Users } from "lucide-react";
 import { useContext, useState } from "react";
 import { toast } from "sonner";
 
-export default function StepTeamSetup() {
+interface TeamSetUpProps {
+  handleContinue: () => void;
+}
+
+export default function StepTeamSetup({ handleContinue }: TeamSetUpProps) {
   const [teamName, setTeamName] = useState("");
   const [errorMsg, setErrorMsg] = useState("");
 
@@ -37,7 +42,8 @@ export default function StepTeamSetup() {
       setTeamName("");
       setErrorMsg("");
 
-      toast.success(`${teamName} Team created successfully!, Click Next`);
+      toast.success(`${teamName} Team created successfully!`);
+      handleContinue();
     } catch (err: any) {
       toast.error(
         err?.response?.data?.detail ||
@@ -62,6 +68,7 @@ export default function StepTeamSetup() {
           placeholder="Team Name"
           className="mt-3"
           onChange={(e) => setTeamName(e.target.value)}
+          onKeyDown={(e) => e.key === "Enter" && createNewTeam()}
         />
         {errorMsg && (
           <p className="text-red-300 font-semibold text-sm mt-2">{errorMsg}</p>
@@ -72,6 +79,7 @@ export default function StepTeamSetup() {
         className="bg-accent dark:text-gray-100 hover:bg-[#0742a2] cursor-pointer"
         onClick={() => createNewTeam()}
       >
+        <Users />
         Create Team
       </Button>
     </div>

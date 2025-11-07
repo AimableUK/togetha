@@ -8,10 +8,15 @@ import { Label } from "@/components/ui/label";
 import { api } from "@/convex/_generated/api";
 import { useKindeBrowserClient } from "@kinde-oss/kinde-auth-nextjs";
 import { useMutation } from "convex/react";
+import { FilePlus } from "lucide-react";
 import { useContext, useState } from "react";
 import { toast } from "sonner";
 
-export default function StepCreateFile() {
+interface FileSetUpProps {
+  handleContinue: () => void;
+}
+
+export default function StepCreateFile({ handleContinue }: FileSetUpProps) {
   const [fileInput, setFileInput] = useState("");
   const [errorMsg, setErrorMsg] = useState("");
   const { user } = useKindeBrowserClient();
@@ -32,15 +37,18 @@ export default function StepCreateFile() {
       archieve: false,
       document: "",
       whiteboard: "",
-      editedAt: Date.now()
+      editedAt: Date.now(),
     });
 
     toast.promise(promise, {
-      loading: "Creating...",
-      success: () => ({
-        message: "File Created",
-        description: `${fileInput} created!, Click Next to Continue.`,
-      }),
+      loading: "Creating file...",
+      success: () => {
+        handleContinue();
+        return {
+          message: "File Created",
+          description: `${fileInput} created!, Click Next to Continue.`,
+        };
+      },
       error: (error) => ({
         message: "Error",
         description:
@@ -57,15 +65,16 @@ export default function StepCreateFile() {
       <p className="text-sm text-muted-foreground">
         Start your first project file to begin working on ideas.
       </p>
-      <div className="flex-1 gap-2 flex flex-col items-center">
+      <div className="flex-1 gap-2 flex flex-col items-center w-full">
         <Label htmlFor="fileName" className="sr-only">
           Link
         </Label>
         <Input
           id="fileName"
           placeholder="Enter File Name"
-          className="mt-2"
+          className="mt-2 w-3/4 md:w-2/4 "
           onChange={(e) => setFileInput(e.target.value)}
+          onKeyDown={(e) => e.key === "Enter" && onFileCreate()}
         />
         {errorMsg && (
           <p className="text-red-300 font-semibold text-sm">{errorMsg}</p>
@@ -76,7 +85,7 @@ export default function StepCreateFile() {
           disabled={!(fileInput && fileInput.length > 2)}
           onClick={onFileCreate}
         >
-          Create File
+          <FilePlus /> Create File
         </Button>
       </div>
     </div>

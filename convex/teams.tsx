@@ -120,6 +120,111 @@ export const respondToInvite = mutation({
   },
 });
 
+export const addCollaborator = mutation({
+  args: {
+    teamId: v.id("teams"),
+    email: v.string(),
+    role: v.union(v.literal("Editor"), v.literal("Viewer")),
+    invitedBy: v.string(),
+  },
+  handler: async (ctx, args) => {
+    const team = await ctx.db.get(args.teamId);
+    if (!team) throw new Error("Team not found");
+
+    const alreadyCollaborator = team.collaborators?.some(
+      (c: any) => c.email.toLowerCase() === args.email.toLowerCase()
+    );
+    if (alreadyCollaborator) {
+      throw new Error("This collaborator is already part of the team.");
+    }
+
+    const alreadyInvited = await ctx.db
+      .query("teamInvites")
+      .filter((q) =>
+        q.and(
+          q.eq(q.field("teamId"), args.teamId),
+          q.eq(q.field("email"), args.email)
+        )
+      )
+      .first();
+
+    if (alreadyInvited) {
+      throw new Error("This collaborator is already invited and pending.");
+    }
+
+    await ctx.db.insert("teamInvites", {
+      teamId: args.teamId,
+      email: args.email,
+      invitedBy: args.invitedBy,
+      role: args.role,
+      status: "pending",
+      invitedAt: Date.now(),
+    });
+
+    return { success: true, email: args.email, status: "pending" };
+  },
+});
+
+export const addCollaborators = mutation({
+  args: {
+    teamId: v.id("teams"),
+    collaborators: v.array(
+      v.object({
+        email: v.string(),
+        role: v.union(v.literal("Editor"), v.literal("Viewer")),
+      })
+    ),
+    invitedBy: v.string(),
+  },
+  handler: async (ctx, args) => {
+    const team = await ctx.db.get(args.teamId);
+    if (!team) throw new Error("Team not found");
+
+    const results: { email: string; status: string }[] = [];
+
+    for (const collab of args.collaborators) {
+      const emailLower = collab.email.toLowerCase();
+
+      const alreadyCollaborator = team.collaborators?.some(
+        (c: any) => c.email.toLowerCase() === emailLower
+      );
+      if (alreadyCollaborator) {
+        results.push({ email: collab.email, status: "Already collaborator" });
+        continue;
+      }
+
+      // Skip if already pending
+      const alreadyInvited = await ctx.db
+        .query("teamInvites")
+        .filter((q) =>
+          q.and(
+            q.eq(q.field("teamId"), args.teamId),
+            q.eq(q.field("email"), collab.email)
+          )
+        )
+        .first();
+      if (alreadyInvited) {
+        results.push({ email: collab.email, status: "Already invited" });
+        continue;
+      }
+
+      // Add to teamInvites only
+      await ctx.db.insert("teamInvites", {
+        teamId: args.teamId,
+        email: collab.email,
+        invitedBy: args.invitedBy,
+        role: collab.role,
+        status: "pending",
+        invitedAt: Date.now(),
+      });
+
+      results.push({ email: collab.email, status: "pending" });
+    }
+
+    return { success: true, results };
+  },
+});
+
 export const renameTeam = mutation({
   args: {
     _id: v.id("teams"),
@@ -137,6 +242,15 @@ export const deleteTeam = mutation({
   },
   handler: async (ctx, args) => {
     const result = await ctx.db.delete(args._id);
+
+    await ctx.db
+      .query("teamInvites")
+      .filter((q) => q.eq(q.field("teamId"), args._id))
+      .collect()
+      .then((invites) => {
+        invites.forEach((invite) => ctx.db.delete(invite._id));
+      });
+
     return result;
   },
 });

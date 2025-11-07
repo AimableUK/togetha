@@ -12,26 +12,78 @@ import {
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
-import { UserPlus, X } from "lucide-react";
+import { SendHorizontal, UserPlus, X } from "lucide-react";
 import { validateEmail } from "@/app/Schema/schema";
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { useMutation } from "convex/react";
 import { api } from "@/convex/_generated/api";
-import { useKindeBrowserClient } from "@kinde-oss/kinde-auth-nextjs";
 import { Separator } from "@/components/ui/separator";
+import { toast } from "sonner";
+import { TeamContext } from "@/app/FilesListContext";
 
 export default function StepInviteMembers() {
-  const [teamName, setTeamName] = useState("");
   const [errorMsg, setErrorMsg] = useState("");
+  const [successMsg, setSuccessMsg] = useState("");
 
-  const createTeam = useMutation(api.teams.createTeam);
-  const { user }: any = useKindeBrowserClient();
+  const addCollabs = useMutation(api.teams.addCollaborators);
+  const { user, activeTeam_ } = useContext(TeamContext);
 
   const [emailInput, setEmailInput] = useState("");
   const [selectedRole, setSelectedRole] = useState<"Editor" | "Viewer">();
   const [invitedEmails, setInvitedEmails] = useState<
     { email: string; role: string }[]
   >([]);
+
+  const sendInvites = async () => {
+    if (!invitedEmails.length) {
+      setErrorMsg("No collaborators to invite");
+      return;
+    }
+
+    const promise = addCollabs({
+      teamId: activeTeam_._id,
+      collaborators: invitedEmails.map((c) => ({
+        email: c.email,
+        role: c.role as "Editor" | "Viewer",
+      })),
+      invitedBy: user.email,
+    });
+
+    try {
+      const res = await promise;
+
+      const added = res.results.filter((r) => r.status === "pending").length;
+      const alreadyInvited = res.results.filter(
+        (r) => r.status === "Already invited"
+      );
+      const alreadyCollaborator = res.results.filter(
+        (r) => r.status === "Already collaborator"
+      );
+
+      let description = `${added} collaborator(s) invited successfully.`;
+      if (alreadyInvited.length) {
+        description += `\n${alreadyInvited.map((r) => r.email).join(", ")} already invited.`;
+      }
+      if (alreadyCollaborator.length) {
+        description += `\n${alreadyCollaborator.map((r) => r.email).join(", ")} already a collaborator.`;
+      }
+
+      toast("Invite Results", {
+        description,
+      });
+
+      setInvitedEmails([]);
+      setSuccessMsg("Invite process completed! Click Next to Continue.");
+    } catch (err: any) {
+      toast.error("Invite Failed", {
+        description:
+          err?.message
+            ?.split("Uncaught Error: ")[1]
+            ?.split("at handler")[0]
+            ?.trim() || "Something went wrong, please try again.",
+      });
+    }
+  };
 
   const handleAddInvite = () => {
     const trimmed = emailInput.trim().toLowerCase();
@@ -85,6 +137,13 @@ export default function StepInviteMembers() {
             </p>
           </div>
         )}
+        {successMsg && (
+          <div className="rounded-md py-2 px-3 bg-secondary flex items-center border border-green-400">
+            <p className="text-green-300 font-semibold text-sm text-center">
+              {successMsg}
+            </p>
+          </div>
+        )}
         <Label htmlFor="fileName" className="sr-only">
           Enter Email
         </Label>
@@ -103,7 +162,8 @@ export default function StepInviteMembers() {
               disabled={!!validateEmail(emailInput)}
               className="cursor-pointer disabled:cursor-none absolute right-1 top-3 bottom-1 rounded-md bg-accent text-white hover:bg-accent/80 active:bg-accent/60"
             >
-              <UserPlus className="h-4 w-4 md:mr-1" /> <span className="hidden md:block">Add</span>
+              <UserPlus className="h-4 w-4 md:mr-1" />{" "}
+              <span className="hidden md:block">Add</span>
             </Button>
           </div>
           <Select
@@ -156,11 +216,11 @@ export default function StepInviteMembers() {
       </div>
 
       <Button
-        disabled={!(invitedEmails && invitedEmails?.length > 1)}
+        disabled={!(invitedEmails && invitedEmails?.length > 0)}
         className="bg-accent dark:text-gray-100 hover:bg-[#0742a2] cursor-pointer"
-        // onClick={() => createNewTeam()}
+        onClick={sendInvites}
       >
-        Create Invite
+        <SendHorizontal className="h-4 w-4 md:mr-1" /> Send Invite
       </Button>
     </div>
   );

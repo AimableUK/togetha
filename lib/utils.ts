@@ -23,6 +23,8 @@ export interface TEAM {
   collaboratorEmail?: string;
   collaboratorName?: string;
   collaboratorImage?: string;
+  collaboratorRole?: string;
+  status?: "pending" | "accepted" | "declined";
 }
 
 export interface TEAMINVITES {

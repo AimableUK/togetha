@@ -61,6 +61,12 @@ const GetStarted = () => {
     }
   };
 
+  const handleContinue = () => {
+    if (currentStep < steps.length) {
+      setCurrentStep((prev) => prev + 1);
+    }
+  };
+
   return (
     <div className="h-[calc(100vh-112px)] md:my-14 m-5 md:mx-20">
       <Stepper
@@ -126,11 +132,19 @@ const GetStarted = () => {
 
         <StepperPanel className="text-sm flex-1">
           <StepperContent value={1}>
-            {isGuide ? <StepTeamSetup /> : <StepTeamSetupReal />}
+            {isGuide ? (
+              <StepTeamSetup />
+            ) : (
+              <StepTeamSetupReal handleContinue={handleContinue} />
+            )}
           </StepperContent>
 
           <StepperContent value={2}>
-            {isGuide ? <StepCreateFile /> : <StepCreateFileReal />}
+            {isGuide ? (
+              <StepCreateFile />
+            ) : (
+              <StepCreateFileReal handleContinue={handleContinue} />
+            )}
           </StepperContent>
 
           <StepperContent value={3}>
