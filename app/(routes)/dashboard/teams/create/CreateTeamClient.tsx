@@ -153,7 +153,7 @@ const CreateTeamClient = () => {
         <div className="mt-3 md:mt-7 w-full md:w-2/5 flex flex-col space-y-3">
           {errorMsg && (
             <div className="rounded-md py-2 px-3 bg-secondary flex items-center border border-red-400">
-              <p className="text-red-300 font-semibold text-sm text-center">
+              <p className="text-red-500 dark:text-red-300 font-semibold text-sm text-center">
                 {errorMsg}
               </p>
             </div>

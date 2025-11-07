@@ -77,7 +77,7 @@ export default function StepCreateFile({ handleContinue }: FileSetUpProps) {
           onKeyDown={(e) => e.key === "Enter" && onFileCreate()}
         />
         {errorMsg && (
-          <p className="text-red-300 font-semibold text-sm">{errorMsg}</p>
+          <p className="text-red-500 dark:text-red-300 font-semibold text-sm">{errorMsg}</p>
         )}
         <Button
           type="submit"

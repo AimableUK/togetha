@@ -225,6 +225,64 @@ export const addCollaborators = mutation({
   },
 });
 
+export const updateCollaboratorRole = mutation({
+  args: {
+    teamId: v.id("teams"),
+    email: v.string(),
+    role: v.union(v.literal("Editor"), v.literal("Viewer")),
+  },
+  handler: async (ctx, args) => {
+    const team = await ctx.db.get(args.teamId);
+    if (!team) throw new Error("Team not found");
+
+    const collaborators = team.collaborators || [];
+
+    const index = collaborators.findIndex(
+      (c: any) => c.email.toLowerCase() === args.email.toLowerCase()
+    );
+
+    if (index === -1) throw new Error("Collaborator not found in team");
+
+    collaborators[index].role = args.role;
+
+    await ctx.db.patch(args.teamId, { collaborators });
+
+    return { success: true, email: args.email, role: args.role };
+  },
+});
+
+export const removeCollaborator = mutation({
+  args: {
+    teamId: v.id("teams"),
+    email: v.string(),
+  },
+  handler: async (ctx, args) => {
+    const team = await ctx.db.get(args.teamId);
+    if (!team) throw new Error("Team not found");
+
+    const updatedCollaborators = (team.collaborators || []).filter(
+      (c: any) => c.email.toLowerCase() !== args.email.toLowerCase()
+    );
+
+    await ctx.db.patch(args.teamId, {
+      collaborators: updatedCollaborators,
+    });
+
+    const allInvites = await ctx.db.query("teamInvites").collect();
+
+    for (const invite of allInvites) {
+      if (
+        invite.teamId === args.teamId &&
+        invite.email.toLowerCase() === args.email.toLowerCase()
+      ) {
+        await ctx.db.delete(invite._id);
+      }
+    }
+
+    return { success: true, email: args.email };
+  },
+});
+
 export const renameTeam = mutation({
   args: {
     _id: v.id("teams"),

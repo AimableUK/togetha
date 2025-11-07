@@ -6,6 +6,7 @@ import {
   ListCollapse,
   LogOut,
   Settings,
+  SunMoon,
   Trash2,
   Users,
   X,
@@ -39,6 +40,7 @@ import { Id } from "@/convex/_generated/dataModel";
 import DeleteDialog from "./DeleteDialog";
 import { validateName } from "@/app/Schema/schema";
 import { TEAM } from "@/lib/utils";
+import { ModeToggle } from "@/components/theme/ModeToggle";
 
 export interface DeleteData {
   id: string;
@@ -163,7 +165,7 @@ const SideNavTopSection = ({ user, setActiveTeamInfo }: any) => {
       <div className="flex flex-col">
         <Popover>
           <PopoverTrigger className="w-full relative">
-            <div className="flex items-center md:w-fit max-w-[88%] md:max-w-full gap-x-2 hover:bg-gray-300 dark:hover:bg-gray-800 p-1 md:w-full rounded-md cursor-pointer">
+            <div className="flex items-center max-w-[88%] md:max-w-full gap-x-2 hover:bg-gray-300 dark:hover:bg-gray-800 p-1 md:w-full rounded-md cursor-pointer">
               <Image
                 src="/logo.png"
                 alt="Togetha logo"
@@ -192,7 +194,7 @@ const SideNavTopSection = ({ user, setActiveTeamInfo }: any) => {
               {teamList_?.map((team: TEAM) => (
                 <div
                   key={team._id}
-                  className={` ${activeTeam_?._id == team._id && "bg-accent text-foreground/90"} p-2 hover:bg-accent/30 hover:text-gray-100 active:bg-accent/80 rounded-md flex flex-row justify-between`}
+                  className={` ${activeTeam_?._id == team._id && "bg-accent text-foreground/90"} text-gray-100 p-2 hover:bg-accent/90 dark:hover:bg-accent/60 active:bg-accent/80 dark:active:bg-accent/40 hover:text-gray-100 rounded-md flex flex-row justify-between`}
                 >
                   <div className="flex items-center gap-2 w-[250px] overflow-hidden">
                     {renameTeam === team._id ? (
@@ -276,6 +278,14 @@ const SideNavTopSection = ({ user, setActiveTeamInfo }: any) => {
                   )}
                 </button>
               ))}
+              <div className="flex flex-row justify-between items-center px-2 py-1 cursor-pointer rounded-md hover:bg-gray-300 dark:hover:bg-gray-800 font-semibold trans">
+                <button className="disabled:opacity-65 flex items-center gap-x-1 cursor-pointer">
+                  <SunMoon />
+                  Change Theme
+                </button>
+                <ModeToggle />
+              </div>
+
               <LogoutLink>
                 <h2 className="flex items-center gap-x-1 p-2 cursor-pointer rounded-md hover:bg-gray-300 dark:hover:bg-gray-800 font-semibold trans">
                   <LogOut className="h-5 w-5" />

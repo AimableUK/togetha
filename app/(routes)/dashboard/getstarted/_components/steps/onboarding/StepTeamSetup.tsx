@@ -71,7 +71,7 @@ export default function StepTeamSetup({ handleContinue }: TeamSetUpProps) {
           onKeyDown={(e) => e.key === "Enter" && createNewTeam()}
         />
         {errorMsg && (
-          <p className="text-red-300 font-semibold text-sm mt-2">{errorMsg}</p>
+          <p className="text-red-500 dark:text-red-300 font-semibold text-sm mt-2">{errorMsg}</p>
         )}
       </div>
       <Button

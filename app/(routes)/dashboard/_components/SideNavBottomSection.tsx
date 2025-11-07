@@ -99,7 +99,7 @@ const SideNavBottomSection = ({
               onChange={(e) => setFileInput(e.target.value)}
             />
             {errorMsg && (
-              <p className="text-red-300 font-semibold text-sm mt-2">
+              <p className="text-red-500 dark:text-red-300 font-semibold text-sm mt-2">
                 {errorMsg}
               </p>
             )}

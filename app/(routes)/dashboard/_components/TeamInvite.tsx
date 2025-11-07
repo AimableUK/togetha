@@ -36,6 +36,7 @@ import { validateEmail } from "@/app/Schema/schema";
 import { useMutation } from "convex/react";
 import { api } from "@/convex/_generated/api";
 import { ExternalToast, toast } from "sonner";
+import { aOrAn } from "@/app/hooks/useReader";
 
 type TeamInviteProps = {
   openInviteDialog: boolean;
@@ -46,12 +47,14 @@ const TeamInvite = ({
   openInviteDialog,
   setOpenInviteDialog,
 }: TeamInviteProps) => {
-  const { user, activeTeam_ } = useContext(TeamContext);
+  const { user, activeTeam_, setActiveTeam_ } = useContext(TeamContext);
   const [emailInput, setEmailInput] = useState("");
   const [errorMsg, setErrorMsg] = useState("");
   const [selectedRole, setSelectedRole] = useState<"Editor" | "Viewer">();
 
   const addCollab = useMutation(api.teams.addCollaborator);
+  const updateCollabRole = useMutation(api.teams.updateCollaboratorRole);
+  const removeCollab = useMutation(api.teams.removeCollaborator);
 
   const createInvite = async () => {
     const trimmed = emailInput.trim().toLowerCase();
@@ -110,6 +113,74 @@ const TeamInvite = ({
     }
   };
 
+  const handleChangeRole = async (
+    email: string,
+    newRole: "Editor" | "Viewer"
+  ) => {
+    const promise = updateCollabRole({
+      teamId: activeTeam_._id,
+      email,
+      role: newRole,
+    });
+
+    toast.promise(promise, {
+      loading: `Updating role for ${email}...`,
+      success: (res) => ({
+        message: "Role Updated",
+        description: `${res.email} is set to ${res.role} Role`,
+      }),
+      error: (err) => ({
+        message: "Failed to update role",
+        description:
+          err?.message?.replace(/\[.*?\]/g, "").trim() ||
+          "Something went wrong, please try again.",
+      }),
+    });
+
+    await promise;
+
+    setActiveTeam_((prev: any) => {
+      if (!prev) return prev;
+      const updated = { ...prev };
+      updated.collaborators = updated.collaborators.map((c: any) =>
+        c.email === email ? { ...c, role: newRole } : c
+      );
+      return updated;
+    });
+  };
+
+  const handleRemoveCollaborator = async (email: string) => {
+    const promise = removeCollab({
+      teamId: activeTeam_._id,
+      email,
+    });
+
+    toast.promise(promise, {
+      loading: `Removing ${email}...`,
+      success: (res) => ({
+        message: "Collaborator Removed",
+        description: `${res.email} has been removed from the team`,
+      }),
+      error: (err) => ({
+        message: "Failed to remove collaborator",
+        description:
+          err?.message?.replace(/\[.*?\]/g, "").trim() ||
+          "Something went wrong, please try again.",
+      }),
+    });
+
+    await promise;
+
+    setActiveTeam_((prev: any) => {
+      if (!prev) return prev;
+      const updated = { ...prev };
+      updated.collaborators = updated.collaborators.filter(
+        (c: any) => c.email !== email
+      );
+      return updated;
+    });
+  };
+
   return (
     <Dialog open={openInviteDialog} onOpenChange={setOpenInviteDialog}>
       <DialogContent className="flex flex-col overflow-hidden px-4">
@@ -164,7 +235,7 @@ const TeamInvite = ({
           </div>
 
           {errorMsg && (
-            <p className="text-red-300 font-semibold text-sm mt-2">
+            <p className="text-red-500 dark:text-red-300 font-semibold text-sm mt-2">
               {errorMsg}
             </p>
           )}
@@ -224,28 +295,35 @@ const TeamInvite = ({
                     {/* Role select for confirmed collaborators */}
                     {c.status !== "pending" ? (
                       <div className="flex justify-end w-[140px] shrink-0">
-                        <Select
-                        // onValueChange={(value) =>
-                        //   handleChangeRole(
-                        //     c.collaboratorEmail,
-                        //     value as "Editor" | "Viewer"
-                        //   )
-                        // }
-                        >
-                          <SelectTrigger className="w-full">
-                            <SelectValue placeholder={c.collaboratorRole} />
-                          </SelectTrigger>
-                          <SelectContent>
-                            <SelectGroup>
-                              <SelectLabel>Role / Actions</SelectLabel>
-                              <SelectItem value="Viewer">Viewer</SelectItem>
-                              <SelectItem value="Editor">Editor</SelectItem>
-                              <SelectItem value="remove">
-                                Remove Collaborator
-                              </SelectItem>
-                            </SelectGroup>
-                          </SelectContent>
-                        </Select>
+                        <div className="flex justify-end w-[140px] shrink-0">
+                          <Select
+                            value={c.collaboratorRole}
+                            onValueChange={(value) => {
+                              if (value === "remove") {
+                                handleRemoveCollaborator(c.collaboratorEmail!);
+                              } else {
+                                handleChangeRole(
+                                  c.collaboratorEmail!,
+                                  value as "Editor" | "Viewer"
+                                );
+                              }
+                            }}
+                          >
+                            <SelectTrigger className="w-full">
+                              <SelectValue />
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectGroup>
+                                <SelectLabel>Role / Actions</SelectLabel>
+                                <SelectItem value="Viewer">Viewer</SelectItem>
+                                <SelectItem value="Editor">Editor</SelectItem>
+                                <SelectItem value="remove">
+                                  Remove Collaborator
+                                </SelectItem>
+                              </SelectGroup>
+                            </SelectContent>
+                          </Select>
+                        </div>
                       </div>
                     ) : (
                       // Pending collaborators

@@ -132,7 +132,7 @@ export default function StepInviteMembers() {
         <h2>Invite Collaborators (Optional)</h2>
         {errorMsg && (
           <div className="rounded-md py-2 px-3 bg-secondary flex items-center border border-red-400">
-            <p className="text-red-300 font-semibold text-sm text-center">
+            <p className="text-red-500 dark:text-red-300 font-semibold text-sm text-center">
               {errorMsg}
             </p>
           </div>
