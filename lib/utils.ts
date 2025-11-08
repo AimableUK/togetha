@@ -315,6 +315,146 @@ export const pageMetadata = {
       images: ["https://www.togetha-app.vercel.app/twitter-banner.png"],
     },
   },
+
+  terms: {
+    title: "Terms and Conditions - Togetha",
+    description:
+      "Read Togetha's Terms and Conditions to understand the rules, responsibilities, and acceptable use of our platform.",
+    openGraph: {
+      type: "website",
+      url: "https://www.togetha-app.vercel.app/legal/terms-and-conditions",
+      title: "Terms and Conditions - Togetha",
+      description:
+        "Read Togetha's Terms and Conditions to understand the rules, responsibilities, and acceptable use of our platform.",
+      images: [
+        {
+          url: "https://www.togetha-app.vercel.app/og-image.png",
+          width: 1200,
+          height: 630,
+          alt: "Terms and Conditions - Togetha",
+        },
+      ],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: "Terms and Conditions - Togetha",
+      description:
+        "Read Togetha's Terms and Conditions to understand the rules, responsibilities, and acceptable use of our platform.",
+      images: ["https://www.togetha-app.vercel.app/twitter-banner.png"],
+    },
+  },
+
+  privacy: {
+    title: "Privacy Policy - Togetha",
+    description:
+      "Learn how Togetha collects, uses, and protects your data to ensure a safe and transparent collaboration experience.",
+    openGraph: {
+      type: "website",
+      url: "https://www.togetha-app.vercel.app/legal/privacy-policy",
+      title: "Privacy Policy - Togetha",
+      description:
+        "Learn how Togetha collects, uses, and protects your data to ensure a safe and transparent collaboration experience.",
+      images: [
+        {
+          url: "https://www.togetha-app.vercel.app/og-image.png",
+          width: 1200,
+          height: 630,
+          alt: "Privacy Policy - Togetha",
+        },
+      ],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: "Privacy Policy - Togetha",
+      description:
+        "Learn how Togetha collects, uses, and protects your data to ensure a safe and transparent collaboration experience.",
+      images: ["https://www.togetha-app.vercel.app/twitter-banner.png"],
+    },
+  },
+
+  communityGuidelines: {
+    title: "Community Guidelines - Togetha",
+    description:
+      "Explore Togetha's Community Guidelines to foster a respectful, creative, and inclusive environment for all users.",
+    openGraph: {
+      type: "website",
+      url: "https://www.togetha-app.vercel.app/legal/community-guidelines",
+      title: "Community Guidelines - Togetha",
+      description:
+        "Explore Togetha's Community Guidelines to foster a respectful, creative, and inclusive environment for all users.",
+      images: [
+        {
+          url: "https://www.togetha-app.vercel.app/og-image.png",
+          width: 1200,
+          height: 630,
+          alt: "Community Guidelines - Togetha",
+        },
+      ],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: "Community Guidelines - Togetha",
+      description:
+        "Explore Togetha's Community Guidelines to foster a respectful, creative, and inclusive environment for all users.",
+      images: ["https://www.togetha-app.vercel.app/twitter-banner.png"],
+    },
+  },
+
+  contact: {
+    title: "Contact Us - Togetha",
+    description:
+      "Get in touch with the Togetha team for support, feedback, or partnership inquiries.",
+    openGraph: {
+      type: "website",
+      url: "https://www.togetha-app.vercel.app/support/contact",
+      title: "Contact Us - Togetha",
+      description:
+        "Get in touch with the Togetha team for support, feedback, or partnership inquiries.",
+      images: [
+        {
+          url: "https://www.togetha-app.vercel.app/og-image.png",
+          width: 1200,
+          height: 630,
+          alt: "Contact Us - Togetha",
+        },
+      ],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: "Contact Us - Togetha",
+      description:
+        "Get in touch with the Togetha team for support, feedback, or partnership inquiries.",
+      images: ["https://www.togetha-app.vercel.app/twitter-banner.png"],
+    },
+  },
+
+  helpCenter: {
+    title: "Help Center - Togetha",
+    description:
+      "Find answers to your questions, explore guides, and learn how to make the most of Togetha's features.",
+    openGraph: {
+      type: "website",
+      url: "https://www.togetha-app.vercel.app/support/help-center",
+      title: "Help Center - Togetha",
+      description:
+        "Find answers to your questions, explore guides, and learn how to make the most of Togetha's features.",
+      images: [
+        {
+          url: "https://www.togetha-app.vercel.app/og-image.png",
+          width: 1200,
+          height: 630,
+          alt: "Help Center - Togetha",
+        },
+      ],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: "Help Center - Togetha",
+      description:
+        "Find answers to your questions, explore guides, and learn how to make the most of Togetha's features.",
+      images: ["https://www.togetha-app.vercel.app/twitter-banner.png"],
+    },
+  },
 };
 
 export interface FAQ {
