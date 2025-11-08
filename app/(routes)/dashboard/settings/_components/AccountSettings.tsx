@@ -1,7 +1,11 @@
+import { TeamContext } from "@/app/FilesListContext";
+import { format } from "date-fns";
 import { User } from "lucide-react";
-import React from "react";
+import React, { useContext } from "react";
 
 const AccountSettings = () => {
+  const { userDetails_ } = useContext(TeamContext);
+
   return (
     <div className="space-y-8">
       <div>
@@ -19,6 +23,21 @@ const AccountSettings = () => {
         </h2>
 
         <div className="space-y-6">
+          {/* google name */}
+          <div>
+            <label className="block text-sm font-medium mb-2">Full Name</label>
+            <div className="flex items-center gap-2">
+              <input
+                type="email"
+                value={userDetails_?.name}
+                disabled
+                className="flex-1 px-4 py-2 border rounded-lg opacity-50 cursor-not-allowed"
+              />
+            </div>
+            <p className="text-xs opacity-50 mt-2">
+              Name from your Google account
+            </p>
+          </div>
           {/* Google Email */}
           <div>
             <label className="block text-sm font-medium mb-2">
@@ -27,7 +46,7 @@ const AccountSettings = () => {
             <div className="flex items-center gap-2">
               <input
                 type="email"
-                defaultValue="john@gmail.com"
+                value={userDetails_?.email}
                 disabled
                 className="flex-1 px-4 py-2 border rounded-lg opacity-50 cursor-not-allowed"
               />
@@ -49,23 +68,13 @@ const AccountSettings = () => {
         <div className="space-y-4">
           <div className="flex items-center justify-between py-3 border-b">
             <div>
-              <p className="text-sm opacity-60">Account Created</p>
-              <p className="font-medium">January 15, 2024</p>
-            </div>
-          </div>
-          <div className="flex items-center justify-between py-3 border-b">
-            <div>
-              <p className="text-sm opacity-60">Account Status</p>
-              <div className="flex items-center gap-2 mt-1">
-                <span className="w-2 h-2 rounded-full bg-green-500 opacity-80"></span>
-                <p className="font-medium">Active</p>
-              </div>
-            </div>
-          </div>
-          <div className="flex items-center justify-between py-3">
-            <div>
-              <p className="text-sm opacity-60">Last Login</p>
-              <p className="font-medium">Today at 2:30 PM</p>
+              <p className="text-sm opacity-60">Member Since</p>
+              <p className="font-medium">
+                {format(
+                  new Date(userDetails_?._creationTime ?? 0),
+                  "MMM d, yyyy"
+                )}
+              </p>
             </div>
           </div>
         </div>

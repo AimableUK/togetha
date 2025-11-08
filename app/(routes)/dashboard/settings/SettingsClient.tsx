@@ -15,7 +15,7 @@ const SettingsDashboard = () => {
     { id: "account", label: "Account", icon: User },
     { id: "notifications", label: "Notifications", icon: Bell },
     { id: "teams", label: "Teams", icon: Users },
-    { id: "privacy", label: "Privacy & Security", icon: Shield },
+    { id: "privacy", label: "Privacy", icon: Shield },
     { id: "preferences", label: "Preferences", icon: Settings },
   ];
 
@@ -25,7 +25,7 @@ const SettingsDashboard = () => {
         <div className="grid grid-cols-1 lg:grid-cols-5 gap-8">
           {/* Sidebar Navigation */}
           <aside className="lg:col-span-1">
-            <nav className="space-y-1 sticky top-24">
+            <nav className="space-y-1 sticky top-10">
               {tabs.map((tab) => {
                 const Icon = tab.icon;
                 return (

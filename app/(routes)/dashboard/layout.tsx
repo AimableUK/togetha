@@ -32,6 +32,7 @@ const DashboardLayout = ({
   const [teamList_, setTeamList_] = useState<TEAM[] | null>(null);
   const [userPlan_, setUserPlan_] = useState<USERPLAN>("PRO");
   const [updates_, setUpdates_] = useState<TEAMINVITES[]>([]);
+  const [userDetails_, setUserDetails_] = useState<string[]>([]);
 
   useEffect(() => {
     isMobile && setCollapseSidebar_(true);
@@ -112,6 +113,8 @@ const DashboardLayout = ({
         userPlan_,
         updates_,
         setUpdates_,
+        userDetails_,
+        setUserDetails_,
       }}
     >
       <UserSync />

@@ -11,7 +11,7 @@ export const UserSync = () => {
   const createUser = useMutation(api.user.createUser);
   const hasCreated = useRef(false);
 
-  const { setUpdates_ } = useContext(TeamContext);
+  const { setUpdates_, setUserDetails_ } = useContext(TeamContext);
 
   useEffect(() => {
     if (!user || hasCreated.current) return;
@@ -30,6 +30,7 @@ export const UserSync = () => {
           image: user.picture!,
         });
       }
+      setUserDetails_(existing);
 
       // 3. Check for pending team invites
       const pendingInvites = await convex.query(
