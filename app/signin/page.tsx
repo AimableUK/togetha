@@ -136,17 +136,6 @@ const SignInPage = () => {
                     </svg>
                     <span className="text-lg">Continue with Google</span>
                   </LoginLink>
-
-                  {/* Privacy Notice */}
-                  <div className="bg-muted border border-border rounded-xl p-4">
-                    <p className="text-sm text-muted-foreground leading-relaxed">
-                      <span className="font-semibold text-foreground">
-                        🔒 Secure Sign-In:
-                      </span>{" "}
-                      We'll redirect you to Google's secure login page. Your
-                      credentials are never shared with us.
-                    </p>
-                  </div>
                 </div>
 
                 {/* Terms */}

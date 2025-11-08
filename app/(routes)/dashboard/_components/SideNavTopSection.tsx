@@ -66,6 +66,8 @@ const SideNavTopSection = ({ user, setActiveTeamInfo }: any) => {
     setActiveTeam_,
   } = useContext(TeamContext);
   const isMobile = useIsMobile();
+  const logoutRedirectUrl =
+    process.env.NEXT_PUBLIC_KINDE_POST_LOGOUT_REDIRECT_URL!;
 
   useEffect(() => {
     if (activeTeam_?._id) {
@@ -286,7 +288,7 @@ const SideNavTopSection = ({ user, setActiveTeamInfo }: any) => {
                 <ModeToggle />
               </div>
 
-              <LogoutLink postLogoutRedirectURL="/">
+              <LogoutLink postLogoutRedirectURL={logoutRedirectUrl}>
                 <h2 className="flex items-center gap-x-1 p-2 cursor-pointer rounded-md hover:bg-gray-300 dark:hover:bg-gray-800 font-semibold trans">
                   <LogOut className="h-5 w-5" />
                   Logout

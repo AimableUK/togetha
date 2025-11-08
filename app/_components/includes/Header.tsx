@@ -3,11 +3,7 @@
 import { ModeToggle } from "@/components/theme/ModeToggle";
 import { Button } from "@/components/ui/button";
 import { useGlobalLoader } from "@/lib/useGlobalLoader";
-import {
-  LoginLink,
-  LogoutLink,
-  RegisterLink,
-} from "@kinde-oss/kinde-auth-nextjs";
+import { LogoutLink } from "@kinde-oss/kinde-auth-nextjs";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -22,6 +18,8 @@ const Header = ({ user, isLoading }: SiteProps) => {
   const [headerCollapse, setHeaderCollapse] = useState(false);
   const { startLoading, stopLoading, isButtonLoading } = useGlobalLoader();
   const pathname = usePathname();
+  const logoutRedirectUrl =
+    process.env.NEXT_PUBLIC_KINDE_POST_LOGOUT_REDIRECT_URL!;
 
   const handleScroll = (amount: number) => {
     scrollTo({
@@ -80,7 +78,7 @@ const Header = ({ user, isLoading }: SiteProps) => {
                 <div className="loader2"></div>
               ) : user ? (
                 <>
-                  <LogoutLink postLogoutRedirectURL="/">
+                  <LogoutLink postLogoutRedirectURL={logoutRedirectUrl}>
                     <Button variant="ghost" className="cursor-pointer">
                       Logout
                     </Button>
@@ -185,7 +183,10 @@ const Header = ({ user, isLoading }: SiteProps) => {
               <div className="loader2 w-5!"></div>
             ) : user ? (
               <>
-                <LogoutLink postLogoutRedirectURL="/" className="z-999">
+                <LogoutLink
+                  postLogoutRedirectURL={logoutRedirectUrl}
+                  className="z-999"
+                >
                   <Button variant="ghost" className="cursor-pointer w-full">
                     Logout
                   </Button>
