@@ -107,17 +107,17 @@ const Header = ({ user, isLoading }: SiteProps) => {
                 </>
               ) : (
                 <>
-                  <LoginLink postLoginRedirectURL="/dashboard">
+                  <a href="/signin">
                     <Button variant="ghost" className="cursor-pointer">
                       Login
                     </Button>
-                  </LoginLink>
+                  </a>
 
-                  <RegisterLink>
+                  <a href="/signup">
                     <Button variant="outline" className="cursor-pointer">
                       Register
                     </Button>
-                  </RegisterLink>
+                  </a>
                 </>
               )}
 
@@ -212,17 +212,17 @@ const Header = ({ user, isLoading }: SiteProps) => {
               </>
             ) : (
               <>
-                <LoginLink postLoginRedirectURL="/dashboard" className="z-999">
+                <a href="/signin" className="z-999">
                   <Button variant="ghost" className="z-50 cursor-pointer">
                     Login
                   </Button>
-                </LoginLink>
+                </a>
 
-                <RegisterLink className="z-999">
+                <a href="/signup" className="z-999">
                   <Button variant="outline" className="z-50 cursor-pointer">
                     Register
                   </Button>
-                </RegisterLink>
+                </a>
               </>
             )}
 

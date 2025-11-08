@@ -286,7 +286,7 @@ const SideNavTopSection = ({ user, setActiveTeamInfo }: any) => {
                 <ModeToggle />
               </div>
 
-              <LogoutLink>
+              <LogoutLink postLogoutRedirectURL="/">
                 <h2 className="flex items-center gap-x-1 p-2 cursor-pointer rounded-md hover:bg-gray-300 dark:hover:bg-gray-800 font-semibold trans">
                   <LogOut className="h-5 w-5" />
                   Logout

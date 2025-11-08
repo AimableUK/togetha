@@ -9,7 +9,7 @@ export default async function Layout({
   const { isAuthenticated } = getKindeServerSession();
 
   if (!(await isAuthenticated())) {
-    redirect("/api/auth/login?post_login_redirect_url=/dashboard");
+    redirect("/signin");
   }
 
   return <>{children}</>;

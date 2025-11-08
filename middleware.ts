@@ -7,7 +7,7 @@ export function middleware(request: NextRequest) {
 
     if (!access && !refresh) {
         const loginUrl = new URL(
-            "/api/auth/login?post_login_redirect_url=/dashboard",
+            "/signin",
             request.url
         );
         return NextResponse.redirect(loginUrl);
