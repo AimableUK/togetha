@@ -13,7 +13,7 @@ import Image from "next/image";
 import React, { useContext } from "react";
 import { toast } from "sonner";
 
-const NotificationsClient = () => {
+const UpdatesClient = () => {
   const convex = useConvex();
   const { updates_, setUpdates_, user } = useContext(TeamContext);
   const inviteResponse = useMutation(api.teams.respondToInvite);
@@ -25,7 +25,7 @@ const NotificationsClient = () => {
           <Image src="/logo.png" alt="togetha logo" width={40} height={40} />
           <div>
             <h3 className="font-bold text-xl md:text-2xl">Togetha</h3>
-            <h4 className="font-semibold text-xs">Loading Notifications</h4>
+            <h4 className="font-semibold text-xs">Loading Updates</h4>
           </div>
         </div>
         <div className="loader1"></div>
@@ -73,13 +73,13 @@ const NotificationsClient = () => {
     <div className="p-4">
       {/* header */}
       <div className="flex flex-row whitespace-nowrap justify-between my-1">
-        <h3 className="font-bold">Notifications</h3>
-        <div className="flex gap-x-2">
+        <h3 className="font-bold">Updates</h3>
+        {/* <div className="flex gap-x-2">
           <button className="p-1 px-3 bg-secondary rounded-md cursor-pointer">
             All
           </button>
           <button className="p-1 px-3 rounded-md cursor-pointer">Unread</button>
-        </div>
+        </div> */}
       </div>
       <Separator />
       {/* Content */}
@@ -136,7 +136,7 @@ const NotificationsClient = () => {
           ))
         ) : (
           <div className="flex flex-row gap-3 bg-secondary hover:bg-secondary/60 rounded-md p-2 w-full">
-            No notifications available
+            No Updates available
           </div>
         )}
       </div>
@@ -144,4 +144,4 @@ const NotificationsClient = () => {
   );
 };
 
-export default NotificationsClient;
+export default UpdatesClient;

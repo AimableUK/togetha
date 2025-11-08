@@ -1,11 +1,11 @@
 import React from "react";
-import SignUpPage from "./SignUpPage";
 import { pageMetadata } from "@/lib/utils";
+import UpdatesClient from "./UpdatesClient";
 
-export const metadata = pageMetadata.signUp;
+export const metadata = pageMetadata.updates;
 
 const page = () => {
-  return <SignUpPage />;
+  return <UpdatesClient />;
 };
 
 export default page;

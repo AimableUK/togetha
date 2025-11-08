@@ -241,30 +241,77 @@ export const pageMetadata = {
     },
   },
 
-  notifications: {
-    title: "notifications - View your notifications, updates.",
-    description:
-      "Togetha is a modern playground for teams and individuals to brainstorm, design, and build ideas together in real time.",
+  signIn: {
+    title: "Sign In - Togetha",
+    description: "Sign in to Togetha and start collaborating instantly with your team.",
     openGraph: {
       type: "website",
-      url: "https://www.togetha-app.vercel.app/",
-      title: "notifications - View your notifications, updates.",
-      description:
-        "Togetha is a modern playground for teams and individuals to brainstorm, design, and build ideas together in real time.",
+      url: "https://www.togetha-app.vercel.app/signin",
+      title: "Sign In - Togetha",
+      description: "Sign in to Togetha and start collaborating instantly with your team.",
       images: [
         {
           url: "https://www.togetha-app.vercel.app/og-image.png",
           width: 1200,
           height: 630,
-          alt: "notifications - View your notifications, updates.",
+          alt: "Sign In - Togetha",
         },
       ],
     },
     twitter: {
       card: "summary_large_image",
-      title: "notifications - View your notifications, updates.",
-      description:
-        "Togetha is a modern playground for teams and individuals to brainstorm, design, and build ideas together in real time.",
+      title: "Sign In - Togetha",
+      description: "Sign in to Togetha and start collaborating instantly with your team.",
+      images: ["https://www.togetha-app.vercel.app/twitter-banner.png"],
+    },
+  },
+
+  signUp: {
+    title: "Sign Up - Togetha",
+    description: "Create your Togetha account to collaborate, brainstorm, and build ideas with your team.",
+    openGraph: {
+      type: "website",
+      url: "https://www.togetha-app.vercel.app/signup",
+      title: "Sign Up - Togetha",
+      description: "Create your Togetha account to collaborate, brainstorm, and build ideas with your team.",
+      images: [
+        {
+          url: "https://www.togetha-app.vercel.app/og-image.png",
+          width: 1200,
+          height: 630,
+          alt: "Sign Up - Togetha",
+        },
+      ],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: "Sign Up - Togetha",
+      description: "Create your Togetha account to collaborate, brainstorm, and build ideas with your team.",
+      images: ["https://www.togetha-app.vercel.app/twitter-banner.png"],
+    },
+  },
+
+  updates: {
+    title: "Updates - Togetha",
+    description: "Check your latest team invitations, notifications, and updates in Togetha.",
+    openGraph: {
+      type: "website",
+      url: "https://www.togetha-app.vercel.app/updates",
+      title: "Updates & Invitations - Togetha",
+      description: "Check your latest team invitations, notifications, and updates in Togetha.",
+      images: [
+        {
+          url: "https://www.togetha-app.vercel.app/og-image.png",
+          width: 1200,
+          height: 630,
+          alt: "Updates & Invitations - Togetha",
+        },
+      ],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: "Updates & Invitations - Togetha",
+      description: "Check your latest team invitations, notifications, and updates in Togetha.",
       images: ["https://www.togetha-app.vercel.app/twitter-banner.png"],
     },
   },

@@ -71,7 +71,7 @@ const Header = () => {
           )}
 
           <div className="flex flex-row gap-x-3 items-center">
-            <Link href="/dashboard/notifications" className="relative">
+            <Link href="/dashboard/updates" className="relative">
               <Bell className="cursor-pointer relative" />
               {updates_ && (
                 <Badge
