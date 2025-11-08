@@ -80,7 +80,7 @@ const Header = ({ user, isLoading }: SiteProps) => {
                 <div className="loader2"></div>
               ) : user ? (
                 <>
-                  <LogoutLink>
+                  <LogoutLink postLogoutRedirectURL="/">
                     <Button variant="ghost" className="cursor-pointer">
                       Logout
                     </Button>
@@ -185,7 +185,7 @@ const Header = ({ user, isLoading }: SiteProps) => {
               <div className="loader2 w-5!"></div>
             ) : user ? (
               <>
-                <LogoutLink className="z-999">
+                <LogoutLink postLogoutRedirectURL="/" className="z-999">
                   <Button variant="ghost" className="cursor-pointer w-full">
                     Logout
                   </Button>
