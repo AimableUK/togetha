@@ -41,7 +41,7 @@ const Header = ({ user, isLoading }: SiteProps) => {
         {/* desktop nav */}
         <div className="flex flex-1 items-center justify-end md:justify-between">
           {/* nav */}
-          <nav aria-label="Global" className="hidden md:block z-998  ">
+          <nav aria-label="Global" className="hidden md:block z-998">
             <ul className="flex items-center gap-6">
               <li>
                 <button
@@ -73,7 +73,7 @@ const Header = ({ user, isLoading }: SiteProps) => {
           </nav>
           {/* auth actions */}
           <div className="flex items-center gap-4">
-            <div className="hidden md:flex flex-row items-center gap-x-1">
+            <div className="hidden md:flex flex-row items-center gap-x-1 z-9999">
               {isLoading ? (
                 <div className="loader2"></div>
               ) : user ? (
