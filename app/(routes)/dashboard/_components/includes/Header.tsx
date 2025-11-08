@@ -48,6 +48,14 @@ const Header = () => {
             <h2 className="hidden md:block font-semibold text-2xl">
               Archieved
             </h2>
+          ) : pathname === "/dashboard/updates" ? (
+            <h2 className="hidden md:block font-semibold text-2xl">
+              Updates
+            </h2>
+          ) : pathname === "/dashboard/settings" ? (
+            <h2 className="hidden md:block font-semibold text-2xl">
+              Settings
+            </h2>
           ) : (
             <h2 className="hidden md:block font-semibold text-2xl">
               Get Started

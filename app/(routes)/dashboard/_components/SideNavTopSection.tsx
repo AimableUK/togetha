@@ -82,7 +82,7 @@ const SideNavTopSection = ({ user, setActiveTeamInfo }: any) => {
       path: "/dashboard/teams/create",
       icon: Users,
     },
-    { id: 2, name: "Settings", path: "/settings", icon: Settings },
+    { id: 2, name: "Settings", path: "/dashboard/settings", icon: Settings },
   ];
 
   useEffect(() => {
