@@ -6,6 +6,7 @@ import { useKindeBrowserClient } from "@kinde-oss/kinde-auth-nextjs";
 import Image from "next/image";
 import {
   Archive,
+  EyeOff,
   FilePenLine,
   MoreHorizontalIcon,
   Trash2,
@@ -28,6 +29,7 @@ import { TeamContext } from "@/app/FilesListContext";
 import DeleteDialog from "../_components/DeleteDialog";
 import { Input } from "@/components/ui/input";
 import { DeleteData } from "../files/FileList";
+import { TEAM } from "@/lib/utils";
 
 const ArchievedList = () => {
   const { isLoading }: any = useKindeBrowserClient();
@@ -42,7 +44,7 @@ const ArchievedList = () => {
 
   const removeFromArchieve = useMutation(api.files.undoArchieve);
   const renameFileName = useMutation(api.files.renameFile);
-  const { user, files_ } = useContext(TeamContext);
+  const { user, files_, activeTeam_ } = useContext(TeamContext);
 
   useEffect(() => {
     setLoadingItem(null);
@@ -62,12 +64,24 @@ const ArchievedList = () => {
       </div>
     );
 
+  const currentRole: "Owner" | "Viewer" | "Editor" =
+    activeTeam_?.createdBy === user?.email
+      ? "Owner"
+      : activeTeam_?.collaboratorsData?.find(
+          (c: TEAM) => c.collaboratorEmail === user?.email
+        )?.collaboratorRole || "Viewer";
+
   const handleRemoveArchieve = async (fileId: string) => {
+    if (currentRole === "Viewer") {
+      toast.error("Request Edit Access to perform this action");
+      return;
+    }
     toast.promise(
       (async () => {
         await removeFromArchieve({
           _id: fileId as Id<"files">,
           archieve: false,
+          userEmail: user?.email,
         });
       })(),
       {
@@ -92,21 +106,35 @@ const ArchievedList = () => {
   };
 
   const handleOpenDialog = (id: string, type: "file" | "team") => {
+    if (currentRole === "Viewer") {
+      toast.error("Request Edit Access to perform this action");
+      return;
+    }
     setOpenDialog(true);
     setDeleteData({ id, type });
   };
 
   const handleRename = (fileId: string) => {
+    if (currentRole === "Viewer") {
+      toast.error("Request Edit Access to perform this action");
+      return;
+    }
     setRenameFIle(fileId);
   };
 
   const handleRenameFile = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    if (currentRole === "Viewer") {
+      toast.error("Request Edit Access to perform this action");
+      return;
+    }
+
     toast.promise(
       (async () => {
         await renameFileName({
           _id: renameFile as Id<"files">,
           fileName: newFileName,
+          userEmail: user?.email,
         });
         setRenameFIle(null);
       })(),
@@ -227,8 +255,8 @@ const ArchievedList = () => {
                     </td>
                     <td className="px-3 py-2 whitespace-nowrap">
                       <Image
-                        src={user?.picture ?? "/user.webp"}
-                        alt="User Image"
+                        src={file.author?.image ?? "/user.webp"}
+                        alt={file.author?.name || "File Creator Image"}
                         width={30}
                         height={30}
                         className="rounded-full"
@@ -239,34 +267,45 @@ const ArchievedList = () => {
                         <DropdownMenuTrigger>
                           <MoreHorizontalIcon className="rounded-md cursor-pointer" />
                         </DropdownMenuTrigger>
-                        <DropdownMenuContent>
-                          <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                          <DropdownMenuSeparator />
-                          <DropdownMenuItem
-                            onClick={() => {
-                              handleRename(file._id);
-                              setNewFileName(file.fileName);
-                            }}
-                            className="group p-2 rounded-md hover:bg-accent active:bg-accent/80 hover:text-gray-100! cursor-pointer trans"
-                          >
-                            <FilePenLine className="group-hover:text-gray-100!" />
-                            Rename
-                          </DropdownMenuItem>
-                          <DropdownMenuItem
-                            onClick={() => handleRemoveArchieve(file._id)}
-                            className="group p-2 rounded-md hover:bg-accent active:bg-accent/80 hover:text-gray-100! cursor-pointer trans"
-                          >
-                            <Archive className="group-hover:text-gray-100!" />
-                            Restore
-                          </DropdownMenuItem>
-                          <DropdownMenuItem
-                            onClick={() => handleOpenDialog(file._id, "file")}
-                            className="group p-2 rounded-md hover:bg-red-800! dark:hover:bg-red-900! active:bg-accent/80 hover:text-gray-100! cursor-pointer trans"
-                          >
-                            <Trash2 className="group-hover:text-gray-100!" />
-                            Delete
-                          </DropdownMenuItem>
-                        </DropdownMenuContent>
+                        {currentRole !== "Viewer" ? (
+                          <DropdownMenuContent>
+                            <DropdownMenuLabel>Actions</DropdownMenuLabel>
+                            <DropdownMenuSeparator />
+                            <DropdownMenuItem
+                              onClick={() => {
+                                handleRename(file._id);
+                                setNewFileName(file.fileName);
+                              }}
+                              className="group p-2 rounded-md hover:bg-accent active:bg-accent/80 hover:text-gray-100! cursor-pointer trans"
+                            >
+                              <FilePenLine className="group-hover:text-gray-100!" />
+                              Rename
+                            </DropdownMenuItem>
+                            <DropdownMenuItem
+                              onClick={() => handleRemoveArchieve(file._id)}
+                              className="group p-2 rounded-md hover:bg-accent active:bg-accent/80 hover:text-gray-100! cursor-pointer trans"
+                            >
+                              <Archive className="group-hover:text-gray-100!" />
+                              Restore
+                            </DropdownMenuItem>
+                            <DropdownMenuItem
+                              onClick={() => handleOpenDialog(file._id, "file")}
+                              className="group p-2 rounded-md hover:bg-red-800! dark:hover:bg-red-900! active:bg-accent/80 hover:text-gray-100! cursor-pointer trans"
+                            >
+                              <Trash2 className="group-hover:text-gray-100!" />
+                              Delete
+                            </DropdownMenuItem>
+                          </DropdownMenuContent>
+                        ) : (
+                          <DropdownMenuContent>
+                            <DropdownMenuLabel>Actions</DropdownMenuLabel>
+                            <DropdownMenuSeparator />
+                            <DropdownMenuItem className="group p-2 rounded-md hover:text-gray-100! trans">
+                              <EyeOff className="group-hover:text-gray-100!" />
+                              Read-Only Mode
+                            </DropdownMenuItem>
+                          </DropdownMenuContent>
+                        )}
                       </DropdownMenu>
                     </td>
                   </tr>

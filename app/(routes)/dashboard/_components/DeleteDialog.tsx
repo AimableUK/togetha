@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useContext } from "react";
 import {
   Dialog,
   DialogClose,
@@ -14,6 +14,8 @@ import { toast } from "sonner";
 import { Id } from "@/convex/_generated/dataModel";
 import { useMutation } from "convex/react";
 import { DeleteData } from "../files/FileList";
+import { TeamContext } from "@/app/FilesListContext";
+import { TEAM } from "@/lib/utils";
 
 interface DialogProps extends DeleteData {
   open: boolean;
@@ -23,21 +25,36 @@ interface DialogProps extends DeleteData {
 const DeleteDialog = ({ id, type, open, setOpen }: DialogProps) => {
   const fileMutation = useMutation(api.files.deleteFile);
   const teamMutation = useMutation(api.teams.deleteTeam);
+  const { user, activeTeam_ } = useContext(TeamContext);
+
+  const currentRole: "Owner" | "Viewer" | "Editor" =
+    activeTeam_?.createdBy === user?.email
+      ? "Owner"
+      : activeTeam_?.collaboratorsData?.find(
+          (c: TEAM) => c.collaboratorEmail === user?.email
+        )?.collaboratorRole || "Viewer";
 
   const handleDelete = async () => {
+    if (currentRole === "Viewer") {
+      toast.error("Request Edit Access to perform this action");
+      return;
+    }
     if (type === "file") {
-      toast.promise(fileMutation({ _id: id as Id<"files"> }), {
-        loading: `Deleting file...`,
-        success: () => ({
-          message: "File Deleted",
-          description: "File deleted successfully!",
-        }),
-        error: (error: any) => ({
-          message: "Error",
-          description:
-            error?.response?.data?.detail || "Failed to delete file.",
-        }),
-      });
+      toast.promise(
+        fileMutation({ _id: id as Id<"files">, userEmail: user?.email }),
+        {
+          loading: `Deleting file...`,
+          success: () => ({
+            message: "File Deleted",
+            description: "File deleted successfully!",
+          }),
+          error: (error: any) => ({
+            message: "Error",
+            description:
+              error?.response?.data?.detail || "Failed to delete file.",
+          }),
+        }
+      );
     } else {
       toast.promise(teamMutation({ _id: id as Id<"teams"> }), {
         loading: `Deleting team...`,

@@ -43,19 +43,18 @@ export const createTeam = mutation({
 export const getTeam = query({
   args: { email: v.string() },
   handler: async (ctx, args) => {
-    const teams = await ctx.db
-      .query("teams")
-      .filter((q) =>
-        q.or(
-          q.eq(q.field("createdBy"), args.email),
-          q.eq(q.field("collaborators.email"), args.email)
-        )
-      )
-      .collect();
+    const allTeams = await ctx.db.query("teams").collect();
 
-    // Add collaborator info
+    const userTeams = allTeams.filter(
+      (team) =>
+        team.createdBy === args.email ||
+        (team.collaborators || []).some(
+          (c: any) => c.email.toLowerCase() === args.email.toLowerCase()
+        )
+    );
+
     const enrichedTeams = await Promise.all(
-      teams.map(async (team) => {
+      userTeams.map(async (team) => {
         const collaborators = team.collaborators || [];
 
         const collaboratorsData = await Promise.all(
@@ -152,6 +151,8 @@ export const addCollaborator = mutation({
       throw new Error("This collaborator is already invited and pending.");
     }
 
+    const expiresAt = Date.now() + 7 * 24 * 60 * 60 * 1000;
+
     await ctx.db.insert("teamInvites", {
       teamId: args.teamId,
       email: args.email,
@@ -159,6 +160,7 @@ export const addCollaborator = mutation({
       role: args.role,
       status: "pending",
       invitedAt: Date.now(),
+      expiresAt,
     });
 
     return { success: true, email: args.email, status: "pending" };
@@ -208,7 +210,8 @@ export const addCollaborators = mutation({
         continue;
       }
 
-      // Add to teamInvites only
+      const expiresAt = Date.now() + 7 * 24 * 60 * 60 * 1000;
+
       await ctx.db.insert("teamInvites", {
         teamId: args.teamId,
         email: collab.email,
@@ -216,6 +219,7 @@ export const addCollaborators = mutation({
         role: collab.role,
         status: "pending",
         invitedAt: Date.now(),
+        expiresAt,
       });
 
       results.push({ email: collab.email, status: "pending" });

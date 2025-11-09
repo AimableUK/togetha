@@ -14,6 +14,13 @@ export interface FILE {
   whiteboard: string;
   _id: string;
   _creationTime: number;
+  editedAt?: number;
+  author?: {
+    _id: string;
+    name: string;
+    email: string;
+    image?: string;
+  } | null;
 }
 
 export interface TEAM {
