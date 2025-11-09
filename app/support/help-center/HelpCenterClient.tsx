@@ -1,14 +1,14 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
-import { ChevronRight, Menu, X, Search, ChevronDown } from "lucide-react";
+import React, { useState } from "react";
+import { Menu, X, Search, ChevronDown } from "lucide-react";
 import Image from "next/image";
 
 export default function HelpCenter() {
   const [activeCategory, setActiveCategory] = useState("getting-started");
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
-  const [expandedFaqs, setExpandedFaqs] = useState({});
+  const [expandedFaqs, setExpandedFaqs] = useState<Record<string, boolean>>({});
 
   const categories = [
     { id: "getting-started", label: "Getting Started" },
@@ -281,6 +281,7 @@ export default function HelpCenter() {
     ],
   };
 
+  type FaqCategory = keyof typeof faqs;
   const allFaqs = Object.values(faqs).flat();
   const filteredFaqs = searchQuery.trim()
     ? allFaqs.filter(
@@ -288,7 +289,7 @@ export default function HelpCenter() {
           faq.question.toLowerCase().includes(searchQuery.toLowerCase()) ||
           faq.answer.toLowerCase().includes(searchQuery.toLowerCase())
       )
-    : faqs[activeCategory] || [];
+    : faqs[activeCategory as FaqCategory] || [];
 
   const toggleFaq = (id: string) => {
     setExpandedFaqs((prev) => ({
