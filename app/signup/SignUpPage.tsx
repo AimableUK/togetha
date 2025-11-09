@@ -81,22 +81,22 @@ const SignUpPage = () => {
                 </RegisterLink>
 
                 {/* Terms */}
-                {/* <p className="text-sm text-muted-foreground leading-relaxed">
+                <p className="text-sm text-muted-foreground leading-relaxed">
                   By signing up, you agree to our{" "}
                   <a
-                    href="#"
+                    href="/legal/terms-and-conditions"
                     className="text-primary hover:underline font-medium"
                   >
-                    Terms
+                    Terms and Conditions
                   </a>{" "}
                   and{" "}
                   <a
-                    href="#"
+                    href="/legal/privacy-policy"
                     className="text-primary hover:underline font-medium"
                   >
                     Privacy Policy
                   </a>
-                </p> */}
+                </p>
 
                 {/* Sign In Link */}
                 <div className="pt-6 border-t border-border">

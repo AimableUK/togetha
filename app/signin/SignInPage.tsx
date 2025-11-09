@@ -139,22 +139,22 @@ const SignInPage = () => {
                 </div>
 
                 {/* Terms */}
-                {/* <p className="text-xs text-muted-foreground text-center leading-relaxed pt-4">
+                <p className="text-xs text-muted-foreground text-center leading-relaxed pt-4">
                   By continuing, you agree to our{" "}
                   <a
-                    href="#"
+                    href="/legal/terms-and-conditions"
                     className="text-primary hover:text-primary/80 font-medium underline"
                   >
-                    Terms of Service
+                    Terms and Conditions
                   </a>{" "}
                   and{" "}
                   <a
-                    href="#"
+                    href="/legal/privacy-policy"
                     className="text-primary hover:text-primary/80 font-medium underline"
                   >
                     Privacy Policy
                   </a>
-                </p> */}
+                </p>
 
                 {/* Footer */}
                 <div className="pt-6 border-t border-border">
