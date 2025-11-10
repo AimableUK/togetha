@@ -49,13 +49,9 @@ const Header = () => {
               Archieved
             </h2>
           ) : pathname === "/dashboard/updates" ? (
-            <h2 className="hidden md:block font-semibold text-2xl">
-              Updates
-            </h2>
+            <h2 className="hidden md:block font-semibold text-2xl">Updates</h2>
           ) : pathname === "/dashboard/settings" ? (
-            <h2 className="hidden md:block font-semibold text-2xl">
-              Settings
-            </h2>
+            <h2 className="hidden md:block font-semibold text-2xl">Settings</h2>
           ) : (
             <h2 className="hidden md:block font-semibold text-2xl">
               Get Started
@@ -103,7 +99,7 @@ const Header = () => {
                 />
               </div>
 
-              {activeTeam_?.collaboratorsData.length > 1 &&
+              {activeTeam_?.collaboratorsData.length > 0 &&
                 activeTeam_.collaboratorsData
                   ?.filter((c: TEAM) => c.collaboratorEmail !== user?.email)
                   .slice(0, 2)
