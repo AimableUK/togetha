@@ -1,3 +1,5 @@
+"use client";
+
 import { usePWAInstallPrompt } from "@/app/hooks/usePWAInstallPrompt";
 import { Button } from "@/components/ui/button";
 import React from "react";
@@ -28,6 +30,11 @@ const AppSettings = () => {
               Download App
             </Button>
           </div>
+          {!canInstall && (
+            <p className="text-sm text-gray-500 mt-1">
+              On iOS, use "Share → Add to Home Screen" to install.
+            </p>
+          )}
         </div>
       </div>
     </div>
