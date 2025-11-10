@@ -204,6 +204,10 @@ const TeamInvite = ({
     });
   };
 
+  const handleDone = () => {
+    setErrorMsg("");
+  };
+
   return (
     <>
       <Dialog open={openInviteDialog} onOpenChange={setOpenInviteDialog}>
@@ -413,17 +417,18 @@ const TeamInvite = ({
             </div>
           </div> */}
           <DialogFooter className="flex flex-row justify-end sm:justify-between">
-            <Button
+            {/* <Button
               type="button"
               variant="secondary"
               className="px-3 py-1 rounded-full border cursor-pointer w-fit"
             >
               <Link2 /> Copy Link
-            </Button>
+            </Button> */}
             <DialogClose asChild>
               <Button
                 type="button"
                 variant="secondary"
+                onClick={handleDone}
                 className="px-5 text-white py-1 rounded-full bg-accent hover:bg-accent/80 cursor-pointer w-fit"
               >
                 Done

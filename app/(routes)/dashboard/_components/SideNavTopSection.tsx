@@ -105,9 +105,6 @@ const SideNavTopSection = ({ user, setActiveTeamInfo }: any) => {
       </div>
     );
 
-  const currentRole: "Owner" | "Restricted" =
-    activeTeam_?.createdBy === user?.email ? "Owner" : "Restricted";
-
   const onMenuClick = (item: any) => {
     const currentPath = window.location.pathname;
 
@@ -119,7 +116,7 @@ const SideNavTopSection = ({ user, setActiveTeamInfo }: any) => {
     router.push(item.path);
 
     setTimeout(() => {
-      if (currentPath !== "/dashboard") {
+      if (currentPath === item.path) {
         setLoadingItem(null);
       }
     }, 2000);
