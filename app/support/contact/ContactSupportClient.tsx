@@ -50,28 +50,28 @@ export default function ContactSupport() {
       icon: Mail,
       title: "Email Support",
       description: "For general inquiries and support requests",
-      contact: "support@togetha.com",
+      contact: "malostechnologies@gmail.com",
       response: "24-48 hours",
     },
     {
       icon: Mail,
       title: "Legal Inquiries",
       description: "For legal requests and data subject requests",
-      contact: "legal@togetha.com",
+      contact: "malostechnologies@gmail.com",
       response: "5-7 business days",
     },
     {
       icon: Mail,
       title: "Security Issues",
       description: "For reporting security vulnerabilities",
-      contact: "security@togetha.com",
+      contact: "malostechnologies@gmail.com",
       response: "24 hours",
     },
     {
       icon: Mail,
       title: "Community Issues",
       description: "For reporting violations or concerns",
-      contact: "community@togetha.com",
+      contact: "malostechnologies@gmail.com",
       response: "24-48 hours",
     },
   ];
@@ -91,12 +91,12 @@ export default function ContactSupport() {
     {
       question: "What is a Data Subject Access Request (DSAR)?",
       answer:
-        "A Data Subject Access Request is a formal request under GDPR, CCPA, and other privacy laws for access to your personal data. To submit a DSAR, email legal@togetha.com with proof of identity. We'll respond within the legally required timeframe (typically 30 days).",
+        "A Data Subject Access Request is a formal request under GDPR, CCPA, and other privacy laws for access to your personal data. To submit a DSAR, email malostechnologies@gmail.com with proof of identity. We'll respond within the legally required timeframe (typically 30 days).",
     },
     {
       question: "How do I report a security vulnerability?",
       answer:
-        "Please send a detailed report to security@togetha.com. Include information about the vulnerability, how to reproduce it, and its potential impact. Do not disclose the vulnerability publicly until we've had time to address it. We appreciate responsible disclosure.",
+        "Please send a detailed report to malostechnologies@gmail.com. Include information about the vulnerability, how to reproduce it, and its potential impact. Do not disclose the vulnerability publicly until we've had time to address it. We appreciate responsible disclosure.",
     },
     {
       question: "What's your typical response time?",
@@ -106,7 +106,7 @@ export default function ContactSupport() {
     {
       question: "Can I schedule a call with the support team?",
       answer:
-        "For Enterprise customers, we offer dedicated support and scheduling options. For other customers, email support@togetha.com to request a call. We'll do our best to accommodate your needs.",
+        "For Enterprise customers, we offer dedicated support and scheduling options. For other customers, email malostechnologies@gmail.com to request a call. We'll do our best to accommodate your needs.",
     },
     {
       question: "How do I request a feature?",
@@ -116,7 +116,7 @@ export default function ContactSupport() {
     {
       question: "What if I need urgent support?",
       answer:
-        'For urgent issues impacting your work, email support@togetha.com with "URGENT" in the subject line. For critical security incidents, contact security@togetha.com immediately. Enterprise customers have priority support channels.',
+        'For urgent issues impacting your work, email malostechnologies@gmail.com with "URGENT" in the subject line, for critical security incidents immediately. Enterprise customers have priority support channels.',
     },
   ];
 
@@ -208,7 +208,7 @@ export default function ContactSupport() {
           </div>
 
           {submitted && (
-            <div className="mb-6 border border-green-200 rounded-lg p-4 flex items-start gap-3 bg-green-50 bg-opacity-30">
+            <div className="mb-6 border border-green-400 rounded-lg p-4 flex items-start gap-3 bg-secondary bg-opacity-30">
               <CheckCircle size={20} className="shrink-0 mt-0.5 opacity-80" />
               <div>
                 <p className="font-semibold mb-1">Message Sent Successfully!</p>
@@ -264,7 +264,11 @@ export default function ContactSupport() {
                 className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-offset-2"
               >
                 {categories.map((cat) => (
-                  <option key={cat.value} value={cat.value}>
+                  <option
+                    key={cat.value}
+                    value={cat.value}
+                    className="bg-secondary"
+                  >
                     {cat.label}
                   </option>
                 ))}
@@ -351,11 +355,9 @@ export default function ContactSupport() {
                 <p className="opacity-75 leading-relaxed">
                   Togetha Inc.
                   <br />
-                  123 Innovation Street
+                  Gasabo Disctrict
                   <br />
-                  San Francisco, CA 94105
-                  <br />
-                  United States
+                  Gasabo, Kigali, Rwanda
                 </p>
               </div>
             </div>
@@ -364,9 +366,9 @@ export default function ContactSupport() {
               <Phone size={24} className="shrink-0 mt-1 opacity-60" />
               <div>
                 <h3 className="font-semibold mb-2 text-lg">Phone</h3>
-                <p className="opacity-75">+1 (415) 555-0123</p>
+                <p className="opacity-75">+250 783 309 468</p>
                 <p className="text-sm opacity-50 mt-2">
-                  Available Monday-Friday, 9 AM - 5 PM PST
+                  Available Monday-Friday, 9 AM - 5 PM EAT
                 </p>
               </div>
             </div>
@@ -395,18 +397,18 @@ export default function ContactSupport() {
               },
               {
                 title: "Status Page",
-                description: "Check platform status and incident reports",
-                link: "https://status.togetha.com",
+                description: "Check Hosting platform status and incident reports",
+                link: "https://www.vercel-status.com/",
               },
               {
                 title: "Community Guidelines",
                 description: "Learn about our community standards and policies",
-                link: "/community-guidelines",
+                link: "/legal/community-guidelines",
               },
               {
                 title: "Privacy Policy",
                 description: "Review how we handle your data and privacy",
-                link: "/privacy",
+                link: "/legal/privacy-policy",
               },
             ].map((resource, idx) => (
               <a

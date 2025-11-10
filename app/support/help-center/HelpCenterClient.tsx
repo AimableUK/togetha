@@ -13,7 +13,7 @@ export default function HelpCenter() {
   const categories = [
     { id: "getting-started", label: "Getting Started" },
     { id: "workspaces", label: "Workspaces & Teams" },
-    { id: "collaboration", label: "Real-Time Collaboration" },
+    // { id: "collaboration", label: "Real-Time Collaboration" },
     { id: "documents", label: "Documents & Files" },
     { id: "permissions", label: "Permissions & Access" },
     { id: "account", label: "Account Settings" },
@@ -25,9 +25,9 @@ export default function HelpCenter() {
     "getting-started": [
       {
         id: "gs-1",
-        question: "How do I create my first workspace?",
+        question: "How do I create my first Team?",
         answer:
-          'To create your first workspace, sign in to your Togetha account and click "Create Workspace" on your dashboard. Choose a name, add a description, and select your workspace type. Invite team members by entering their email addresses, and they\'ll receive an invitation to join.',
+          'To create your first Team, sign in to your Togetha account and click "Create Team" on your dashboard, Choose a name. Invite team members by entering their email addresses, and they\'ll receive an invitation to join.',
       },
       {
         id: "gs-2",
@@ -39,19 +39,19 @@ export default function HelpCenter() {
         id: "gs-3",
         question: "How do I invite team members to my workspace?",
         answer:
-          'Navigate to Workspace Settings > Members. Click "Invite Members" and enter email addresses of the people you want to invite. You can set their role (Admin, Editor, or Viewer) before sending invitations. They\'ll receive an email with a link to join.',
+          'On the Header of Workspace on a specified, Click "Invite" and enter email addresses of the people you want to invite. You can set their role (Editor, or Viewer) before sending invitations. They\'ll receive an email with a link to join.',
       },
       {
         id: "gs-4",
         question: "Can I use Togetha on mobile?",
         answer:
-          "Yes! Togetha is fully responsive and works on mobile browsers. We also offer dedicated iOS and Android apps available on the App Store and Google Play. You can collaborate, view documents, and manage workspaces on the go.",
+          "Yes! Togetha is fully responsive and works on mobile browsers. You can download it anytime from Site Settings. You can collaborate, view documents, and manage teams on the go.",
       },
       {
         id: "gs-5",
         question: "Is there a free trial available?",
         answer:
-          "Yes! We offer a 14-day free trial of all features with no credit card required. Start your trial today and experience the full power of real-time collaboration with your team.",
+          "Yes! We offer a 14-day free trial of all features with no credit card required. (Currently everything is in Premium as an Offer to early Users of Togetha)",
       },
     ],
     workspaces: [
@@ -59,66 +59,54 @@ export default function HelpCenter() {
         id: "ws-1",
         question: "How many workspaces can I create?",
         answer:
-          "You can create unlimited workspaces on any plan. Each workspace is isolated and can have its own set of members, documents, and settings. Perfect for managing multiple projects or organizations.",
+          "By now, you have One active workspace by default where you can create your teams on any plan. Each Team is isolated and can have its own set of members, documents, and settings. Perfect for managing multiple projects or organizations.",
       },
       {
         id: "ws-2",
-        question: "How do I manage workspace members?",
+        question: "How do I manage Team members?",
         answer:
-          "Go to Workspace Settings > Members to manage who has access. You can invite new members, change their roles, or remove members. Roles include Admin (full control), Editor (can edit content), and Viewer (read-only access).",
-      },
-      {
-        id: "ws-3",
-        question: "Can I transfer a workspace to another person?",
-        answer:
-          "Yes! Go to Workspace Settings > Transfer Workspace. Select the person you want to transfer it to. They must be an existing member with Admin access. Once transferred, they'll have full control of the workspace.",
+          "Click Invite on the Workspace Header, you will see Members and their access on your current team who has access. You can invite new members, change their roles, or remove members. Roles include Editor (can edit content), and Viewer (read-only access).",
       },
       {
         id: "ws-4",
-        question: "How do I delete a workspace?",
+        question: "How do I delete a Team?",
         answer:
-          "Only workspace admins can delete a workspace. Go to Workspace Settings > Danger Zone > Delete Workspace. Note that this action is permanent and cannot be undone. All documents and data will be deleted.",
+          "Go to Workspace Side Nav > click More icon on the team you want to delete > Delete Team. Note that this action is permanent and cannot be undone. All documents and data will be deleted.",
       },
       {
         id: "ws-5",
+        question: "How do I delete a workspace?",
+        answer:
+          "Everyone on Togetha is gave one workspace to manage your teams by default, you can't delete it.",
+      },
+      {
+        id: "ws-6",
         question: "What happens when I leave a workspace?",
         answer:
-          "When you leave a workspace, you lose access to all documents and shared resources. If you're the last admin, you'll need to transfer the workspace or delete it before you can leave.",
+          "When you leave a workspace, you lose access to all documents and shared resources.",
       },
     ],
-    collaboration: [
-      {
-        id: "col-1",
-        question: "How does real-time collaboration work?",
-        answer:
-          "When multiple team members open the same document, changes are synchronized instantly. You'll see cursor positions of other collaborators, their edits appear in real-time, and the system merges edits intelligently. Everyone is always working on the latest version.",
-      },
-      {
-        id: "col-2",
-        question:
-          "What happens if two people edit the same content simultaneously?",
-        answer:
-          "Togetha uses advanced conflict resolution to merge simultaneous edits intelligently. Both changes are preserved and combined logically. The system maintains version history so you can see what changed and when.",
-      },
-      {
-        id: "col-3",
-        question: "Can I see who's currently working on a document?",
-        answer:
-          "Yes! When you open a document, you'll see active collaborators at the top. Their cursor positions and selections are highlighted with different colors. This helps you coordinate work and avoid duplicate efforts.",
-      },
-      {
-        id: "col-4",
-        question: "How do I leave comments and feedback?",
-        answer:
-          "Use the Comment tool to add feedback without editing. Select text or click anywhere to add a comment. Comments are threaded, so team members can reply and have conversations. Resolve comments when feedback is addressed.",
-      },
-      {
-        id: "col-5",
-        question: "Is there a chat feature in Togetha?",
-        answer:
-          "Yes! Each workspace has a built-in chat for quick communication. Use workspace-wide chat for general discussions or create team channels for focused conversations. You can also mention team members with @mentions.",
-      },
-    ],
+    // collaboration: [
+    //   {
+    //     id: "col-1",
+    //     question: "How does real-time collaboration work?",
+    //     answer:
+    //       "When multiple team members open the same document, changes are synchronized instantly. You'll see cursor positions of other collaborators, their edits appear in real-time, and the system merges edits intelligently. Everyone is always working on the latest version.",
+    //   },
+    //   {
+    //     id: "col-2",
+    //     question:
+    //       "What happens if two people edit the same content simultaneously?",
+    //     answer:
+    //       "Togetha uses advanced conflict resolution to merge simultaneous edits intelligently. Both changes are preserved and combined logically. The system maintains version history so you can see what changed and when.",
+    //   },
+    //   {
+    //     id: "col-3",
+    //     question: "Can I see who's currently working on a document?",
+    //     answer:
+    //       "Yes! When you open a document, you'll see active collaborators at the top. Their cursor positions and selections are highlighted with different colors. This helps you coordinate work and avoid duplicate efforts.",
+    //   },
+    // ],
     documents: [
       {
         id: "doc-1",
@@ -138,17 +126,17 @@ export default function HelpCenter() {
         answer:
           "Storage limits depend on your plan. Free plans include 5GB, Pro plans get 100GB, and Enterprise plans have unlimited storage. Attachment storage is separate from document storage.",
       },
-      {
-        id: "doc-4",
-        question: "Can I organize documents into folders?",
-        answer:
-          "Yes! Create unlimited folders to organize your documents. Drag and drop documents between folders, create nested folder structures, and use consistent naming for easy navigation.",
-      },
+      // {
+      //   id: "doc-4",
+      //   question: "Can I organize documents into folders?",
+      //   answer:
+      //     "Yes! Create unlimited folders to organize your documents. Drag and drop documents between folders, create nested folder structures, and use consistent naming for easy navigation.",
+      // },
       {
         id: "doc-5",
         question: "How do I search for documents?",
         answer:
-          "Use the workspace search bar to find documents by title or content. Search works across all documents you have access to. Use filters to narrow results by team, date, or document type.",
+          "Use the workspace search bar to find files by title. Search works across all files you have access to. Use filters to narrow results by team, date, or document type.",
       },
     ],
     permissions: [
@@ -156,63 +144,45 @@ export default function HelpCenter() {
         id: "perm-1",
         question: "What are the different permission levels?",
         answer:
-          "Togetha has four permission levels: Owner (created the workspace), Admin (manage all settings and members), Editor (create and edit documents), and Viewer (read-only access). Some features can have granular permissions.",
+          "Togetha has three permission levels: Owner (created the workspace), Editor (create and edit files), and Viewer (read-only access). Some features can have granular permissions.",
       },
       {
         id: "perm-2",
-        question: "How do I set permissions on specific documents?",
+        question: "How do I set permissions on specific file?",
         answer:
-          'Open a document and click "Share". Choose who can access it and their permission level (Viewer, Editor, or Admin). You can also generate a shareable link with time-limited or password-protected access.',
+          'On the Header of the Workspace and click "Share". Choose who can access it and their permission level (Viewer, or Editor).',
       },
       {
         id: "perm-3",
-        question: "Can I make a document public?",
+        question: "Can I make a file private?",
         answer:
-          "Yes! Go to Share > Make Public to generate a public link. Anyone with the link can view the document (or edit if you allow it). You can disable the link anytime or require a password.",
+          "No! Currently all files are public for the users who have access to them in the team",
       },
       {
         id: "perm-4",
-        question: "How do I prevent accidental deletion?",
+        question: "Can I see who has access to a file?",
         answer:
-          'Enable "Lock Document" to prevent edits. For important documents, ask admins to set deletion permissions to admins-only. Deleted documents go to trash for 30 days before permanent deletion.',
-      },
-      {
-        id: "perm-5",
-        question: "Can I see who has access to a document?",
-        answer:
-          'Yes! Click "Share" to see all people with access, their roles, and when they were added. You can remove access immediately or change permission levels.',
+          'Yes! Click "Share" to see all people with access, their roles. You can remove access immediately or change permission levels.',
       },
     ],
     account: [
       {
         id: "acc-1",
-        question: "How do I change my profile picture?",
+        question: "Can I change my email address?",
         answer:
-          "Go to Account Settings > Profile. Click your avatar and upload a new image. The image should be a square at least 200x200 pixels. Changes appear immediately across all workspaces.",
+          "No! All your teams are bound to your Connected Google Account which can't be changed by Now.",
       },
       {
         id: "acc-2",
-        question: "How do I enable two-factor authentication?",
-        answer:
-          "Go to Account Settings > Security > Two-Factor Authentication. Choose between authenticator app or SMS. Follow the setup instructions and save your backup codes in a safe place.",
-      },
-      {
-        id: "acc-3",
-        question: "Can I change my email address?",
-        answer:
-          "Yes! Go to Account Settings > Email. Enter your new email address and verify it with a confirmation link. You'll use this new email to sign in going forward.",
-      },
-      {
-        id: "acc-4",
         question: "How do I delete my account?",
         answer:
-          "Go to Account Settings > Danger Zone > Delete Account. Note that this is permanent and will remove you from all workspaces. Download your data first if needed. You'll have a 30-day grace period to recover.",
+          "Go to Account Settings > Delete Account. Note that this is permanent and will remove you from all teams. Download your data first if needed. You'll have a 30-day grace period to recover.",
       },
       {
-        id: "acc-5",
+        id: "acc-2",
         question: "How do I update my notification preferences?",
         answer:
-          "Go to Account Settings > Notifications. Choose what types of notifications you want (mentions, comments, document updates) and how to receive them (email, push, in-app).",
+          "Go to Settings > Notifications Settings. Choose what types of notifications you want and how to receive them (email, push, in-app).",
       },
     ],
     troubleshooting: [
@@ -224,45 +194,39 @@ export default function HelpCenter() {
       },
       {
         id: "ts-2",
-        question: "What should I do if a document won't load?",
+        question: "What should I do if a file won't load?",
         answer:
-          "First, try refreshing the page or clearing your browser cache. If it persists, try a different browser. If still not working, contact support@togetha.com with the document ID and what you were trying to do.",
+          "First, try refreshing the page or clearing your browser cache. If it persists, try a different browser. If still not working, contact malostechnologies@gmail.com with the file ID and what you were trying to do.",
       },
       {
         id: "ts-3",
-        question: "Can I recover a deleted document?",
+        question: "Can I recover a deleted file or team?",
         answer:
-          "Yes! Deleted documents go to Workspace Trash for 30 days. Go to Workspace Settings > Trash and click Restore. After 30 days, documents are permanently deleted and cannot be recovered.",
+          "No! After Clicking delete on a File or Team its permanently deleted and cannot be recovered.",
       },
       {
         id: "ts-4",
         question: "Why is my invite not working?",
         answer:
-          "Check that the email address is correct and the person isn't already in the workspace. Make sure you didn't misspell the email. Have them check spam folder. If issues persist, ask them to create an account first.",
+          "Check that the email address is correct and the person isn't already in the team. Make sure you didn't misspell the email. Have them check spam folder. If issues persist, ask them to create an account first.",
       },
       {
         id: "ts-5",
         question: "What do I do if I'm experiencing performance issues?",
         answer:
-          "Close unused tabs and browser extensions. Restart your browser or computer. Check if you're on a slow internet connection. For large documents, performance may vary. Contact support if issues continue.",
+          "Close unused tabs and browser extensions. Restart your browser or computer. Check if you're on a slow internet connection. For large files, performance may vary. Contact support if issues continue.",
       },
     ],
     "best-practices": [
-      {
-        id: "bp-1",
-        question: "How should I organize my workspace?",
-        answer:
-          "Create clear folder structures by project or team. Use consistent naming conventions. Keep a main README document with workspace overview. Archive completed projects. This makes navigation easy for all team members.",
-      },
-      {
-        id: "bp-2",
-        question: "What's the best way to use comments?",
-        answer:
-          "Use comments for feedback, questions, and discussions tied to content. Use chat for quick conversations. Comments keep feedback organized and attached to specific content sections. Always resolve comments when addressed.",
-      },
+      // {
+      //   id: "bp-1",
+      //   question: "How should I organize my Team?",
+      //   answer:
+      //     "Create clear folder structures by project or team. Use consistent naming conventions. Keep a main README document with workspace overview. Archive completed projects. This makes navigation easy for all team members.",
+      // },
       {
         id: "bp-3",
-        question: "How should I structure large documents?",
+        question: "How should I structure large documents in files?",
         answer:
           "Use clear headings and sections. Keep documents focused on single topics. Link to related documents instead of cramming everything in one place. Use table of contents for navigation. This makes documents easier to update and understand.",
       },
@@ -270,11 +234,11 @@ export default function HelpCenter() {
         id: "bp-4",
         question: "When should I create a new workspace vs. a team?",
         answer:
-          "Use workspaces for separate organizations or major divisions. Use teams within workspaces for projects, departments, or functional groups. Workspaces are more isolated; teams share more context.",
+          "Workspaces are created by default, one for a specific user, Use teams within workspaces for projects, departments, or functional groups. Workspaces are more isolated; teams share more context.",
       },
       {
         id: "bp-5",
-        question: "How do I keep my workspace secure?",
+        question: "How do I keep my Team secure?",
         answer:
           "Regularly review member permissions. Remove inactive members. Use strong passwords and enable 2FA. Don't share sensitive links publicly. Audit access regularly. Keep sensitive documents in restricted folders with limited access.",
       },
@@ -471,17 +435,18 @@ export default function HelpCenter() {
               </h3>
               <p className="mb-4">
                 Our support team is here to help. Reach out to us at
-                support@togetha.com or use the chat feature in your workspace.
+                malostechnologies@gmail.com or use the chat feature in your
+                workspace.
               </p>
               <div className="flex gap-4 flex-wrap">
                 <a
-                  href="mailto:support@togetha.com"
+                  href="mailto:malostechnologies@gmail.com"
                   className="opacity-60 hover:opacity-100 transition-opacity underline text-sm"
                 >
                   Email Support
                 </a>
                 <a
-                  href="/contact"
+                  href="/support/contact"
                   className="opacity-60 hover:opacity-100 transition-opacity underline text-sm"
                 >
                   Contact Form

@@ -82,7 +82,7 @@ export default function PrivacyPolicy() {
               How we protect and handle your data at Togetha
             </p>
             <p className="text-sm opacity-50 font-medium">
-              Last updated: November 8, 2025
+              Last updated: November 10, 2025
             </p>
           </div>
         </div>
@@ -165,19 +165,11 @@ export default function PrivacyPolicy() {
                   {[
                     {
                       title: "Account Registration",
-                      desc: "When you create an account, we collect your name, email address, password, and company information.",
-                    },
-                    {
-                      title: "Profile Information",
-                      desc: "You may provide additional information like a profile picture, bio, role, and preferences.",
+                      desc: "When you create an account, we collect your name, email address, and profile picture from Google.",
                     },
                     {
                       title: "Communication Data",
                       desc: "We collect information when you email us, submit a support ticket, or communicate through our platform.",
-                    },
-                    {
-                      title: "Payment Information",
-                      desc: "When you subscribe to our paid services, we collect billing address, payment method, and transaction history.",
                     },
                     {
                       title: "User-Generated Content",
@@ -208,10 +200,6 @@ export default function PrivacyPolicy() {
                     {
                       title: "Usage Data",
                       desc: "Information about how you interact with our Services, including features accessed and time spent.",
-                    },
-                    {
-                      title: "IP Address",
-                      desc: "Your IP address and general location information (country, city level).",
                     },
                     {
                       title: "Cookies & Similar Technologies",
@@ -335,7 +323,7 @@ export default function PrivacyPolicy() {
                   {[
                     "We do not sell your personal data to third parties for marketing purposes.",
                     "We do not share your data with unaffiliated parties for their own marketing purposes without consent.",
-                    "We do not disclose your sensitive information (passwords, payment details) to unauthorized parties.",
+                    "We do not disclose your sensitive information (account details) to unauthorized parties.",
                   ].map((item, idx) => (
                     <li key={idx} className="flex gap-3 opacity-75">
                       <ChevronRight size={18} className="shrink-0 mt-0.5" />
@@ -473,7 +461,6 @@ export default function PrivacyPolicy() {
                     "Performance Cookies: Help us understand how you use our Services to improve functionality.",
                     "Functional Cookies: Remember your preferences and settings.",
                     "Analytics Cookies: Track usage patterns and performance metrics.",
-                    "Marketing Cookies: Used to display relevant advertising.",
                   ].map((item, idx) => (
                     <li key={idx} className="flex gap-3 opacity-75">
                       <ChevronRight size={18} className="shrink-0 mt-0.5" />
@@ -512,10 +499,9 @@ export default function PrivacyPolicy() {
               </h3>
               <ul className="space-y-3">
                 {[
-                  "Analytics Services (Google Analytics, Mixpanel)",
-                  "Payment Processors (Stripe, PayPal)",
-                  "Email Providers (SendGrid, Mailgun)",
-                  "Customer Support Tools (Intercom, Zendesk)",
+                  "Analytics Services (Google Analytics)",
+                  "Payment Processors (Flutter Wave)",
+                  "Email Providers (Resend)",
                   "Social Media Platforms",
                 ].map((item, idx) => (
                   <li key={idx} className="flex gap-3 opacity-75">
@@ -581,20 +567,15 @@ export default function PrivacyPolicy() {
               your rights, please contact us:
             </p>
             <div className="border-l-4 pl-6 py-4 mb-8 opacity-75">
-              <p className="font-semibold mb-3">Email: privacy@togetha.com</p>
               <p className="font-semibold mb-3">
-                Data Protection Officer: dpo@togetha.com
+                Email: malostechnologies@gmail.com
               </p>
               <p className="font-semibold mb-3">
-                Mailing Address:
+                Mailing Address: Gasabo, kigali, Rwanda
                 <br />
                 Togetha Inc.
                 <br />
-                123 Privacy Street
-                <br />
                 Gasabo, Kigali
-                <br />
-                Rwanda
               </p>
               <p className="font-semibold">
                 Response Time: We aim to respond to all inquiries within 30

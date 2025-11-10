@@ -83,7 +83,7 @@ export default function CommunityGuidelines() {
               environment for all Togetha users
             </p>
             <p className="text-sm opacity-50 font-medium">
-              Last updated: November 8, 2025
+              Last updated: November 10, 2025
             </p>
           </div>
         </div>
@@ -406,10 +406,8 @@ export default function CommunityGuidelines() {
             <ul className="space-y-3 mb-8">
               {[
                 "Keep confidential information within appropriate access levels",
-                "Don't share passwords or access credentials with others",
+                "Don't share access credentials with others",
                 "Log out when stepping away from your device",
-                "Use strong, unique passwords for your Togetha account",
-                "Enable two-factor authentication for added security",
                 "Don't access others' workspaces or data without permission",
                 "Report security vulnerabilities to Togetha support immediately",
                 "Be cautious with external file sharing and link permissions",
@@ -538,7 +536,6 @@ export default function CommunityGuidelines() {
                     "Silence notifications or step away if you can't focus",
                     "Avoid multitasking during important discussions",
                     "Listen actively and avoid interrupting",
-                    "Keep video on when it's a video meeting (if comfortable)",
                     "Follow the meeting agenda and stay on topic",
                     "Respect time limits and finish on time",
                   ].map((item, idx) => (
@@ -556,7 +553,6 @@ export default function CommunityGuidelines() {
                 </h3>
                 <ul className="space-y-3">
                   {[
-                    "Use comments instead of direct edits when appropriate",
                     "Communicate before making major changes",
                     "Organize documents clearly and consistently",
                     "Don't delete others' work without discussion",
@@ -578,7 +574,7 @@ export default function CommunityGuidelines() {
                 </h3>
                 <ul className="space-y-3">
                   {[
-                    "Keep workspace organized and folders clearly named",
+                    "Keep workspace organized and files clearly named",
                     "Use consistent naming conventions",
                     "Archive completed projects appropriately",
                     "Don't create unnecessary duplicate files",
@@ -612,9 +608,9 @@ export default function CommunityGuidelines() {
                 <ul className="space-y-3 mb-6">
                   {[
                     "Contact your workspace administrator directly",
-                    "Email our support team at support@togetha.com",
-                    "Use the report feature within Togetha (if available)",
-                    "Report severe violations to safety@togetha.com immediately",
+                    "Email our support team at malostechnologies@gmail.com",
+                    "Use the Help Center within Togetha, for asking help",
+                    "Report severe violations to malostechnologies@gmail.com immediately",
                   ].map((item, idx) => (
                     <li key={idx} className="flex gap-3 opacity-75">
                       <ChevronRight size={18} className="shrink-0 mt-0.5" />
@@ -710,7 +706,7 @@ export default function CommunityGuidelines() {
                 </p>
                 <ul className="space-y-3">
                   {[
-                    "Email appeals@togetha.com within 30 days of the action",
+                    "Email malostechnologies@gmail.com within 30 days of the action",
                     "Provide detailed explanation of why you believe the action was in error",
                     "Our review team will investigate and respond within 5 business days",
                     "Decisions can be overturned if evidence supports your appeal",
@@ -731,7 +727,8 @@ export default function CommunityGuidelines() {
               These Community Guidelines are part of our commitment to creating
               a positive, productive collaboration environment. We review and
               update these guidelines regularly based on community feedback and
-              emerging issues. Questions? Contact us at community@togetha.com.
+              emerging issues. Questions? Contact us at
+              malostechnologies@gmail.com.
             </p>
           </div>
         </main>

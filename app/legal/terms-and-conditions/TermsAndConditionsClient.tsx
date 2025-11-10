@@ -82,7 +82,7 @@ export default function TermsConditions() {
               The legal agreement governing your use of Togetha
             </p>
             <p className="text-sm opacity-50 font-medium">
-              Last updated: November 8, 2025
+              Last updated: November 10, 2025
             </p>
           </div>
         </div>
@@ -479,8 +479,8 @@ export default function TermsConditions() {
           <div className="pt-12 border-t opacity-50 text-sm">
             <p>
               If you have any questions about these Terms and Conditions, please
-              contact us at legal@togetha.com. These Terms and Conditions were
-              last updated on November 8, 2025.
+              contact us at malostechnologies@gmail.com. These Terms and Conditions were
+              last updated on November 10, 2025.
             </p>
           </div>
         </main>
