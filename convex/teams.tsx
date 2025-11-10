@@ -57,6 +57,11 @@ export const getTeam = query({
       userTeams.map(async (team) => {
         const collaborators = team.collaborators || [];
 
+        const creator = await ctx.db
+          .query("user")
+          .filter((q) => q.eq(q.field("email"), team.createdBy))
+          .first();
+
         const collaboratorsData = await Promise.all(
           collaborators.map(async (collab: { email: string; role: string }) => {
             const user = await ctx.db
@@ -73,7 +78,25 @@ export const getTeam = query({
           })
         );
 
-        return { ...team, collaboratorsData };
+        // check if creator already exists in collaborators
+        const isCreatorInList = collaborators.some(
+          (c) => c.email.toLowerCase() === team.createdBy.toLowerCase()
+        );
+
+        // only add creator if not already in collaborators
+        const allCollaborators = isCreatorInList
+          ? collaboratorsData
+          : [
+              {
+                collaboratorEmail: team.createdBy,
+                collaboratorRole: "Owner",
+                collaboratorName: creator?.name || "Unknown User",
+                collaboratorImage: creator?.image || "/user.webp",
+              },
+              ...collaboratorsData,
+            ];
+
+        return { ...team, collaboratorsData: allCollaborators };
       })
     );
 
