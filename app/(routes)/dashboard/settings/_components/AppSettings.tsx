@@ -1,7 +1,10 @@
+import { usePWAInstallPrompt } from "@/app/hooks/usePWAInstallPrompt";
 import { Button } from "@/components/ui/button";
 import React from "react";
 
 const AppSettings = () => {
+  const { canInstall, installApp } = usePWAInstallPrompt();
+
   return (
     <div className="space-y-8">
       <div>
@@ -15,12 +18,15 @@ const AppSettings = () => {
         <h2 className="text-sm text-primary/80">
           Our App is Compatible with all devices. If you incurr any issues while
           trying to download it or using it, kindly contact us on
-          malostechnologies@gmail.com for quick help with [COMPATIBILITY ISSUE] Headline.
+          malostechnologies@gmail.com for quick help with [COMPATIBILITY ISSUE]
+          Headline.
         </h2>
 
         <div className="space-y-4">
           <div className="flex items-center justify-between py-3">
-            <Button>Download App</Button>
+            <Button onClick={installApp} disabled={!canInstall}>
+              Download App
+            </Button>
           </div>
         </div>
       </div>

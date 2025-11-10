@@ -1,9 +1,26 @@
-import type { NextConfig } from "next";
+const withPWA = require("next-pwa")({
+  dest: "public",
+  register: true,
+  skipWaiting: true,
+  disable: process.env.NODE_ENV === "development",
+});
 
-const nextConfig: NextConfig = {
+/** @type {import('next').NextConfig} */
+const nextConfig: import('next').NextConfig = {
+  reactStrictMode: true,
+
   images: {
-    domains: ['lh3.googleusercontent.com']
-  }
+    remotePatterns: [
+      {
+        protocol: "https",
+        hostname: 'lh3.googleusercontent.com',
+      },
+      {
+        protocol: "https",
+        hostname: "cdn.togetha.app",
+      },
+    ],
+  },
 };
 
-export default nextConfig;
+module.exports = withPWA(nextConfig);
