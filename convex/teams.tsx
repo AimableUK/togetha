@@ -130,6 +130,10 @@ export const addCollaborator = mutation({
     const team = await ctx.db.get(args.teamId);
     if (!team) throw new Error("Team not found");
 
+    if (team.createdBy.toLowerCase() !== args.invitedBy.toLowerCase()) {
+      throw new Error("Only the team owner can invite collaborators");
+    }
+
     const alreadyCollaborator = team.collaborators?.some(
       (c: any) => c.email.toLowerCase() === args.email.toLowerCase()
     );
@@ -181,6 +185,10 @@ export const addCollaborators = mutation({
   handler: async (ctx, args) => {
     const team = await ctx.db.get(args.teamId);
     if (!team) throw new Error("Team not found");
+
+    if (team.createdBy.toLowerCase() !== args.invitedBy.toLowerCase()) {
+      throw new Error("Only the team owner can invite collaborators");
+    }
 
     const results: { email: string; status: string }[] = [];
 
@@ -234,13 +242,17 @@ export const updateCollaboratorRole = mutation({
     teamId: v.id("teams"),
     email: v.string(),
     role: v.union(v.literal("Editor"), v.literal("Viewer")),
+    requesterEmail: v.string(),
   },
   handler: async (ctx, args) => {
     const team = await ctx.db.get(args.teamId);
     if (!team) throw new Error("Team not found");
 
-    const collaborators = team.collaborators || [];
+    if (team.createdBy.toLowerCase() !== args.requesterEmail.toLowerCase()) {
+      throw new Error("Only the team owner can update roles");
+    }
 
+    const collaborators = team.collaborators || [];
     const index = collaborators.findIndex(
       (c: any) => c.email.toLowerCase() === args.email.toLowerCase()
     );
@@ -259,10 +271,16 @@ export const removeCollaborator = mutation({
   args: {
     teamId: v.id("teams"),
     email: v.string(),
+    requesterEmail: v.string(),
   },
   handler: async (ctx, args) => {
     const team = await ctx.db.get(args.teamId);
     if (!team) throw new Error("Team not found");
+
+    // Only the team creator can remove collaborators
+    if (team.createdBy.toLowerCase() !== args.requesterEmail.toLowerCase()) {
+      throw new Error("Only the team owner can remove collaborators");
+    }
 
     const updatedCollaborators = (team.collaborators || []).filter(
       (c: any) => c.email.toLowerCase() !== args.email.toLowerCase()
@@ -272,8 +290,8 @@ export const removeCollaborator = mutation({
       collaborators: updatedCollaborators,
     });
 
+    // Remove any pending invites for that collaborator
     const allInvites = await ctx.db.query("teamInvites").collect();
-
     for (const invite of allInvites) {
       if (
         invite.teamId === args.teamId &&
@@ -291,8 +309,17 @@ export const renameTeam = mutation({
   args: {
     _id: v.id("teams"),
     teamName: v.string(),
+    userEmail: v.string(),
   },
+
   handler: async (ctx, args) => {
+    const team = await ctx.db.get(args._id);
+    if (!team) throw new Error("Team not found");
+
+    if (team.createdBy !== args.userEmail) {
+      throw new Error("Only the team owner can rename this team");
+    }
+
     const result = await ctx.db.patch(args._id, { teamName: args.teamName });
     return result;
   },
@@ -301,17 +328,29 @@ export const renameTeam = mutation({
 export const deleteTeam = mutation({
   args: {
     _id: v.id("teams"),
+    userEmail: v.string(),
   },
+
   handler: async (ctx, args) => {
+    const team = await ctx.db.get(args._id);
+    if (!team) {
+      throw new Error("Team not found");
+    }
+
+    if (team.createdBy !== args.userEmail) {
+      throw new Error("Unauthorized: Only the team owner can delete this team");
+    }
+
     const result = await ctx.db.delete(args._id);
 
-    await ctx.db
+    const invites = await ctx.db
       .query("teamInvites")
       .filter((q) => q.eq(q.field("teamId"), args._id))
-      .collect()
-      .then((invites) => {
-        invites.forEach((invite) => ctx.db.delete(invite._id));
-      });
+      .collect();
+
+    for (const invite of invites) {
+      await ctx.db.delete(invite._id);
+    }
 
     return result;
   },

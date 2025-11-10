@@ -34,12 +34,15 @@ const DeleteDialog = ({ id, type, open, setOpen }: DialogProps) => {
           (c: TEAM) => c.collaboratorEmail === user?.email
         )?.collaboratorRole || "Viewer";
 
+  const OwnerRole: "Owner" | "Restricted" =
+    activeTeam_?.createdBy === user?.email ? "Owner" : "Restricted";
+
   const handleDelete = async () => {
-    if (currentRole === "Viewer") {
-      toast.error("Request Edit Access to perform this action");
-      return;
-    }
     if (type === "file") {
+      if (currentRole === "Viewer") {
+        toast.error("Request Edit Access to perform this action");
+        return;
+      }
       toast.promise(
         fileMutation({ _id: id as Id<"files">, userEmail: user?.email }),
         {
@@ -56,18 +59,25 @@ const DeleteDialog = ({ id, type, open, setOpen }: DialogProps) => {
         }
       );
     } else {
-      toast.promise(teamMutation({ _id: id as Id<"teams"> }), {
-        loading: `Deleting team...`,
-        success: () => ({
-          message: "Team Deleted",
-          description: "Team deleted successfully!",
-        }),
-        error: (error: any) => ({
-          message: "Error",
-          description:
-            error?.response?.data?.detail || "Failed to delete team.",
-        }),
-      });
+      if (OwnerRole === "Restricted") {
+        toast.error("Request Edit Access to perform this action");
+        return;
+      }
+      toast.promise(
+        teamMutation({ _id: id as Id<"teams">, userEmail: user?.email }),
+        {
+          loading: `Deleting team...`,
+          success: () => ({
+            message: "Team Deleted",
+            description: "Team deleted successfully!",
+          }),
+          error: (error: any) => ({
+            message: "Error",
+            description:
+              error?.response?.data?.detail || "Failed to delete team.",
+          }),
+        }
+      );
     }
 
     setOpen(false);

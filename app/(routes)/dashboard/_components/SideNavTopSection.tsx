@@ -1,6 +1,7 @@
 import {
   ChevronDown,
   Ellipsis,
+  EyeOff,
   FilePenLine,
   LayoutGridIcon,
   ListCollapse,
@@ -100,6 +101,9 @@ const SideNavTopSection = ({ user, setActiveTeamInfo }: any) => {
       </div>
     );
 
+  const currentRole: "Owner" | "Restricted" =
+    activeTeam_?.createdBy === user?.email ? "Owner" : "Restricted";
+
   const onMenuClick = (item: any) => {
     setLoadingItem(item?.id);
     router.push(item.path);
@@ -123,11 +127,20 @@ const SideNavTopSection = ({ user, setActiveTeamInfo }: any) => {
   };
 
   const handleRename = (teamId: string) => {
+    if (currentRole === "Restricted") {
+      toast.error("This Action is performed by Team Owner");
+      return;
+    }
     setRenameTeam(teamId);
   };
 
   const handleRenameTeam = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    if (currentRole === "Restricted") {
+      toast.error("This Action is performed by Team Owner");
+      return;
+    }
+
     const error = validateName(newTeamName);
     if (error) {
       toast.error(error);
@@ -137,6 +150,7 @@ const SideNavTopSection = ({ user, setActiveTeamInfo }: any) => {
           await renameTeamName({
             _id: renameTeam as Id<"teams">,
             teamName: newTeamName,
+            userEmail: user?.email,
           });
           setRenameTeam(null);
         })(),
@@ -150,7 +164,7 @@ const SideNavTopSection = ({ user, setActiveTeamInfo }: any) => {
             message: "Error",
             description:
               error?.response?.data?.detail ||
-              "Failed to rename your file, Please try again later.",
+              "Failed to rename Team, To rename a Team you must be its Owner",
           }),
         }
       );
@@ -158,6 +172,10 @@ const SideNavTopSection = ({ user, setActiveTeamInfo }: any) => {
   };
 
   const handleOpenDialog = (id: string, type: "file" | "team") => {
+    if (currentRole === "Restricted") {
+      toast.error("This Action is performed by Team Owner");
+      return;
+    }
     setOpenDialog(true);
     setDeleteData({ id, type });
   };

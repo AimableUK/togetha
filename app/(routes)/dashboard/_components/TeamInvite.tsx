@@ -9,14 +9,6 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import {
   Select,
   SelectContent,
   SelectGroup,
@@ -29,7 +21,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import Image from "next/image";
 import React, { useContext, useState } from "react";
-import { ChevronDown, Link2, LockKeyhole, SendHorizontal } from "lucide-react";
+import { Link2, SendHorizontal } from "lucide-react";
 import { TeamContext } from "@/app/FilesListContext";
 import { TEAM } from "@/lib/utils";
 import { validateEmail } from "@/app/Schema/schema";
@@ -62,6 +54,9 @@ const TeamInvite = ({
     const error = validateEmail(trimmed);
     if (error) {
       setErrorMsg(error);
+      setTimeout(() => {
+        setErrorMsg("");
+      }, 5000);
       return;
     }
 
@@ -118,10 +113,16 @@ const TeamInvite = ({
     email: string,
     newRole: "Editor" | "Viewer"
   ) => {
+    if (activeTeam_.createdBy !== user?.email) {
+      toast.error("Only the team owner can update roles");
+      return;
+    }
+
     const promise = updateCollabRole({
       teamId: activeTeam_._id,
       email,
       role: newRole,
+      requesterEmail: user?.email,
     });
 
     toast.promise(promise, {
@@ -130,12 +131,20 @@ const TeamInvite = ({
         message: "Role Updated",
         description: `${res.email} is set to ${res.role} Role`,
       }),
-      error: (err) => ({
-        message: "Failed to update role",
-        description:
+      error: (err) => {
+        let cleanMessage =
+          err?.message
+            ?.split("Uncaught Error: ")[1]
+            ?.split("at handler")[0]
+            ?.trim() ||
           err?.message?.replace(/\[.*?\]/g, "").trim() ||
-          "Something went wrong, please try again.",
-      }),
+          "Something went wrong, please try again.";
+
+        return {
+          message: "Failed to Update Role",
+          description: cleanMessage,
+        };
+      },
     });
 
     await promise;
@@ -151,9 +160,14 @@ const TeamInvite = ({
   };
 
   const handleRemoveCollaborator = async (email: string) => {
+    if (activeTeam_.createdBy !== user?.email) {
+      toast.error("Only the team owner can update roles");
+      return;
+    }
     const promise = removeCollab({
       teamId: activeTeam_._id,
       email,
+      requesterEmail: user?.email,
     });
 
     toast.promise(promise, {
@@ -162,12 +176,20 @@ const TeamInvite = ({
         message: "Collaborator Removed",
         description: `${res.email} has been removed from the team`,
       }),
-      error: (err) => ({
-        message: "Failed to remove collaborator",
-        description:
+      error: (err) => {
+        let cleanMessage =
+          err?.message
+            ?.split("Uncaught Error: ")[1]
+            ?.split("at handler")[0]
+            ?.trim() ||
           err?.message?.replace(/\[.*?\]/g, "").trim() ||
-          "Something went wrong, please try again.",
-      }),
+          "Something went wrong, please try again.";
+
+        return {
+          message: "Failed to Remove Collaborator",
+          description: cleanMessage,
+        };
+      },
     });
 
     await promise;
@@ -187,118 +209,104 @@ const TeamInvite = ({
       <Dialog open={openInviteDialog} onOpenChange={setOpenInviteDialog}>
         <DialogContent className="flex flex-col overflow-hidden px-4">
           <DialogHeader>
-            <DialogTitle>Invite People to {activeTeam_?.teamName}</DialogTitle>
+            <DialogTitle>
+              {activeTeam_?.createdBy === user?.email && "Invite People to"}{" "}
+              {activeTeam_?.teamName}
+            </DialogTitle>
             <DialogDescription className="sr-only">
               {activeTeam_?.teamName}
             </DialogDescription>
           </DialogHeader>
           <div className="flex-1 gap-2">
             {/* Invite Input */}
-            <div className="flex-1 gap-2">
-              <Label htmlFor="inviteEmail" className="sr-only">
-                Enter Email
-              </Label>
-              <div className="flex gap-1 flex-col lg:flex-row lg:items-center w-full">
-                <div className="flex relative w-full">
-                  <Input
-                    id="inviteEmail"
-                    value={emailInput}
-                    placeholder="Invite via Email address"
-                    className="mt-2 h-11 py-2 pr-12 md:pr-24"
-                    onChange={(e) => setEmailInput(e.target.value)}
-                    onKeyDown={(e) => e.key === "Enter" && createInvite()}
-                  />
-                  <Button
-                    onClick={createInvite}
-                    disabled={!!validateEmail(emailInput)}
-                    className="cursor-pointer disabled:cursor-none absolute right-1 top-3 bottom-1 rounded-md bg-accent text-white hover:bg-accent/80 active:bg-accent/60"
+            {activeTeam_?.createdBy === user?.email && (
+              <div className="flex-1 gap-2">
+                <Label htmlFor="inviteEmail" className="sr-only">
+                  Enter Email
+                </Label>
+                <div className="flex gap-1 flex-col lg:flex-row lg:items-center w-full">
+                  <div className="flex relative w-full">
+                    <Input
+                      id="inviteEmail"
+                      value={emailInput}
+                      placeholder="Invite via Email address"
+                      className="mt-2 h-11 py-2 pr-12 md:pr-24"
+                      onChange={(e) => setEmailInput(e.target.value)}
+                      onKeyDown={(e) => e.key === "Enter" && createInvite()}
+                    />
+                    <Button
+                      onClick={createInvite}
+                      disabled={!!validateEmail(emailInput)}
+                      className="cursor-pointer disabled:cursor-none absolute right-1 top-3 bottom-1 rounded-md bg-accent text-white hover:bg-accent/80 active:bg-accent/60"
+                    >
+                      <SendHorizontal className="h-4 w-4 md:mr-1" />
+                      <span className="hidden md:flex">Invite</span>
+                    </Button>
+                  </div>
+                  <Select
+                    value={selectedRole}
+                    onValueChange={(value) =>
+                      setSelectedRole(value as "Editor" | "Viewer")
+                    }
                   >
-                    <SendHorizontal className="h-4 w-4 md:mr-1" />
-                    <span className="hidden md:flex">Invite</span>
-                  </Button>
+                    <SelectTrigger className=" h-11 py-2 mt-2 w-[100px]">
+                      <SelectValue placeholder="Select role" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectGroup>
+                        <SelectLabel>Role</SelectLabel>
+                        <SelectItem value="Viewer">Viewer</SelectItem>
+                        <SelectItem value="Editor">Editor</SelectItem>
+                      </SelectGroup>
+                    </SelectContent>
+                  </Select>
                 </div>
-                <Select
-                  value={selectedRole}
-                  onValueChange={(value) =>
-                    setSelectedRole(value as "Editor" | "Viewer")
-                  }
-                >
-                  <SelectTrigger className=" h-11 py-2 mt-2 w-[100px]">
-                    <SelectValue placeholder="Select role" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectGroup>
-                      <SelectLabel>Role</SelectLabel>
-                      <SelectItem value="Viewer">Viewer</SelectItem>
-                      <SelectItem value="Editor">Editor</SelectItem>
-                    </SelectGroup>
-                  </SelectContent>
-                </Select>
               </div>
-            </div>
+            )}
 
-            {errorMsg && (
+            {errorMsg && errorMsg.length > 0 && (
               <p className="text-red-500 dark:text-red-300 font-semibold text-sm mt-2">
                 {errorMsg}
               </p>
             )}
           </div>
           <div className="flex flex-col max-h-30 sm:max-h-48 overflow-y-auto">
-            <h2 className="font-semibold text-sm">People with access</h2>
-            {user && (
-              <div className="flex flex-row mb-2 md:mb-2 items-center whitespace-nowrap justify-between">
-                <div className="mt-2 flex items-center gap-1">
-                  <Image
-                    src={user?.picture ?? "/user.webp"}
-                    alt="user Image"
-                    width={40}
-                    height={40}
-                    className="rounded-full w-8 md:w-10"
-                  />
-                  <div className="flex flex-col overflow-hidden">
-                    <h2 className="font-bold text-foreground/85 text-xs md:text-sm truncate">
-                      {user?.given_name} {user?.family_name} (You)
-                    </h2>
-                    <h2 className="text-[12.5px] md:text-[14px] text-foreground/75 truncate max-w-[180px]">
-                      {user?.email}
-                    </h2>
-                  </div>
-                </div>
-                <h3 className="text-foreground/75">Owner</h3>
-              </div>
-            )}
+            <h2 className="font-semibold text-sm mb-2">People with access</h2>
             <div className="flex flex-col space-y-1 md:space-y-2">
               {activeTeam_?.collaboratorsData.length > 1 &&
-                activeTeam_.collaboratorsData
-                  ?.filter((c: TEAM) => c.collaboratorEmail !== user?.email)
-                  .map((c: TEAM) => (
-                    <div
-                      key={c.collaboratorEmail}
-                      className="flex items-center justify-between w-full gap-2"
-                    >
-                      {/* Collaborator Info */}
-                      <div className="flex items-center gap-2 min-w-0 flex-1">
-                        <Image
-                          src={c.collaboratorImage ?? "/user.webp"}
-                          alt={c.collaboratorName ?? "Team Collaborator"}
-                          width={40}
-                          height={40}
-                          className="rounded-full w-8 md:w-10 shrink-0"
-                        />
-                        <div className="flex flex-col min-w-0">
-                          <h2 className="font-bold text-foreground/85 text-xs md:text-sm truncate">
-                            {c.collaboratorName}
-                          </h2>
-                          <h2 className="text-[12.5px] md:text-[14px] text-foreground/75 truncate">
-                            {c.collaboratorEmail}
-                          </h2>
-                        </div>
+                activeTeam_.collaboratorsData.map((c: TEAM) => (
+                  <div
+                    key={c.collaboratorEmail}
+                    className="flex items-center justify-between w-full gap-2"
+                  >
+                    {/* Collaborator Info */}
+                    <div className="flex items-center gap-2 min-w-0 flex-1">
+                      <Image
+                        src={c.collaboratorImage ?? "/user.webp"}
+                        alt={c.collaboratorName ?? "Team Collaborator"}
+                        width={40}
+                        height={40}
+                        className="rounded-full w-8 md:w-10 shrink-0"
+                      />
+                      <div className="flex flex-col min-w-0">
+                        <h2 className="font-bold text-foreground/85 text-xs md:text-sm truncate">
+                          {c.collaboratorName}
+                        </h2>
+                        <h2 className="text-[12.5px] md:text-[14px] text-foreground/75 truncate">
+                          {c.collaboratorEmail}
+                        </h2>
                       </div>
+                    </div>
 
-                      {/* Role select for confirmed collaborators */}
-                      {c.status !== "pending" ? (
+                    {/* Role select for confirmed collaborators */}
+                    {c.status !== "pending" ? (
+                      <div className="flex justify-end w-[140px] shrink-0">
                         <div className="flex justify-end w-[140px] shrink-0">
-                          <div className="flex justify-end w-[140px] shrink-0">
+                          {c.collaboratorEmail === activeTeam_.createdBy ? (
+                            <h2 className="text-5 text-foreground/75 truncate">
+                              Owner
+                            </h2>
+                          ) : activeTeam_.createdBy === user?.email ? (
                             <Select
                               value={c.collaboratorRole}
                               onValueChange={(value) => {
@@ -328,28 +336,31 @@ const TeamInvite = ({
                                 </SelectGroup>
                               </SelectContent>
                             </Select>
-                          </div>
+                          ) : (
+                            <h2 className="text-5 text-foreground/75 truncate">
+                              {c.collaboratorRole}
+                            </h2>
+                          )}
                         </div>
-                      ) : (
-                        // Pending collaborators
-                        <div className="flex items-center justify-end w-[140px] gap-2 shrink-0">
-                          <span className="text-yellow-600 text-sm">
-                            Pending
-                          </span>
-                          <Button
-                            size="sm"
-                            variant="ghost"
-                            // onClick={() => handleUndoInvite(c.collaboratorEmail)}
-                          >
-                            Undo
-                          </Button>
-                        </div>
-                      )}
-                    </div>
-                  ))}
+                      </div>
+                    ) : (
+                      // Pending collaborators
+                      <div className="flex items-center justify-end w-[140px] gap-2 shrink-0">
+                        <span className="text-yellow-600 text-sm">Pending</span>
+                        <Button
+                          size="sm"
+                          variant="ghost"
+                          // onClick={() => handleUndoInvite(c.collaboratorEmail)}
+                        >
+                          Undo
+                        </Button>
+                      </div>
+                    )}
+                  </div>
+                ))}
             </div>
           </div>
-          <div className="flex flex-col">
+          {/* <div className="flex flex-col">
             <h2 className="font-semibold">General access</h2>
             <div className="md:mt-2 flex items-center gap-1 w-fit">
               <LockKeyhole className="min-h-5 hidden md:block" />
@@ -395,7 +406,7 @@ const TeamInvite = ({
                 </DropdownMenu>
               </div>
             </div>
-          </div>
+          </div> */}
           <DialogFooter className="flex flex-row justify-end sm:justify-between">
             <Button
               type="button"
