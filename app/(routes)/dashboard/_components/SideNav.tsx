@@ -53,12 +53,20 @@ const SideNav = () => {
         message: "File Created",
         description: `${fileName} created successfully!`,
       }),
-      error: (error) => ({
-        message: "Error",
-        description:
-          error?.response?.data?.detail ||
-          "Failed to Create file, Please Try again later.",
-      }),
+      error: (err) => {
+        let cleanMessage =
+          err?.message
+            ?.split("Uncaught Error: ")[1]
+            ?.split("at handler")[0]
+            ?.trim() ||
+          err?.message?.replace(/\[.*?\]/g, "").trim() ||
+          "Something went wrong, please try again.";
+
+        return {
+          message: "Failed to Create File, Please try Again",
+          description: cleanMessage,
+        };
+      },
     });
     setErrorMsg("");
   };

@@ -90,10 +90,6 @@ const SideNavTopSection = ({ user, setActiveTeamInfo }: any) => {
     activeTeam_ && setActiveTeamInfo(activeTeam_);
   }, [activeTeam_]);
 
-  useEffect(() => {
-    setLoadingItem(null);
-  }, [router]);
-
   if (activeTeam_ === undefined)
     return (
       <div className="flex flex-col items-center gap-5 absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 ">
@@ -114,12 +110,7 @@ const SideNavTopSection = ({ user, setActiveTeamInfo }: any) => {
 
     setLoadingItem(item?.id);
     router.push(item.path);
-
-    setTimeout(() => {
-      if (currentPath === item.path) {
-        setLoadingItem(null);
-      }
-    }, 2000);
+    setTimeout(() => setLoadingItem(null), 2000);
   };
 
   const onTeamsClick = () => {

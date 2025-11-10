@@ -1,7 +1,6 @@
 import { v } from "convex/values";
 import { mutation, query } from "./_generated/server";
 
-// done
 export const createFile = mutation({
   args: {
     fileName: v.string(),
@@ -14,11 +13,27 @@ export const createFile = mutation({
   },
 
   handler: async (ctx, args) => {
+    const team = await ctx.db.get(args.teamId);
+    if (!team) throw new Error("Team not found");
+
+    const isOwner = team.createdBy === args.createdBy;
+    const isEditor = (team.collaborators || []).some(
+      (c: any) =>
+        c.email.toLowerCase() === args.createdBy.toLowerCase() &&
+        c.role === "Editor"
+    );
+
+    if (!isOwner && !isEditor) {
+      throw new Error(
+        "Permission denied. Only Editors or the Owner can create files."
+      );
+    }
+
     const result = await ctx.db.insert("files", args);
     return result;
   },
 });
-// done
+
 export const getFiles = query({
   args: { teamId: v.string() },
 
@@ -58,7 +73,7 @@ export const getFileById = query({
     return result;
   },
 });
-// done
+
 export const addArchieve = mutation({
   args: {
     _id: v.id("files"),
@@ -86,7 +101,7 @@ export const addArchieve = mutation({
     return { success: true };
   },
 });
-// done
+
 export const undoArchieve = mutation({
   args: {
     _id: v.id("files"),
@@ -114,7 +129,7 @@ export const undoArchieve = mutation({
     return result;
   },
 });
-// done
+
 export const deleteFile = mutation({
   args: {
     _id: v.id("files"),
@@ -141,7 +156,7 @@ export const deleteFile = mutation({
     return result;
   },
 });
-// done
+
 export const renameFile = mutation({
   args: {
     _id: v.id("files"),

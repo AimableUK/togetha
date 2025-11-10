@@ -9,11 +9,10 @@ import {
   TextAlignJustify,
 } from "lucide-react";
 import Image from "next/image";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import React, { useContext, useState } from "react";
 import TeamInvite from "../TeamInvite";
 import { Badge } from "@/components/ui/badge";
-import Link from "next/link";
 import { TEAM } from "@/lib/utils";
 
 const Header = () => {
@@ -27,6 +26,14 @@ const Header = () => {
   } = useContext(TeamContext);
   const pathname = usePathname();
   const [openInviteDialog, setOpenInviteDialog] = useState(false);
+  const [loading, setLoading] = useState<boolean>(false);
+  const router = useRouter();
+
+  const handleUpdates = async () => {
+    setLoading(true);
+    router.push("/dashboard/updates");
+    setTimeout(() => setLoading(false), 1000);
+  };
 
   return (
     <>
@@ -75,17 +82,20 @@ const Header = () => {
           )}
 
           <div className="flex flex-row gap-x-3 items-center">
-            <Link href="/dashboard/updates" className="relative">
-              <Bell className="cursor-pointer relative" />
-              {updates_ && (
-                <Badge
-                  className="-top-3 -right-2 h-5 min-w-5 bg-secondary rounded-full px-1 font-mono tabular-nums absolute"
-                  variant="outline"
-                >
-                  {updates_.length ?? 0}
-                </Badge>
-              )}
-            </Link>
+            <div className="flex gap-2">
+              {loading && <span className="loader2 w-6!"></span>}
+              <div onClick={handleUpdates} className="relative">
+                <Bell className="cursor-pointer relative" />
+                {updates_ && (
+                  <Badge
+                    className="-top-3 -right-2 h-5 min-w-5 bg-secondary rounded-full px-1 font-mono tabular-nums absolute"
+                    variant="outline"
+                  >
+                    {updates_.length ?? 0}
+                  </Badge>
+                )}
+              </div>
+            </div>
 
             <div className="flex items-end relative">
               {/* Owner */}

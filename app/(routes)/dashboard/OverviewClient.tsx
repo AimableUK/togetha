@@ -3,7 +3,7 @@
 import { CircularProgressbarWithChildren } from "react-circular-progressbar";
 import "react-circular-progressbar/dist/styles.css";
 import BarChart from "./_components/BarChart";
-import { useContext, useMemo } from "react";
+import { useContext, useMemo, useState } from "react";
 import { TeamContext } from "@/app/FilesListContext";
 import {
   FREE_PLAN_LIMITS,
@@ -14,6 +14,7 @@ import { Button } from "@/components/ui/button";
 import Image from "next/image";
 import MotivationBanner from "./_components/MotivationBanner";
 import { TEAM } from "@/lib/utils";
+import { useRouter } from "next/navigation";
 
 type CreationItem = {
   _creationTime: number;
@@ -29,6 +30,8 @@ type GroupedDataItem = {
 const OverviewClient = () => {
   const { activeTeam_, teamList_, files_, userPlan_, user } =
     useContext(TeamContext);
+  const [loading, setLoading] = useState<boolean>(false);
+  const router = useRouter();
 
   const userPlanLimits = useMemo(() => {
     switch (userPlan_) {
@@ -98,6 +101,12 @@ const OverviewClient = () => {
   const category: "high" | "medium" | "low" =
     filesTodayCount >= 2 ? "high" : filesTodayCount === 1 ? "medium" : "low";
 
+  const handleGetStarted = async () => {
+    setLoading(true);
+    router.push("/dashboard/getstarted");
+    setTimeout(() => setLoading(false), 1000);
+  };
+
   return (
     <div className="flex flex-col gap-4 my-5 mx-3">
       <div className="grid grid-cols-1 lg:grid-cols-3 md:gap-4 h-full">
@@ -110,8 +119,11 @@ const OverviewClient = () => {
         </div>
         <div className="col-span-1 relative bg-secondary rounded-lg px-5 py-3 mt-4 md:mt-0">
           <div className="flex flex-col gap-3">
-            <h2 className="font-semibold">Upgrade to PRO for more resources</h2>
-            <Button className="w-fit btn-grad">Upgrade Now</Button>
+            <h2 className="font-semibold">Bring your next idea to life</h2>
+            <Button onClick={handleGetStarted} className="flex! w-fit btn-grad">
+              {loading && <span className="loader2 w-5!"></span>}
+              Get Started
+            </Button>
           </div>
           <Image
             src="/upgrade-pro.png"
@@ -205,7 +217,7 @@ const OverviewClient = () => {
 
           {/* cards */}
           <div className="flex flex-col gap-y-1">
-            {activeTeam_?.collaboratorsData.length < 1 ? (
+            {activeTeam_?.collaboratorsData.length > 1 ? (
               activeTeam_.collaboratorsData.map((c: TEAM) => (
                 <div
                   key={c.collaboratorEmail}
