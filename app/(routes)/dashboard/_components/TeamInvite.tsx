@@ -364,7 +364,7 @@ const TeamInvite = ({
                 ))
               ) : (
                 <div className="flex items-center text-center w-full text-primary/80 font-semibold text-xs">
-                  No Collaborators, Invite them and start collaborating.
+                  No Collaborators, Invite some and start collaborating.
                 </div>
               )}
             </div>

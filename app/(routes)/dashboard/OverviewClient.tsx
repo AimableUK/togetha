@@ -13,8 +13,6 @@ import {
 import { Button } from "@/components/ui/button";
 import Image from "next/image";
 import MotivationBanner from "./_components/MotivationBanner";
-import { formatDistanceToNow } from "date-fns";
-import { Separator } from "@/components/ui/separator";
 import { TEAM } from "@/lib/utils";
 
 type CreationItem = {
@@ -207,7 +205,7 @@ const OverviewClient = () => {
 
           {/* cards */}
           <div className="flex flex-col gap-y-1">
-            {activeTeam_?.collaboratorsData.length > 1 &&
+            {activeTeam_?.collaboratorsData.length < 1 ? (
               activeTeam_.collaboratorsData.map((c: TEAM) => (
                 <div
                   key={c.collaboratorEmail}
@@ -232,7 +230,12 @@ const OverviewClient = () => {
                     </div>
                   </div>
                 </div>
-              ))}
+              ))
+            ) : (
+              <div className="flex items-center text-primary/90 text-sm justify-between w-full gap-2 bg-background/60 hover:bg-background/80 trans rounded-md p-2">
+                No Collaborators, Invite some and start collaborating.
+              </div>
+            )}
           </div>
           {/* end updates */}
         </div>
