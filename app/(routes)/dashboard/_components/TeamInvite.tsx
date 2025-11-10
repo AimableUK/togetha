@@ -273,7 +273,7 @@ const TeamInvite = ({
           <div className="flex flex-col max-h-30 sm:max-h-48 overflow-y-auto">
             <h2 className="font-semibold text-sm mb-2">People with access</h2>
             <div className="flex flex-col space-y-1 md:space-y-2">
-              {activeTeam_?.collaboratorsData.length > 1 &&
+              {activeTeam_?.collaboratorsData.length > 1 ? (
                 activeTeam_.collaboratorsData.map((c: TEAM) => (
                   <div
                     key={c.collaboratorEmail}
@@ -357,7 +357,12 @@ const TeamInvite = ({
                       </div>
                     )}
                   </div>
-                ))}
+                ))
+              ) : (
+                <div className="flex items-center text-center w-full text-primary/80 font-semibold text-xs">
+                  No Collaborators, Invite them and start collaborating.
+                </div>
+              )}
             </div>
           </div>
           {/* <div className="flex flex-col">

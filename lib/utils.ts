@@ -27,6 +27,11 @@ export interface TEAM {
   createdBy: string;
   teamName: string;
   _id: string;
+  collaborators?: {
+    email: string,
+    role: string
+  }[];
+  _creationTime?: number;
   collaboratorEmail?: string;
   collaboratorName?: string;
   collaboratorImage?: string;

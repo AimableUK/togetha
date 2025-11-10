@@ -90,6 +90,10 @@ const SideNavTopSection = ({ user, setActiveTeamInfo }: any) => {
     activeTeam_ && setActiveTeamInfo(activeTeam_);
   }, [activeTeam_]);
 
+  useEffect(() => {
+    setLoadingItem(null);
+  }, [router]);
+
   if (activeTeam_ === undefined)
     return (
       <div className="flex flex-col items-center gap-5 absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 ">
@@ -105,11 +109,19 @@ const SideNavTopSection = ({ user, setActiveTeamInfo }: any) => {
     activeTeam_?.createdBy === user?.email ? "Owner" : "Restricted";
 
   const onMenuClick = (item: any) => {
+    const currentPath = window.location.pathname;
+
+    if (currentPath === item.path) {
+      return;
+    }
+
     setLoadingItem(item?.id);
     router.push(item.path);
 
     setTimeout(() => {
-      pathname !== "/dashboard" && setLoadingItem(null);
+      if (currentPath !== "/dashboard") {
+        setLoadingItem(null);
+      }
     }, 2000);
   };
 
@@ -127,20 +139,11 @@ const SideNavTopSection = ({ user, setActiveTeamInfo }: any) => {
   };
 
   const handleRename = (teamId: string) => {
-    if (currentRole === "Restricted") {
-      toast.error("This Action is performed by Team Owner");
-      return;
-    }
     setRenameTeam(teamId);
   };
 
   const handleRenameTeam = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    if (currentRole === "Restricted") {
-      toast.error("This Action is performed by Team Owner");
-      return;
-    }
-
     const error = validateName(newTeamName);
     if (error) {
       toast.error(error);
@@ -172,10 +175,6 @@ const SideNavTopSection = ({ user, setActiveTeamInfo }: any) => {
   };
 
   const handleOpenDialog = (id: string, type: "file" | "team") => {
-    if (currentRole === "Restricted") {
-      toast.error("This Action is performed by Team Owner");
-      return;
-    }
     setOpenDialog(true);
     setDeleteData({ id, type });
   };

@@ -29,7 +29,7 @@ const AccountSettings = () => {
             <div className="flex items-center gap-2">
               <input
                 type="email"
-                value={userDetails_?.name}
+                value={userDetails_?.name || "User Name"}
                 disabled
                 className="flex-1 px-4 py-2 border rounded-lg opacity-50 cursor-not-allowed"
               />
@@ -46,7 +46,7 @@ const AccountSettings = () => {
             <div className="flex items-center gap-2">
               <input
                 type="email"
-                value={userDetails_?.email}
+                value={userDetails_?.email || "User Email"}
                 disabled
                 className="flex-1 px-4 py-2 border rounded-lg opacity-50 cursor-not-allowed"
               />

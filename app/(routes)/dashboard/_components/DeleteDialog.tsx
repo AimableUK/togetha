@@ -34,9 +34,6 @@ const DeleteDialog = ({ id, type, open, setOpen }: DialogProps) => {
           (c: TEAM) => c.collaboratorEmail === user?.email
         )?.collaboratorRole || "Viewer";
 
-  const OwnerRole: "Owner" | "Restricted" =
-    activeTeam_?.createdBy === user?.email ? "Owner" : "Restricted";
-
   const handleDelete = async () => {
     if (type === "file") {
       if (currentRole === "Viewer") {
@@ -51,18 +48,23 @@ const DeleteDialog = ({ id, type, open, setOpen }: DialogProps) => {
             message: "File Deleted",
             description: "File deleted successfully!",
           }),
-          error: (error: any) => ({
-            message: "Error",
-            description:
-              error?.response?.data?.detail || "Failed to delete file.",
-          }),
+          error: (err) => {
+            let cleanMessage =
+              err?.message
+                ?.split("Uncaught Error: ")[1]
+                ?.split("at handler")[0]
+                ?.trim() ||
+              err?.message?.replace(/\[.*?\]/g, "").trim() ||
+              "Something went wrong, please try again.";
+
+            return {
+              message: "Failed to Delete File",
+              description: cleanMessage,
+            };
+          },
         }
       );
     } else {
-      if (OwnerRole === "Restricted") {
-        toast.error("Request Edit Access to perform this action");
-        return;
-      }
       toast.promise(
         teamMutation({ _id: id as Id<"teams">, userEmail: user?.email }),
         {
@@ -71,11 +73,20 @@ const DeleteDialog = ({ id, type, open, setOpen }: DialogProps) => {
             message: "Team Deleted",
             description: "Team deleted successfully!",
           }),
-          error: (error: any) => ({
-            message: "Error",
-            description:
-              error?.response?.data?.detail || "Failed to delete team.",
-          }),
+          error: (err) => {
+            let cleanMessage =
+              err?.message
+                ?.split("Uncaught Error: ")[1]
+                ?.split("at handler")[0]
+                ?.trim() ||
+              err?.message?.replace(/\[.*?\]/g, "").trim() ||
+              "Something went wrong, please try again.";
+
+            return {
+              message: "Failed to Delete Team",
+              description: cleanMessage,
+            };
+          },
         }
       );
     }

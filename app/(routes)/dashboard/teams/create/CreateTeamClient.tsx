@@ -67,7 +67,7 @@ const CreateTeamClient = () => {
       setTeamName("");
       setErrorMsg("");
 
-      toast.success(`${teamName} Team created successfully!`);
+      toast.success(`${teamName} Team created successfully! redirecting to Dashboard`);
 
       router.push("/dashboard");
     } catch (err: any) {

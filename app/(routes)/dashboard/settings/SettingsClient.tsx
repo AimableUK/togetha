@@ -1,12 +1,13 @@
 "use client";
 
 import React, { useState } from "react";
-import { Settings, User, Bell, Shield, Users } from "lucide-react";
+import { Settings, User, Bell, Shield, Users, Component } from "lucide-react";
 import AccountSettings from "./_components/AccountSettings";
 import NotificationSettings from "./_components/NotificationSettings";
 import TeamSettings from "./_components/TeamSettings";
 import PrivacySettings from "./_components/PrivacySettings";
 import PreferenciesSettings from "./_components/PreferenciesSettings";
+import AppSettings from "./_components/AppSettings";
 
 const SettingsDashboard = () => {
   const [activeTab, setActiveTab] = useState("account");
@@ -17,6 +18,7 @@ const SettingsDashboard = () => {
     { id: "teams", label: "Teams", icon: Users },
     { id: "privacy", label: "Privacy", icon: Shield },
     { id: "preferences", label: "Preferences", icon: Settings },
+    { id: "App", label: "App", icon: Component },
   ];
 
   return (
@@ -57,6 +59,8 @@ const SettingsDashboard = () => {
             {activeTab === "privacy" && <PrivacySettings />}
 
             {activeTab === "preferences" && <PreferenciesSettings />}
+
+            {activeTab === "App" && <AppSettings />}
           </main>
         </div>
       </div>

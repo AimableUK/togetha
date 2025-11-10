@@ -15,6 +15,7 @@ import Image from "next/image";
 import MotivationBanner from "./_components/MotivationBanner";
 import { formatDistanceToNow } from "date-fns";
 import { Separator } from "@/components/ui/separator";
+import { TEAM } from "@/lib/utils";
 
 type CreationItem = {
   _creationTime: number;
@@ -28,7 +29,7 @@ type GroupedDataItem = {
 };
 
 const OverviewClient = () => {
-  const { teamList_, files_, userPlan_, user } =
+  const { activeTeam_, teamList_, files_, userPlan_, user } =
     useContext(TeamContext);
 
   const userPlanLimits = useMemo(() => {
@@ -199,20 +200,39 @@ const OverviewClient = () => {
           </div>
         </div>
 
-        <div className="w-full col-span-1 p-5 rounded-md bg-secondary flex flex-col">
+        <div className="w-full col-span-1 p-3 rounded-md bg-secondary flex flex-col">
           <h3 className="font-semibold text-primary/80 mb-3">
-            Recent Activity
+            Team Collaborators
           </h3>
 
           {/* cards */}
-          <div className="flex flex-col gap-2">
-            <div className="flex items-center p-3 rounded-md bg-background/60 hover:bg-background/80 transition">
-              <div className="flex items-center gap-3">
-                <p className="text-sm text-foreground/80 font-semibold">
-                  No Updates available
-                </p>
-              </div>
-            </div>
+          <div className="flex flex-col gap-y-1">
+            {activeTeam_?.collaboratorsData.length > 1 &&
+              activeTeam_.collaboratorsData.map((c: TEAM) => (
+                <div
+                  key={c.collaboratorEmail}
+                  className="flex items-center justify-between w-full gap-2 bg-background/60 hover:bg-background/80 trans rounded-md p-2"
+                >
+                  {/* Collaborator Info */}
+                  <div className="flex items-center gap-2 min-w-0 flex-1">
+                    <Image
+                      src={c.collaboratorImage ?? "/user.webp"}
+                      alt={c.collaboratorName ?? "Team Collaborator"}
+                      width={40}
+                      height={40}
+                      className="rounded-full w-8 md:w-10 shrink-0"
+                    />
+                    <div className="flex flex-col min-w-0">
+                      <h2 className="font-bold text-foreground/85 text-xs md:text-sm truncate">
+                        {c.collaboratorName}
+                      </h2>
+                      <h2 className="text-[12.5px] md:text-[14px] text-foreground/75 truncate">
+                        {c.collaboratorEmail}
+                      </h2>
+                    </div>
+                  </div>
+                </div>
+              ))}
           </div>
           {/* end updates */}
         </div>
