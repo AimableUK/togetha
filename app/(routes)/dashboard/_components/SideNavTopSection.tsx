@@ -210,7 +210,7 @@ const SideNavTopSection = ({ user, setActiveTeamInfo }: any) => {
 
           <PopoverContent className="md:ml-5 p-2 max-h-[410px] w-64">
             {/* Team section */}
-            <div className="px-2 overflow-y-auto max-h-40">
+            <div className="px-2 overflow-y-auto max-h-32">
               {teamList_?.map((team: TEAM) => (
                 <div
                   key={team._id}
