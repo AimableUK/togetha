@@ -70,7 +70,7 @@ const DashboardLayout = ({
       setTeamList_(null);
 
       if (!pathname.includes("teams/create")) {
-        router.push("/dashboard/getstarted?mode=onboarding");
+        router.push("/dashboard/entry_point");
       }
     }
   }, [teams, pathname, router]);
@@ -93,7 +93,11 @@ const DashboardLayout = ({
   }
 
   // Routes that should NOT show layout
-  const noLayoutRoutes = ["/dashboard/getstarted", "/dashboard/teams/create"];
+  const noLayoutRoutes = [
+    "/dashboard/getstarted",
+    "/dashboard/teams/create",
+    "/dashboard/entry_point",
+  ];
   const hideLayout = noLayoutRoutes.some((route) => pathname.startsWith(route));
 
   return (

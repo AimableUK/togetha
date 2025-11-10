@@ -467,6 +467,35 @@ export const pageMetadata = {
       images: ["https://www.togetha-app.vercel.app/twitter-banner.png"],
     },
   },
+  
+  onboarding: {
+    title: "Onboarding - Togetha",
+    description:
+      "Get started with Togetha! Learn how to set up your workspace, invite collaborators, and explore the tools that help your team think, create, and collaborate.",
+    openGraph: {
+      type: "website",
+      url: "https://www.togetha-app.vercel.app/dashboard/entry_point",
+      title: "Onboarding - Togetha",
+      description:
+        "Get started with Togetha! Learn how to set up your workspace, invite collaborators, and explore the tools that help your team think, create, and collaborate.",
+      images: [
+        {
+          url: "https://www.togetha-app.vercel.app/og-image.png",
+          width: 1200,
+          height: 630,
+          alt: "Onboarding - Togetha",
+        },
+      ],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: "Onboarding - Togetha",
+      description:
+        "Get started with Togetha! Learn how to set up your workspace, invite collaborators, and explore the tools that help your team think, create, and collaborate.",
+      images: ["https://www.togetha-app.vercel.app/twitter-banner.png"],
+    },
+  },
+
 };
 
 export interface FAQ {

@@ -185,8 +185,8 @@ const FileList = () => {
           <tbody className="divide-y">
             {isLoading ? (
               <tr>
-                <td className="flex py-3 items-center justify-center">
-                  <span className="loader2"></span>
+                <td colSpan={5} className="py-3 text-center align-middle">
+                  <span className="loader2 inline-block"></span>
                 </td>
               </tr>
             ) : files_ && files_.length > 0 ? (

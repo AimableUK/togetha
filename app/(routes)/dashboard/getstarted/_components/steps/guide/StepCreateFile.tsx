@@ -6,8 +6,8 @@ export default function StepCreateFile() {
   const points = [
     "On the sidebar at the bottom of your dashboard.",
     "Click 'New File' to start a new project file.",
-    "Enter a name for your file - you can edit it later if needed.",
-    "Click 'Create' to finalize. Your new file will appear in your workspace.",
+    "Enter a name for your file - you can rename it later if needed.",
+    "Click 'Create' to finalize. Your new file will appear in your team.",
   ];
 
   return (

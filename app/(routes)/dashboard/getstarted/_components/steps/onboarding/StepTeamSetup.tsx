@@ -57,7 +57,7 @@ export default function StepTeamSetup({ handleContinue }: TeamSetUpProps) {
     <div className="flex flex-col items-center justify-center w-full text-center space-y-4">
       <h2 className="text-lg font-semibold">Create Your Team</h2>
       <p className="text-sm text-muted-foreground">
-        Give your team a name to get started with collaboration.
+        What's the name of your company or team that is recognizable? This can be even used individually
       </p>
 
       <div className="mt-3 md:mt-7 w-4/5 md:w-2/5">
@@ -71,7 +71,9 @@ export default function StepTeamSetup({ handleContinue }: TeamSetUpProps) {
           onKeyDown={(e) => e.key === "Enter" && createNewTeam()}
         />
         {errorMsg && (
-          <p className="text-red-500 dark:text-red-300 font-semibold text-sm mt-2">{errorMsg}</p>
+          <p className="text-red-500 dark:text-red-300 font-semibold text-sm mt-2">
+            {errorMsg}
+          </p>
         )}
       </div>
       <Button

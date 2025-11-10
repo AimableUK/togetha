@@ -13,9 +13,7 @@ export default function StepCollaborate() {
   return (
     <div className="flex flex-col items-center text-center space-y-2">
       <Rocket className="w-10 h-10 text-indigo-500" />
-      <h2 className="text-lg font-semibold">
-        Step 4: Start Collaborating (Not Yet Available)
-      </h2>
+      <h2 className="text-lg font-semibold">Step 4: Start Collaborating</h2>
       <p className="text-sm text-muted-foreground max-w-md">
         You're all set! Work togetha and bring your ideas to life.
       </p>
