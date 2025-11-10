@@ -1,4 +1,3 @@
-import { Heart } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import React from "react";
@@ -129,21 +128,10 @@ const Footer = () => {
         </div>
       </div>
       <div className="bg-accent/5 py-4">
-        <div className="container mx-auto px-4">
-          <div className="-mx-4 flex flex-wrap justify-between text-sm">
-            <div className="px-4 w-full text-center sm:w-auto sm:text-left">
-              Copyright &copy;
-              {new Date().getFullYear()} Togetha. All Rights Reserved.
-            </div>
-            <div className="px-4 w-full flex text-center sm:w-auto sm:text-left mt-3 md:mt-0">
-              Built with &nbsp; <Heart className="text-accent" size={20} />{" "}
-              &nbsp;by&nbsp;
-              <strong>
-                <a href="https://ukobizaba-aimable.vercel.app" target="_blank">
-                  AIMABLE Ukobizaba
-                </a>
-              </strong>
-            </div>
+        <div className="flex flex-wrap justify-between text-sm">
+          <div className="px-4 w-full text-center">
+            Copyright &copy;
+            {new Date().getFullYear()} Togetha. All Rights Reserved.
           </div>
         </div>
       </div>
