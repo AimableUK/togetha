@@ -3,6 +3,7 @@
 import React, { useState } from "react";
 import { Mail, Phone, MapPin, Clock, Send, CheckCircle } from "lucide-react";
 import Image from "next/image";
+import Link from "next/link";
 
 export default function ContactSupport() {
   const [formData, setFormData] = useState({
@@ -124,10 +125,12 @@ export default function ContactSupport() {
     <div className="min-h-screen">
       {/* Header */}
       <header className="border-b sticky top-0 z-40 bg-opacity-95 backdrop-blur">
-        <div className="max-w-7xl mx-auto px-3 md:px-4 sm:px-6 lg:px-8 py-2 md:py-4 flex items-center gap-x-2">
-          <Image src="/logo.png" alt="Togetha Logo" width={40} height={40} />
-          <div className="text-2xl font-bold tracking-tight">Togetha</div>
-        </div>
+        <Link href="/">
+          <div className="max-w-7xl mx-auto px-3 md:px-4 sm:px-6 lg:px-8 py-2 md:py-4 flex items-center gap-x-2">
+            <Image src="/logo.png" alt="Togetha Logo" width={40} height={40} />
+            <div className="text-2xl font-bold tracking-tight">Togetha</div>
+          </div>
+        </Link>
       </header>
 
       {/* Hero Section */}
@@ -397,7 +400,8 @@ export default function ContactSupport() {
               },
               {
                 title: "Status Page",
-                description: "Check Hosting platform status and incident reports",
+                description:
+                  "Check Hosting platform status and incident reports",
                 link: "https://www.vercel-status.com/",
               },
               {

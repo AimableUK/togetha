@@ -3,6 +3,7 @@
 import React, { useState } from "react";
 import { Menu, X, Search, ChevronDown } from "lucide-react";
 import Image from "next/image";
+import Link from "next/link";
 
 export default function HelpCenter() {
   const [activeCategory, setActiveCategory] = useState("getting-started");
@@ -267,10 +268,17 @@ export default function HelpCenter() {
       {/* Header */}
       <header className="border-b sticky top-0 z-40 bg-opacity-95 backdrop-blur">
         <div className="max-w-7xl mx-auto px-3 md:px-4 sm:px-6 lg:px-8 py-2 md:py-4 flex items-center justify-between">
-          <div className="flex gap-x-1 items-center">
-            <Image src="/logo.png" alt="Togetha Logo" width={40} height={40} />
-            <div className="text-2xl font-bold tracking-tight">Togetha</div>
-          </div>
+          <Link href="/">
+            <div className="flex gap-x-1 items-center">
+              <Image
+                src="/logo.png"
+                alt="Togetha Logo"
+                width={40}
+                height={40}
+              />
+              <div className="text-2xl font-bold tracking-tight">Togetha</div>
+            </div>
+          </Link>
 
           <button
             className="lg:hidden p-2"

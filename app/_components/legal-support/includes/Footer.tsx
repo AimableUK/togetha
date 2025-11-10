@@ -30,7 +30,13 @@ const Footer = () => {
             href="/support/contact"
             className="opacity-60 hover:opacity-100 transition-opacity"
           >
-            Contact
+            Contact Us
+          </a>
+          <a
+            href="/legal/about-us"
+            className="opacity-60 hover:opacity-100 transition-opacity"
+          >
+            About Us
           </a>
           <a
             href="/support/help-center"

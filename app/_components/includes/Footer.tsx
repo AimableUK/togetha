@@ -110,7 +110,15 @@ const Footer = () => {
                       href="/support/contact"
                       className="trans cursor-pointer hover:text-accent"
                     >
-                      Contact
+                      Contact Us
+                    </a>
+                  </li>
+                  <li>
+                    <a
+                      href="/legal/about-us"
+                      className="trans cursor-pointer hover:text-accent"
+                    >
+                      About Us
                     </a>
                   </li>
                   <li>
