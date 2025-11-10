@@ -1,5 +1,3 @@
-import { Button } from "@/components/ui/button";
-import { LoginLink } from "@kinde-oss/kinde-auth-nextjs";
 import Image from "next/image";
 import React, { useState } from "react";
 
@@ -119,14 +117,14 @@ const MainPreview = () => {
                       >
                         Canvas
                       </div>
-                      <LoginLink postLoginRedirectURL="/dashboard">
+                      <a href="/signup">
                         <div
                           onClick={() => setPreview("canvas")}
                           className="hover:bg-white/5 cursor-pointer border-r border-gray-600/10 px-4 py-2"
                         >
                           Try Now!
                         </div>
-                      </LoginLink>
+                      </a>
                     </div>
                   </div>
                   <div>

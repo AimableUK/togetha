@@ -1,5 +1,4 @@
 import ClickSpark from "@/components/ClickSpark";
-import { LoginLink } from "@kinde-oss/kinde-auth-nextjs";
 import { useTheme } from "next-themes";
 import React from "react";
 
@@ -64,12 +63,12 @@ const Hero = () => {
                   create without distractions
                 </p>
                 <div className="mt-10 flex items-center justify-center gap-x-6">
-                  <LoginLink
-                    postLoginRedirectURL="/dashboard"
+                  <a
+                    href="/signup"
                     className="rounded-md bg-accent text-white px-3.5 py-2.5 text-sm font-semibold shadow-xs hover:bg-accent/60 active:bg-accent/30 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500"
                   >
                     Get started
-                  </LoginLink>
+                  </a>
                   <button
                     onClick={() => handleScroll(480)}
                     className="text-sm/6 font-semibold cursor-pointer"

@@ -1,4 +1,3 @@
-import { LoginLink } from "@kinde-oss/kinde-auth-nextjs";
 import { MoveRight } from "lucide-react";
 import React from "react";
 
@@ -17,13 +16,13 @@ const JoinUs = () => {
         </h3>
 
         <div className="mt-8 flex items-center justify-center gap-x-6">
-          <LoginLink
-            postLoginRedirectURL="/dashboard"
+          <a
+            href="/signup"
             className="group inline-flex text-white items-center justify-center gap-2 rounded-xl bg-accent hover:bg-accent/60 active:bg-accent/30 px-4 py-3 text-sm font-semibold shadow-sm transition-all duration-150"
           >
             Explore the forum
             <MoveRight className="group-hover:-rotate-45 trans" />
-          </LoginLink>
+          </a>
         </div>
 
         <svg

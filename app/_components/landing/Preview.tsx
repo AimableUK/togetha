@@ -1,4 +1,3 @@
-import { LoginLink } from "@kinde-oss/kinde-auth-nextjs";
 import React from "react";
 import { useIsMobile } from "../../hooks/use-mobile";
 
@@ -33,17 +32,17 @@ const Preview = () => {
           </p>
 
           <div className="flex mt-8">
-            <LoginLink
-              postLoginRedirectURL="/dashboard"
+            <a
+              href="/signup"
               className="py-2 px-3 font-semibold rounded-lg bg-accent text-white text-md mr-4 hover:bg-accent/60 active:bg-accent/30 trans"
             >
               Explore Now
-            </LoginLink>
+            </a>
             <button
               onClick={() =>
                 isMobile ? handleScroll(300 * 14.2) : handleScroll(300 * 8.3)
               }
-              className="py-2 px-3 font-semibold rounded-lg bg-transparent border-2 border-accent text-accent hover:bg-accent hover:text-white active:bg-accent/80 text-md transition"
+              className="cursor-pointer py-2 px-3 font-semibold rounded-lg bg-transparent border-2 border-accent text-accent hover:bg-accent hover:text-white active:bg-accent/80 text-md transition"
             >
               Read More
             </button>
