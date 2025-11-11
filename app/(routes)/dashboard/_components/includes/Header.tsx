@@ -14,6 +14,7 @@ import React, { useContext, useState } from "react";
 import TeamInvite from "../TeamInvite";
 import { Badge } from "@/components/ui/badge";
 import { TEAM } from "@/lib/utils";
+import FilesSearch from "./FilesSearch";
 
 const Header = () => {
   const {
@@ -67,15 +68,7 @@ const Header = () => {
         </div>
         <div className="flex items-center gap-2">
           {(pathname === "/dashboard/files" ||
-            pathname === "/dashboard/archieved") && (
-            <div className="hidden md:flex gap-2 items-center md:px-2">
-              <Search className="h-4 w-4 absolute ml-2" />
-              <Input
-                placeholder="Search files..."
-                className="relative border rounded-md pl-7"
-              />
-            </div>
-          )}
+            pathname === "/dashboard/archieved") && <FilesSearch />}
           {(pathname === "/dashboard/files" ||
             pathname === "/dashboard/archieved") && (
             <Search className="h-7 w-7 flex md:hidden" />
