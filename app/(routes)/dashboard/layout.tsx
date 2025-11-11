@@ -70,7 +70,7 @@ const DashboardLayout = ({
       setTeamList_(null);
 
       if (!pathname.includes("teams/create")) {
-        router.push("/dashboard/get started?mode=onboarding");
+        router.push("/dashboard/getstarted?mode=onboarding");
       }
     }
   }, [teams, pathname, router]);
