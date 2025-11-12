@@ -28,6 +28,7 @@ import { validateEmail } from "@/app/Schema/schema";
 import { useMutation } from "convex/react";
 import { api } from "@/convex/_generated/api";
 import { ExternalToast, toast } from "sonner";
+import { usePathname } from "next/navigation";
 
 type TeamInviteProps = {
   openInviteDialog: boolean;
@@ -44,6 +45,7 @@ const TeamInvite = ({
   const [selectedRole, setSelectedRole] = useState<"Editor" | "Viewer">(
     "Viewer"
   );
+  const pathname = usePathname();
 
   const addCollab = useMutation(api.teams.addCollaborator);
   const updateCollabRole = useMutation(api.teams.updateCollaboratorRole);
@@ -417,13 +419,16 @@ const TeamInvite = ({
             </div>
           </div> */}
           <DialogFooter className="flex flex-row justify-end sm:justify-between">
-            {/* <Button
-              type="button"
-              variant="secondary"
-              className="px-3 py-1 rounded-full border cursor-pointer w-fit"
-            >
-              <Link2 /> Copy Link
-            </Button> */}
+            {pathname?.includes("workspace") && (
+              <Button
+                type="button"
+                variant="secondary"
+                className="px-3 py-1 rounded-full border cursor-pointer w-fit"
+              >
+                <Link2 /> Copy Link
+              </Button>
+            )}
+
             <DialogClose asChild>
               <Button
                 type="button"

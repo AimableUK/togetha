@@ -1,5 +1,7 @@
 import { getKindeServerSession } from "@kinde-oss/kinde-auth-nextjs/server";
 import { redirect } from "next/navigation";
+import React from "react";
+import ClientAppLayout from "./ClientAppLayout";
 
 export default async function Layout({
   children,
@@ -12,5 +14,5 @@ export default async function Layout({
     redirect("/signin");
   }
 
-  return <>{children}</>;
+  return <ClientAppLayout>{children}</ClientAppLayout>;
 }
