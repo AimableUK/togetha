@@ -210,6 +210,25 @@ const TeamInvite = ({
     setErrorMsg("");
   };
 
+  const handleCopyLink = () => {
+    toast.promise(
+      navigator.clipboard.writeText(
+        `https://togetha-app.vercel.app${pathname}`
+      ),
+      {
+        loading: `Copying link...`,
+        success: () => ({
+          message: "Link Copied",
+          description: "Link Copied Successfully",
+        }),
+        error: () => ({
+          message: "Link Copy Error",
+          description: "Failed to copy Link",
+        }),
+      }
+    );
+  };
+
   return (
     <>
       <Dialog open={openInviteDialog} onOpenChange={setOpenInviteDialog}>
@@ -423,7 +442,8 @@ const TeamInvite = ({
               <Button
                 type="button"
                 variant="secondary"
-                className="px-3 py-1 rounded-full border cursor-pointer w-fit"
+                className="px-3 py-1 rounded-full border cursor-pointer w-fit active:scale-95 trans "
+                onClick={handleCopyLink}
               >
                 <Link2 /> Copy Link
               </Button>

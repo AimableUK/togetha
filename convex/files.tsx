@@ -67,10 +67,40 @@ export const getFiles = query({
 export const getFileById = query({
   args: {
     _id: v.id("files"),
+    teamId: v.id("teams"),
+    userEmail: v.string(),
   },
   handler: async (ctx, args) => {
-    const result = await ctx.db.get(args._id);
-    return result;
+    const file = await ctx.db.get(args._id);
+    if (!file) {
+      return { error: "File not found or may have been deleted." };
+    }
+
+    const fileTeam = await ctx.db.get(file.teamId);
+    if (!fileTeam) {
+      return { error: "Team associated with this file not found." };
+    }
+
+    const isCollaborator = fileTeam.collaborators?.some(
+      (c) => c.email === args.userEmail
+    );
+
+    if (!isCollaborator) {
+      return {
+        error: "Access denied, you're not a collaborator of this team.",
+      };
+    }
+
+    // If file belongs to a different team, let the client switch
+    if (file.teamId !== args.teamId) {
+      return {
+        ...file,
+        requiresTeamSwitch: true,
+        correctTeamId: file.teamId,
+      };
+    }
+
+    return { data: file };
   },
 });
 

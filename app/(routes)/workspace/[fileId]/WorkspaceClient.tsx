@@ -1,27 +1,60 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import WorkspaceHeader from "../_components/WorkspaceHeader";
 import Editor from "../_components/Editor";
-import { api } from "@/convex/_generated/api";
 import { Id } from "@/convex/_generated/dataModel";
 import Canvas from "../_components/Canvas";
 import Image from "next/image";
 import { useIsMobile } from "@/app/hooks/use-mobile";
-import { useQuery } from "convex/react";
+import { TeamContext } from "@/app/FilesListContext";
+import { TEAM } from "@/lib/utils";
+import { toast } from "sonner";
+import { useRouter } from "next/navigation";
+import { useSecureFile } from "./useSecureFile";
 
 type WorkspaceClientProps = {
-  fileId: string;
+  fileId: Id<"files">;
 };
 
 const WorkspaceClient = ({ fileId }: WorkspaceClientProps) => {
   const [workspaceViewMode, setWorkspaceViewMode] = useState<string>("both");
   const isMobile = useIsMobile();
+  const router = useRouter();
   const [savingWorkspace, setSavingWorkspace] = useState<boolean>(false);
+  const { user, activeTeam_ } = useContext(TeamContext);
 
   useEffect(() => {
     isMobile && convertWorkspaceviewMode();
   }, [isMobile]);
+
+  useEffect(() => {
+    if (!user?.email) {
+      toast.error("You must be signed in to view this workspace.");
+      router.push("/signin");
+      return;
+    }
+
+    if (!activeTeam_) return;
+
+    const isCollaborator = activeTeam_.collaboratorsData?.some(
+      (c: TEAM) => c.collaboratorEmail === user.email
+    );
+
+    if (!isCollaborator) {
+      toast.error("You're not a collaborator here.");
+      localStorage.removeItem("activeTeamId");
+      router.push("/dashboard");
+    }
+  }, [user, activeTeam_, router]);
+
+  const fileData = useSecureFile(fileId);
+
+  useEffect(() => {
+    if (fileData?.fileName) {
+      document.title = `${fileData.fileName} Workspace - Togetha`;
+    }
+  }, [fileData]);
 
   const convertWorkspaceviewMode = () => {
     if (workspaceViewMode === "both") {
@@ -40,16 +73,6 @@ const WorkspaceClient = ({ fileId }: WorkspaceClientProps) => {
       setWorkspaceViewMode("both");
     }
   };
-
-  const fileData = useQuery(api.files.getFileById, {
-    _id: fileId as Id<"files">,
-  });
-
-  useEffect(() => {
-    if (fileData?.fileName) {
-      document.title = `${fileData.fileName} Workspace - Togetha`;
-    }
-  }, [fileData]);
 
   if (!fileId || !fileData)
     return (
