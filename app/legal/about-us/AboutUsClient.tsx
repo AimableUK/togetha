@@ -167,7 +167,7 @@ const AboutUs = () => {
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8 items-start">
               {/* Profile Card */}
               <div className="md:col-span-1 text-center">
-                <div className="w-fit rounded-full border-2 opacity-60 flex items-center justify-center mx-auto mb-6 text-4xl">
+                <div className="w-fit rounded-full border-2 opacity-95 flex items-center justify-center mx-auto mb-6 text-4xl">
                   <Image
                     src="/Aimable.jpg"
                     alt="Ukobizaba Aimable Picture"
