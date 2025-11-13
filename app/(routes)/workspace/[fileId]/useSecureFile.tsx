@@ -44,10 +44,10 @@ export const useSecureFile = (fileId: Id<"files">) => {
       setActiveTeam_ &&
         setActiveTeam_({
           _id: queryResult.correctTeamId,
-          name: "Updated Team", // optional: fetch real team name
-          collaboratorsData: [], // optional: fetch real collaborators
+          name: "Updated Team",
+          collaboratorsData: [],
         } as any);
-      toast.success("Switched to the correct team for this file.");
+      toast.success("You must switch the team to view this file");
       router.refresh();
       return; // stop here
     }
