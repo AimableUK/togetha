@@ -53,11 +53,13 @@ const SideNavTopSection = ({ user, setActiveTeamInfo }: any) => {
   const [renameTeam, setRenameTeam] = useState<string | null>();
   const [newTeamName, setNewTeamName] = useState("");
 
+  const isMobile = useIsMobile();
   const router = useRouter();
   const pathname = usePathname();
   const renameTeamName = useMutation(api.teams.renameTeam);
   const [openDialog, setOpenDialog] = useState(false);
   const [deleteData, setDeleteData] = useState<DeleteData>();
+  const [popoverOpen, setPopoverOpen] = useState(false);
 
   const {
     collapseSidebar_,
@@ -66,7 +68,7 @@ const SideNavTopSection = ({ user, setActiveTeamInfo }: any) => {
     activeTeam_,
     setActiveTeam_,
   } = useContext(TeamContext);
-  const isMobile = useIsMobile();
+
   const logoutRedirectUrl =
     process.env.NEXT_PUBLIC_KINDE_POST_LOGOUT_REDIRECT_URL!;
 
@@ -75,6 +77,16 @@ const SideNavTopSection = ({ user, setActiveTeamInfo }: any) => {
       localStorage.setItem("activeTeamId", activeTeam_._id);
     }
   }, [activeTeam_]);
+
+  useEffect(() => {
+    isMobile && setCollapseSidebar_(true);
+  }, [pathname]);
+
+  useEffect(() => {
+    if (isMobile && collapseSidebar_) {
+      setPopoverOpen(false);
+    }
+  }, [collapseSidebar_, isMobile]);
 
   const menu = [
     {
@@ -170,7 +182,13 @@ const SideNavTopSection = ({ user, setActiveTeamInfo }: any) => {
   return (
     <>
       <div className="flex flex-col">
-        <Popover>
+        <Popover
+          open={isMobile ? popoverOpen : undefined}
+          onOpenChange={(open) => {
+            if (!isMobile) return;
+            setPopoverOpen(open);
+          }}
+        >
           <PopoverTrigger className="w-full relative">
             <div className="flex items-center max-w-[88%] md:max-w-full gap-x-2 hover:bg-gray-300 dark:hover:bg-gray-800 p-1 md:w-full rounded-md cursor-pointer">
               <Image

@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { Archive, FilePlus2, Files, Flag } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
@@ -16,6 +16,8 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { usePathname, useRouter } from "next/navigation";
+import { TeamContext } from "@/app/FilesListContext";
+import { useIsMobile } from "@/app/hooks/use-mobile";
 
 type SideNavBottomProps = {
   onFileCreate: (fileInput: string) => void;
@@ -31,8 +33,10 @@ const SideNavBottomSection = ({
   const [loadingItem, setLoadingItem] = useState<number | null>(null);
   const router = useRouter();
   const pathname = usePathname();
-
+  const isMobile = useIsMobile();
+  const { setCollapseSidebar_ } = useContext(TeamContext);
   const [fileInput, setFileInput] = useState("");
+
   const menuList = [
     {
       id: 0,
@@ -47,6 +51,10 @@ const SideNavBottomSection = ({
   useEffect(() => {
     const activeItem = menuList.find((menu) => pathname === menu.path);
     if (activeItem) setLoadingItem(null);
+  }, [pathname]);
+
+  useEffect(() => {
+    isMobile && setCollapseSidebar_(true);
   }, [pathname]);
 
   const onBottomMenuClick = (item: any) => {
