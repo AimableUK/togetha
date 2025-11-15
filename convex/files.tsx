@@ -1,12 +1,5 @@
 import { v } from "convex/values";
 import { mutation, query } from "./_generated/server";
-import PDFDocument from "pdfkit";
-import { Document, Packer, Paragraph } from "docx";
-import {
-  editorJsToHTML,
-  editorJsToMarkdown,
-  editorJsToText,
-} from "@/app/hooks/exportUtils";
 
 export const createFile = mutation({
   args: {
@@ -252,102 +245,37 @@ export const updateWhiteboard = mutation({
   },
 });
 
-export const exportFile = mutation({
-  args: {
-    _id: v.id("files"),
-    userEmail: v.string(),
-    format: v.string(), // "md" | "html" | "pdf" | "txt" | "docx"
-  },
+// export const exportFile = mutation({
+//   args: {
+//     _id: v.id("files"),
+//     userEmail: v.string(),
+//     format: v.string(),
+//   },
+//   handler: async (ctx, { _id, userEmail, format }) => {
+//     const file = await ctx.db.get(_id);
+//     if (!file) throw new Error("File not found");
 
-  handler: async (ctx, args) => {
-    const file = await ctx.db.get(args._id);
-    if (!file) throw new Error("File not found");
+//     const team = await ctx.db.get(file.teamId);
+//     if (!team) throw new Error("Team not found");
 
-    const team = await ctx.db.get(file.teamId);
-    if (!team) throw new Error("Team not found");
+//     const role =
+//       team.createdBy === userEmail
+//         ? "Owner"
+//         : team.collaborators?.find((c) => c.email === userEmail)?.role ||
+//           "Viewer";
 
-    const role =
-      team.createdBy === args.userEmail
-        ? "Owner"
-        : team.collaborators?.find((c) => c.email === args.userEmail)?.role ||
-          "Viewer";
+//     if (role === "Viewer") {
+//       throw new Error("No permission to export");
+//     }
 
-    if (role === "Viewer") {
-      throw new Error("Request Edit Access to perform this action");
-    }
+//     const data = file.document;
+//     const fileName = file.fileName;
 
-    // EXPORT LOGIC
-
-    const data: any = file.document;
-
-    let filename = "";
-    let mime = "";
-    let content: any = null;
-
-    switch (args.format) {
-      case "txt":
-        content = editorJsToText(data);
-        mime = "text/plain";
-        filename = file.fileName + ".txt";
-        break;
-
-      case "md":
-        content = editorJsToMarkdown(data);
-        mime = "text/markdown";
-        filename = file.fileName + ".md";
-        break;
-
-      case "html":
-        content = editorJsToHTML(data);
-        mime = "text/html";
-        filename = file.fileName + ".html";
-        break;
-
-      case "pdf": {
-        const doc = new PDFDocument();
-        const chunks: Uint8Array[] = [];
-
-        doc.on("data", (c: Uint8Array) => chunks.push(c));
-        doc.text(editorJsToText(data));
-        doc.end();
-
-        const buffer: Buffer = await new Promise((resolve) =>
-          doc.on("end", () => resolve(Buffer.concat(chunks)))
-        );
-
-        content = buffer.toString("base64");
-        mime = "application/pdf";
-        filename = file.fileName + ".pdf";
-        break;
-      }
-
-      case "docx": {
-        const doc = new Document({
-          sections: [
-            {
-              children: [new Paragraph(editorJsToText(data))],
-            },
-          ],
-        });
-
-        const buffer = await Packer.toBuffer(doc);
-
-        content = buffer.toString("base64");
-        mime =
-          "application/vnd.openxmlformats-officedocument.wordprocessingml.document";
-        filename = file.fileName + ".docx";
-        break;
-      }
-
-      default:
-        throw new Error("Invalid export format");
-    }
-
-    return {
-      success: true,
-      filename,
-      mime,
-      content,
-    };
-  },
-});
+//     const result = await ctx.runAction("exportFileAction", {
+//       data,
+//       format,
+//       fileName,
+//     });
+//     return { success: true, ...result };
+//   },
+// });

@@ -8,10 +8,9 @@ import {
   CloudUpload,
   Link,
   RectangleEllipsis,
-  Save,
 } from "lucide-react";
 import Image from "next/image";
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import {
   Tooltip,
   TooltipContent,
@@ -22,22 +21,31 @@ import { useIsMobile } from "@/app/hooks/use-mobile";
 import {
   DropdownMenu,
   DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { FILE } from "@/lib/utils";
 import TeamInvite from "../../dashboard/_components/TeamInvite";
+import { useExportFile } from "@/app/hooks/useExportFile";
+import { Id } from "@/convex/_generated/dataModel";
+import { TeamContext } from "@/app/FilesListContext";
 
 const WorkspaceHeader = ({
+  fileId,
   fileData,
   workspaceViewMode,
   handleWorkspaceViewMode,
   savingWorkspace,
 }: {
+  fileId: Id<"files">;
   fileData: FILE;
   workspaceViewMode: string;
   handleWorkspaceViewMode: (viewMode: string) => void;
   savingWorkspace: boolean | undefined;
 }) => {
+  const { download } = useExportFile();
+  const { user } = useContext(TeamContext);
   const router = useRouter();
   const isMobile = useIsMobile();
   const [headerCollapse, setHeaderCollapse] = useState(false);
@@ -64,7 +72,42 @@ const WorkspaceHeader = ({
           <h2 className="font-semibold text-xl flex gap-2 items-center whitespace-nowrap truncate max-w-3/4">
             {fileData?.fileName}
           </h2>
-          <RectangleEllipsis className="mt-2 cursor-pointer rounded-full bg-secondary/80" />
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <RectangleEllipsis
+                size={30}
+                className="hidden mt-2 cursor-pointer rounded-full hover:bg-accent/30 active:bg-accent/50 p-1 trans"
+              />
+            </DropdownMenuTrigger>
+            <DropdownMenuContent className="hidden">
+              <DropdownMenuLabel>Export Options</DropdownMenuLabel>
+              <DropdownMenuItem
+                onSelect={() => download(fileId, "docx", user?.email)}
+              >
+                .docx
+              </DropdownMenuItem>
+              <DropdownMenuItem
+                onSelect={() => download(fileId, "pdf", user?.email)}
+              >
+                .pdf
+              </DropdownMenuItem>
+              <DropdownMenuItem
+                onSelect={() => download(fileId, "txt", user?.email)}
+              >
+                .txt
+              </DropdownMenuItem>
+              <DropdownMenuItem
+                onSelect={() => download(fileId, "md", user?.email)}
+              >
+                .md
+              </DropdownMenuItem>
+              <DropdownMenuItem
+                onSelect={() => download(fileId, "html", user?.email)}
+              >
+                .html
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
         </div>
         <div className="hidden md:flex border rounded-[3px]">
           <button
