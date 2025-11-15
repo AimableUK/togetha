@@ -116,6 +116,19 @@ const OverviewClient = () => {
           </div>
           <h2 className="font-semibold">Welcome Back! {user.family_name}</h2>
           {category && <MotivationBanner category={category} files_={files_} />}
+
+          <button
+            onClick={async () => {
+              await fetch("api/emails", { method: "POST",
+                body: JSON.stringify({
+                  email: "aimableukobizaba@gmail.com",
+                  firstName: "Aimable"
+                })
+               });
+            }}
+          >
+            Send Email
+          </button>
         </div>
         <div className="col-span-1 relative bg-secondary rounded-lg px-5 py-3 mt-4 md:mt-0">
           <div className="flex flex-col gap-3">
