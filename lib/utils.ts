@@ -55,6 +55,58 @@ export interface TEAMINVITES {
   teamName: string;
 }
 
+export type EditorJsBlock =
+  | {
+    type: "header";
+    data: {
+      text: string;
+      level: 2 | 3 | 4;
+    };
+  }
+  | {
+    type: "paragraph";
+    data: {
+      text: string;
+    };
+  }
+  | {
+    type: "list";
+    data: {
+      style: "unordered" | "ordered";
+      items: string[];
+    };
+  }
+  | {
+    type: "code";
+    data: {
+      code: string;
+    };
+  }
+  | {
+    type: "quote";
+    data: {
+      text: string;
+      caption?: string;
+    };
+  }
+  | {
+    type: "warning";
+    data: {
+      title: string;
+      message: string;
+    };
+  }
+  | {
+    type: "delimiter";
+    data: Record<string, unknown>;
+  };
+
+export interface EditorJsData {
+  time?: number;
+  version?: string;
+  blocks: EditorJsBlock[];
+}
+
 
 export const pageMetadata = {
   landing: {
@@ -467,7 +519,7 @@ export const pageMetadata = {
       images: ["https://www.togetha-app.vercel.app/twitter-banner.png"],
     },
   },
-  
+
   onboarding: {
     title: "Onboarding - Togetha",
     description:

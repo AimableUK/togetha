@@ -2,7 +2,14 @@
 
 import { ModeToggle } from "@/components/theme/ModeToggle";
 import { Button } from "@/components/ui/button";
-import { CircleArrowLeft, CloudCheck, CloudUpload, Link } from "lucide-react";
+import {
+  CircleArrowLeft,
+  CloudCheck,
+  CloudUpload,
+  Link,
+  RectangleEllipsis,
+  Save,
+} from "lucide-react";
 import Image from "next/image";
 import React, { useState } from "react";
 import {
@@ -43,7 +50,7 @@ const WorkspaceHeader = ({
           <Tooltip>
             <TooltipTrigger>
               <CircleArrowLeft
-                size={32}
+                size={28}
                 className="hover:text-accent cursor-pointer active:scale-90 trans"
                 absoluteStrokeWidth
                 onClick={router.back}
@@ -57,6 +64,7 @@ const WorkspaceHeader = ({
           <h2 className="font-semibold text-xl flex gap-2 items-center whitespace-nowrap truncate max-w-3/4">
             {fileData?.fileName}
           </h2>
+          <RectangleEllipsis className="mt-2 cursor-pointer rounded-full bg-secondary/80" />
         </div>
         <div className="hidden md:flex border rounded-[3px]">
           <button
