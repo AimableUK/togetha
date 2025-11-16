@@ -10,7 +10,7 @@ import {
   RectangleEllipsis,
 } from "lucide-react";
 import Image from "next/image";
-import React, { useContext, useState } from "react";
+import React, { useState } from "react";
 import {
   Tooltip,
   TooltipContent,
@@ -25,27 +25,23 @@ import {
   DropdownMenuLabel,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { FILE } from "@/lib/utils";
 import TeamInvite from "../../dashboard/_components/TeamInvite";
 import { useExportFile } from "@/app/hooks/useExportFile";
-import { Id } from "@/convex/_generated/dataModel";
-import { TeamContext } from "@/app/FilesListContext";
+import { SecureFileResult } from "@/lib/utils";
+import { Separator } from "@/components/ui/separator";
 
 const WorkspaceHeader = ({
-  fileId,
   fileData,
   workspaceViewMode,
   handleWorkspaceViewMode,
   savingWorkspace,
 }: {
-  fileId: Id<"files">;
-  fileData: FILE;
+  fileData: SecureFileResult;
   workspaceViewMode: string;
   handleWorkspaceViewMode: (viewMode: string) => void;
   savingWorkspace: boolean | undefined;
 }) => {
-  const { download } = useExportFile();
-  const { user } = useContext(TeamContext);
+  const { download } = useExportFile(fileData);
   const router = useRouter();
   const isMobile = useIsMobile();
   const [headerCollapse, setHeaderCollapse] = useState(false);
@@ -54,55 +50,64 @@ const WorkspaceHeader = ({
   return (
     <>
       <div className="px-3 border-b flex items-center justify-between p-2 fixed w-full z-50 bg-background">
-        <div className="flex flex-row w-fit items-center gap-x-2 rounded-md">
-          <Tooltip>
-            <TooltipTrigger>
-              <CircleArrowLeft
-                size={28}
-                className="hover:text-accent cursor-pointer active:scale-90 trans"
-                absoluteStrokeWidth
-                onClick={router.back}
-              />
-            </TooltipTrigger>
-            <TooltipContent>
-              <p>Return to Files</p>
-            </TooltipContent>
-          </Tooltip>
-          <Image src="/logo.png" alt="Togetha logo" width={35} height={35} />
-          <h2 className="font-semibold text-xl flex gap-2 items-center whitespace-nowrap truncate max-w-3/4">
-            {fileData?.fileName}
-          </h2>
+        <div className="flex flex-row justify-between md:justify-start flex-1 md:flex-none w-fit items-center gap-x-2 rounded-md">
+          <div className="flex gap-x-1">
+            <Tooltip>
+              <TooltipTrigger>
+                <CircleArrowLeft
+                  size={28}
+                  className="hover:text-accent cursor-pointer active:scale-90 trans"
+                  absoluteStrokeWidth
+                  onClick={router.back}
+                />
+              </TooltipTrigger>
+              <TooltipContent>
+                <p>Return to Files</p>
+              </TooltipContent>
+            </Tooltip>
+            <Image src="/logo.png" alt="Togetha logo" width={35} height={35} />
+            <h2 className="font-semibold text-xl flex gap-2 items-center whitespace-nowrap truncate max-w-3/4">
+              {fileData?.fileName}
+            </h2>
+          </div>
+
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <RectangleEllipsis
                 size={30}
-                className="hidden mt-2 cursor-pointer rounded-full hover:bg-accent/30 active:bg-accent/50 p-1 trans"
+                className="md:mt-1 cursor-pointer rounded-full hover:bg-accent/30 active:bg-accent/50 p-1 trans"
               />
             </DropdownMenuTrigger>
-            <DropdownMenuContent className="hidden">
+            <DropdownMenuContent>
               <DropdownMenuLabel>Export Options</DropdownMenuLabel>
+              <Separator />
               <DropdownMenuItem
-                onSelect={() => download(fileId, "docx", user?.email)}
-              >
-                .docx
-              </DropdownMenuItem>
-              <DropdownMenuItem
-                onSelect={() => download(fileId, "pdf", user?.email)}
+                onSelect={() => download("pdf")}
+                className="cursor-pointer"
               >
                 .pdf
               </DropdownMenuItem>
               <DropdownMenuItem
-                onSelect={() => download(fileId, "txt", user?.email)}
+                onSelect={() => download("docx")}
+                className="cursor-pointer"
+              >
+                .docx
+              </DropdownMenuItem>
+              <DropdownMenuItem
+                onSelect={() => download("txt")}
+                className="cursor-pointer"
               >
                 .txt
               </DropdownMenuItem>
               <DropdownMenuItem
-                onSelect={() => download(fileId, "md", user?.email)}
+                onSelect={() => download("md")}
+                className="cursor-pointer"
               >
                 .md
               </DropdownMenuItem>
               <DropdownMenuItem
-                onSelect={() => download(fileId, "html", user?.email)}
+                onSelect={() => download("html")}
+                className="cursor-pointer"
               >
                 .html
               </DropdownMenuItem>

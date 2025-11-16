@@ -8,7 +8,6 @@
  * @module
  */
 
-import type * as actions_exportFileAction from "../actions/exportFileAction.js";
 import type * as files from "../files.js";
 import type * as teamInvites from "../teamInvites.js";
 import type * as teams from "../teams.js";
@@ -29,7 +28,6 @@ import type {
  * ```
  */
 declare const fullApi: ApiFromModules<{
-  "actions/exportFileAction": typeof actions_exportFileAction;
   files: typeof files;
   teamInvites: typeof teamInvites;
   teams: typeof teams;

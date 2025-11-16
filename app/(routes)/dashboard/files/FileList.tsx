@@ -40,7 +40,6 @@ export interface DeleteData {
 const FileList = () => {
   const { isLoading }: any = useKindeBrowserClient();
   const [loadingItem, setLoadingItem] = useState<string | null>();
-
   const [openDialog, setOpenDialog] = useState(false);
   const [deleteData, setDeleteData] = useState<DeleteData>();
   const [renameFile, setRenameFIle] = useState<string | null>();
@@ -167,6 +166,42 @@ const FileList = () => {
       );
     }
   };
+
+  // const handleExportFile = async (
+  //   fileId: Id<"files">,
+  //   format: "txt" | "md" | "html" | "pdf" | "docx"
+  // ) => {
+  //   toast.promise(
+  //     (async () => {
+  //       const data = await useSecureFile(fileId);
+  //       setFileData(data);
+  //       if (!fileData) throw new Error("File not found");
+  //       await download(format);
+  //     })(),
+  //     {
+  //       loading: `Fetching file...`,
+  //       success: () => ({
+  //         message: "Done",
+  //         description: "Download Started!",
+  //       }),
+  //       error: (err) => {
+  //         // let cleanMessage =
+  //         //   err?.message
+  //         //     ?.split("Uncaught Error: ")[1]
+  //         //     ?.split("at handler")[0]
+  //         //     ?.trim() ||
+  //         //   err?.message?.replace(/\[.*?\]/g, "").trim() ||
+  //         //   "Something went wrong, please try again.";
+  //         // console.log(err)
+
+  //         return {
+  //           message: "Failed to Download File",
+  //           description: err,
+  //         };
+  //       },
+  //     }
+  //   );
+  // };
 
   return (
     <div className="mt-6 p-1 px-2 md:p-4">

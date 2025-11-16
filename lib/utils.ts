@@ -1,3 +1,4 @@
+import { Id } from "@/convex/_generated/dataModel";
 import { clsx, type ClassValue } from "clsx"
 import { twMerge } from "tailwind-merge"
 
@@ -55,49 +56,68 @@ export interface TEAMINVITES {
   teamName: string;
 }
 
+export type SecureFileResult =
+  | (FILE & {
+    _id: Id<"files">;
+    fileName: string;
+    teamId: Id<"teams">;
+    requiresTeamSwitch?: boolean;
+    correctTeamId?: Id<"teams">;
+    document: string;
+  })
+  | null;
+
 export type EditorJsBlock =
   | {
-    type: "header";
+    type: "header" | "Header" | "header"
     data: {
       text: string;
-      level: 2 | 3 | 4;
+      level: 1 | 2 | 3 | 4 | 5 | 6;
     };
   }
   | {
-    type: "paragraph";
+    type: "paragraph" | "Paragraph";
     data: {
       text: string;
     };
   }
   | {
-    type: "list";
+    type: "list" | "List";
     data: {
-      style: "unordered" | "ordered";
-      items: string[];
+      style: "unordered" | "ordered" | "checklist";
+      meta?: Record<string, any>;
+      items: {
+        content: string;
+        meta?: {
+          checked?: boolean;
+        };
+        items?: any[];
+      }[];
     };
   }
   | {
-    type: "code";
+    type: "code" | "Code";
     data: {
       code: string;
     };
   }
   | {
-    type: "quote";
+    type: "quote" | "Quote";
     data: {
       text: string;
       caption?: string;
+      alignment?: string;
     };
   }
   | {
-    type: "warning";
+    type: "warning" | "Warning";
     data: {
       title: string;
       message: string;
     };
   }
   | {
-    type: "delimiter";
+    type: "delimiter" | "Delimiter";
     data: Record<string, unknown>;
   };
 

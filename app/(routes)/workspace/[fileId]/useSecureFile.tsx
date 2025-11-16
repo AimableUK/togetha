@@ -7,17 +7,7 @@ import { toast } from "sonner";
 import { TeamContext } from "@/app/FilesListContext";
 import { api } from "@/convex/_generated/api";
 import { Id } from "@/convex/_generated/dataModel";
-import { FILE } from "@/lib/utils";
-
-type SecureFileResult =
-  | (FILE & {
-      _id: Id<"files">;
-      fileName: string;
-      teamId: Id<"teams">;
-      requiresTeamSwitch?: boolean;
-      correctTeamId?: Id<"teams">;
-    })
-  | null;
+import { SecureFileResult } from "@/lib/utils";
 
 export const useSecureFile = (fileId: Id<"files">) => {
   const { user, setActiveTeam_ } = useContext(TeamContext);

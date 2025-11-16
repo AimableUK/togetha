@@ -91,7 +91,6 @@ const WorkspaceClient = ({ fileId }: WorkspaceClientProps) => {
   return (
     <div className="h-screen flex flex-col">
       <WorkspaceHeader
-        fileId={fileId}
         fileData={fileData}
         workspaceViewMode={workspaceViewMode}
         handleWorkspaceViewMode={handleWorkspaceViewMode}

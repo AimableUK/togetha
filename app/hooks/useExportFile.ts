@@ -1,27 +1,61 @@
-import { useMutation } from "convex/react";
-import { api } from "@/convex/_generated/api";
-import { Id } from "@/convex/_generated/dataModel";
 
-export function useExportFile() {
-  const exportFile = useMutation(api.files.exportFile);
+import { SecureFileResult } from "@/lib/utils";
+import { editorJsToHTML, editorJsToMarkdown, editorJsToPDF, editorJsToText } from "./exportUtils";
+import { editorJsToDOCX } from "./exportUtils";
+import { toast } from "sonner";
 
-  const download = async (_id: string, format: "txt" | "md" | "html" | "pdf" | "docx", userEmail: string) => {
+export function useExportFile(fileData: SecureFileResult) {
+
+  const download = async (format: "txt" | "md" | "html" | "pdf" | "docx") => {
     try {
-      const result = await exportFile({ _id: _id as Id<"files">, format, userEmail });
-      if (!result?.content || !result?.mime || !result?.filename) return;
+      if (!fileData) return;
+      const data = JSON.parse(fileData.document);
+      let content: Blob | null = null;
+      let filename = fileData.fileName + "." + format;
 
-      const blob = ["pdf", "docx"].includes(format)
-        ? new Blob([Uint8Array.from(atob(result.content), (c) => c.charCodeAt(0))], { type: result.mime })
-        : new Blob([result.content], { type: result.mime });
+      //  Conversion 
+      switch (format) {
+        case "txt":
+          content = new Blob([editorJsToText(data)], { type: "text/plain" });
+          break;
 
-      const url = URL.createObjectURL(blob);
+        case "md":
+          content = new Blob([editorJsToMarkdown(data)], {
+            type: "text/markdown",
+          });
+          break;
+
+        case "html":
+          content = new Blob([editorJsToHTML(data)], { type: "text/html" });
+          break;
+
+        case "docx": {
+          const buffer = await editorJsToDOCX(data);
+          content = new Blob([new Uint8Array(buffer)], {
+            type: "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+          });
+          break;
+        }
+
+        case "pdf": {
+          const pdfBuffer = await editorJsToPDF(data);
+          content = new Blob([new Uint8Array(pdfBuffer)], { type: "application/pdf" });
+          break;
+        }
+
+        default:
+          return;
+      }
+
+      // Download
+      const url = URL.createObjectURL(content);
       const a = document.createElement("a");
       a.href = url;
-      a.download = result.filename;
+      a.download = filename;
       a.click();
       URL.revokeObjectURL(url);
-    } catch (err) {
-      console.error("Export failed", err);
+    } catch (err: any) {
+      toast.error("Download failed");
     }
   };
 

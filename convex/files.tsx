@@ -244,38 +244,3 @@ export const updateWhiteboard = mutation({
     return result;
   },
 });
-
-// export const exportFile = mutation({
-//   args: {
-//     _id: v.id("files"),
-//     userEmail: v.string(),
-//     format: v.string(),
-//   },
-//   handler: async (ctx, { _id, userEmail, format }) => {
-//     const file = await ctx.db.get(_id);
-//     if (!file) throw new Error("File not found");
-
-//     const team = await ctx.db.get(file.teamId);
-//     if (!team) throw new Error("Team not found");
-
-//     const role =
-//       team.createdBy === userEmail
-//         ? "Owner"
-//         : team.collaborators?.find((c) => c.email === userEmail)?.role ||
-//           "Viewer";
-
-//     if (role === "Viewer") {
-//       throw new Error("No permission to export");
-//     }
-
-//     const data = file.document;
-//     const fileName = file.fileName;
-
-//     const result = await ctx.runAction("exportFileAction", {
-//       data,
-//       format,
-//       fileName,
-//     });
-//     return { success: true, ...result };
-//   },
-// });

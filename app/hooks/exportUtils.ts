@@ -1,138 +1,661 @@
 import { EditorJsData } from "@/lib/utils";
-import PDFDocument from "pdfkit";
 import { Document, Paragraph, Packer, HeadingLevel, BorderStyle, TextRun } from 'docx';
+import { PDFDocument, PDFPage, rgb } from 'pdf-lib';
+
 
 export function editorJsToText(data: EditorJsData) {
     return data.blocks
         .map((b) => {
-            switch (b.type) {
-                case "paragraph":
-                case "header":
-                    return b.data.text;
+            const type = b.type;
 
-                case "list":
-                    return b.data.items.join("\n");
-
-                case "code":
-                    return `\`\`\`\n${b.data.code}\n\`\`\``;
-
-                case "quote":
-                    return `"${b.data.text}"\n— ${b.data.caption || "Anonymous"}`;
-
-                case "warning":
-                    return `⚠ ${b.data.title}\n${b.data.message}`;
-
-                case "delimiter":
-                    return "---";
-
-                default:
-                    return "";
+            if (type === "header" || type === "Header") {
+                return b.data.text;
             }
+
+            if (type === "paragraph" || type === "Paragraph") {
+                return b.data.text;
+            }
+
+            if (type === "list" || type === "List") {
+                const listData = b.data as any;
+                const items = listData.items.map((item: any) => ({
+                    text: item.content,
+                    checked: item.meta?.checked ?? false
+                }));
+
+                if (listData.style === "checklist") {
+                    return items
+                        .map((i: any) => `${i.checked ? "[x]" : "[ ]"} ${i.text}`)
+                        .join("\n");
+                }
+
+                if (listData.style === "ordered") {
+                    return items
+                        .map((i: any, idx: number) => `${idx + 1}. ${i.text}`)
+                        .join("\n");
+                }
+
+                return items.map((i: any) => `• ${i.text}`).join("\n");
+            }
+
+            if (type === "code" || type === "Code") {
+                const codeData = b.data as any;
+                return `\`\`\`\n${codeData.code}\n\`\`\``;
+            }
+
+            if (type === "quote" || type === "Quote") {
+                const quoteData = b.data as any;
+                const { text, caption } = quoteData;
+                const cleanText = text.replace(/&nbsp;/g, " ");
+                return `"${cleanText}"\n— ${caption || "Anonymous"}`;
+            }
+
+            if (type === "warning" || type === "Warning") {
+                const warningData = b.data as any;
+                const { title, message } = warningData;
+                return `⚠ ${title}\n${message}`;
+            }
+
+            if (type === "delimiter" || type === "Delimiter") {
+                return "***";
+            }
+
+            return "";
         })
+        .filter((block) => block.trim() !== "")
         .join("\n\n");
 }
 
 export function editorJsToMarkdown(data: EditorJsData) {
     return data.blocks
         .map((b) => {
-            switch (b.type) {
+            const type = b.type;
+
+            switch (type) {
                 case "header":
-                    return `${"#".repeat(b.data.level)} ${b.data.text}`;
+                case "Header": {
+                    const headerData = b.data as any;
+                    return `${"#".repeat(headerData.level)} ${headerData.text}`;
+                }
+
                 case "paragraph":
-                    return b.data.text;
+                case "Paragraph": {
+                    const paraData = b.data as any;
+                    return paraData.text;
+                }
+
                 case "list":
-                    return b.data.items.map((i) => `- ${i}`).join("\n");
+                case "List": {
+                    const listData = b.data as any;
+                    const items = listData.items.map((item: any) => item.content);
+
+                    if (listData.style === "checklist") {
+                        return items
+                            .map((text: string, idx: number) => {
+                                const checked = listData.items[idx].meta?.checked ? "x" : " ";
+                                return `- [${checked}] ${text}`;
+                            })
+                            .join("\n");
+                    }
+
+                    if (listData.style === "ordered") {
+                        return items
+                            .map((text: string, idx: number) => `${idx + 1}. ${text}`)
+                            .join("\n");
+                    }
+
+                    return items.map((text: string) => `- ${text}`).join("\n");
+                }
+
                 case "code":
-                    return `\`\`\`\n${b.data.code}\n\`\`\``;
+                case "Code": {
+                    const codeData = b.data as any;
+                    return `\`\`\`\n${codeData.code}\n\`\`\``;
+                }
+
                 case "quote":
-                    return `> ${b.data.text}\n>\n> — ${b.data.caption || "Anonymous"}`;
+                case "Quote": {
+                    const quoteData = b.data as any;
+                    const cleanText = quoteData.text.replace(/&nbsp;/g, " ");
+                    return `> ${cleanText}\n>\n> — ${quoteData.caption || "Anonymous"}`;
+                }
+
                 case "warning":
-                    return `**${b.data.title}**\n${b.data.message}`;
+                case "Warning": {
+                    const warningData = b.data as any;
+                    return `**⚠ ${warningData.title}**\n\n${warningData.message}`;
+                }
+
                 case "delimiter":
+                case "Delimiter":
                     return `---`;
+
                 default:
                     return "";
             }
         })
+        .filter((block) => block.trim() !== "")
         .join("\n\n");
 }
 
 export function editorJsToHTML(data: EditorJsData) {
     return data.blocks
         .map((b) => {
-            switch (b.type) {
+            const type = b.type;
+
+            switch (type) {
                 case "header":
-                    return `<h${b.data.level}>${b.data.text}</h${b.data.level}>`;
+                case "Header": {
+                    const headerData = b.data as any;
+                    const level = headerData.level || 1;
+                    return `<h${level} class="heading-${level}">${headerData.text}</h${level}>`;
+                }
+
                 case "paragraph":
-                    return `<p>${b.data.text}</p>`;
+                case "Paragraph": {
+                    const paraData = b.data as any;
+                    return `<p class="paragraph">${paraData.text}</p>`;
+                }
+
                 case "list":
-                    return `<ul>${b.data.items.map((i) => `<li>${i}</li>`).join("")}</ul>`;
+                case "List": {
+                    const listData = b.data as any;
+                    const items = listData.items.map((item: any) => item.content);
+
+                    if (listData.style === "checklist") {
+                        return `<ul class="checklist">
+                            ${items
+                                .map((text: string, idx: number) => {
+                                    const checked = listData.items[idx].meta?.checked ? "checked" : "";
+                                    return `  <li class="checklist-item"><input type="checkbox" disabled ${checked} /> <span>${text}</span></li>`;
+                                })
+                                .join("\n")}
+                        </ul>`;
+                    }
+
+                    if (listData.style === "ordered") {
+                        return `<ol class="ordered-list">
+                        ${items.map((text: string) => `<li>${text}</li>`).join("\n")}
+                        </ol>`;
+                    }
+
+                    return `<ul class="unordered-list">
+                        ${items.map((text: string) => `  <li>${text}</li>`).join("\n")}
+                        </ul>`;
+                }
+
                 case "code":
-                    return `<pre><code>${b.data.code}</code></pre>`;
+                case "Code": {
+                    const codeData = b.data as any;
+                    return `<pre class="code-block"><code>${escapeHTML(codeData.code)}</code></pre>`;
+                }
+
                 case "quote":
-                    return `<blockquote>${b.data.text}<footer>${b.data.caption || "Anonymous"}</footer></blockquote>`;
+                case "Quote": {
+                    const quoteData = b.data as any;
+                    const cleanText = quoteData.text.replace(/&nbsp;/g, " ");
+                    return `<blockquote class="quote">
+                            <p class="quote-text">"${cleanText}"</p>
+                            <footer class="quote-author">— ${quoteData.caption || "Anonymous"}</footer>
+                        </blockquote>`;
+                }
+
                 case "warning":
-                    return `<div class="warning"><strong>${b.data.title}</strong><p>${b.data.message}</p></div>`;
+                case "Warning": {
+                    const warningData = b.data as any;
+                    return `<div class="warning-box">
+                        <div class="warning-header">
+                            <span class="warning-icon">⚠</span>
+                            <strong>${warningData.title}</strong>
+                        </div>
+                        <p class="warning-message">${warningData.message}</p>
+                    </div>`;
+                }
+
                 case "delimiter":
-                    return `<hr/>`;
+                case "Delimiter":
+                    return `<hr class="delimiter" />`;
+
                 default:
                     return "";
             }
         })
-        .join("");
+        .filter((block) => block.trim() !== "")
+        .join("\n");
 }
 
-export async function editorJsToPDF(data: EditorJsData): Promise<Buffer> {
-    const doc = new PDFDocument();
-    const chunks: Uint8Array[] = [];
-
-    doc.on("data", (c: Uint8Array) => chunks.push(c));
-    doc.text(editorJsToText(data));
-    doc.end();
-
-    const buffer: Buffer = await new Promise((resolve) =>
-        doc.on("end", () => resolve(Buffer.concat(chunks)))
-    );
-
-    return buffer;
+function escapeHTML(text: string): string {
+    const map: Record<string, string> = {
+        "&": "&amp;",
+        "<": "&lt;",
+        ">": "&gt;",
+        '"': "&quot;",
+        "'": "&#039;",
+    };
+    return text.replace(/[&<>"']/g, (char) => map[char]);
 }
 
 const blockHandlers: Record<string, (block: any) => Paragraph | Paragraph[]> = {
-    header: (block) => new Paragraph({
-        text: block.data.text || '',
-        heading: [HeadingLevel.HEADING_2, HeadingLevel.HEADING_3, HeadingLevel.HEADING_4][block.data.level - 2] || HeadingLevel.HEADING_3,
-    }),
-    list: (block) => (block.data.items || []).map((item: string) =>
-        new Paragraph({ text: item, bullet: { level: 0 } })
-    ),
-    paragraph: (block) => new Paragraph(block.data.text || ''),
-    delimiter: () => new Paragraph('─'.repeat(50)),
-    code: (block) => new Paragraph({
-        text: block.data.code || '',
-        shading: { fill: 'f0f0f0' },
-        border: { top: { color: 'cccccc', space: 1, style: BorderStyle.SINGLE } },
-    }),
-    quote: (block) => new Paragraph({
-        children: [new TextRun({ text: `"${block.data.text || ''}" — ${block.data.caption || ''}`, italics: true })],
-        indent: { left: 720 },
-    }),
-    warning: (block) => [
-        new Paragraph({
-            children: [new TextRun({ text: block.data.title || 'Warning', bold: true })],
-            shading: { fill: 'fff3cd' },
-        }),
-        new Paragraph({
-            text: block.data.message || '',
-            shading: { fill: 'fff3cd' },
-        }),
-    ],
+    header: (block) => {
+        const headerData = block.data as any;
+        const level = headerData.level || 1;
+        const headingLevels = [
+            HeadingLevel.HEADING_1,
+            HeadingLevel.HEADING_1,
+            HeadingLevel.HEADING_2,
+            HeadingLevel.HEADING_3,
+            HeadingLevel.HEADING_4,
+            HeadingLevel.HEADING_5,
+            HeadingLevel.HEADING_6,
+        ];
+        return new Paragraph({
+            text: headerData.text || '',
+            heading: headingLevels[level] || HeadingLevel.HEADING_3,
+            spacing: { after: 200 },
+        });
+    },
+
+    list: (block) => {
+        const listData = block.data as any;
+        const items = listData.items || [];
+
+        if (listData.style === "checklist") {
+            return items.map((item: any) => {
+                const checked = item.meta?.checked ? "☑" : "☐";
+                return new Paragraph({
+                    children: [new TextRun({ text: `${checked} ${item.content || ''}` })],
+                    spacing: { after: 100 },
+                });
+            });
+        }
+
+        if (listData.style === "ordered") {
+            return items.map((item: any, idx: number) => {
+                const num = idx + 1;
+                return new Paragraph({
+                    children: [new TextRun({ text: `${num}. ${item.content || ''}` })],
+                    spacing: { after: 100 },
+                    indent: { left: 200 },
+                });
+            });
+        }
+
+        return items.map((item: any) =>
+            new Paragraph({
+                text: item.content || '',
+                bullet: { level: 0 },
+                spacing: { after: 100 },
+            })
+        );
+    },
+
+    paragraph: (block) => {
+        const paraData = block.data as any;
+        return new Paragraph({
+            text: paraData.text || '',
+            spacing: { after: 150 },
+        });
+    },
+
+    delimiter: () => {
+        return new Paragraph({
+            text: '─'.repeat(50),
+            spacing: { before: 200, after: 200 },
+            alignment: 'center' as any,
+        });
+    },
+
+    code: (block) => {
+        const codeData = block.data as any;
+        return new Paragraph({
+            children: [new TextRun({ text: codeData.code || '', font: 'Courier New', size: 20 })],
+            shading: { fill: 'f0f0f0' },
+            border: {
+                top: { color: 'cccccc', space: 1, style: BorderStyle.SINGLE },
+                bottom: { color: 'cccccc', space: 1, style: BorderStyle.SINGLE },
+                left: { color: 'cccccc', space: 1, style: BorderStyle.SINGLE },
+                right: { color: 'cccccc', space: 1, style: BorderStyle.SINGLE },
+            },
+            spacing: { after: 150, before: 150 },
+            indent: { left: 200, right: 200 },
+        });
+    },
+
+    quote: (block) => {
+        const quoteData = block.data as any;
+        const cleanText = (quoteData.text || '').replace(/&nbsp;/g, ' ');
+        return new Paragraph({
+            children: [
+                new TextRun({
+                    text: `"${cleanText}"`,
+                    italics: true,
+                    size: 24,
+                }),
+                new TextRun({ text: `\n— ${quoteData.caption || 'Anonymous'}`, italics: true }),
+            ],
+            indent: { left: 720 },
+            spacing: { before: 150, after: 150 },
+            border: { left: { color: '4472c4', space: 1, style: BorderStyle.SINGLE, size: 12 } },
+        });
+    },
+
+    warning: (block) => {
+        const warningData = block.data as any;
+        return [
+            new Paragraph({
+                children: [
+                    new TextRun({ text: '⚠ ', size: 28 }),
+                    new TextRun({ text: warningData.title || 'Warning', bold: true, size: 24 }),
+                ],
+                shading: { fill: 'fff3cd' },
+                spacing: { before: 100, after: 100 },
+                indent: { left: 200, right: 200 },
+            }),
+            new Paragraph({
+                text: warningData.message || '',
+                shading: { fill: 'fff3cd' },
+                spacing: { before: 50, after: 200 },
+                indent: { left: 200, right: 200 },
+            }),
+        ];
+    },
 };
 
-export async function editorJsToDOCX(data: any): Promise<Buffer> {
-    const children = data.blocks?.flatMap((block: any) =>
-        (blockHandlers[block.type]?.(block) || new Paragraph(''))
-    ) || [new Paragraph('')];
+export async function editorJsToDOCX(data: EditorJsData): Promise<Buffer> {
+    const children = (data.blocks || []).flatMap((block: any) => {
+        const type = block.type;
+        const handler = blockHandlers[type] || blockHandlers[type.toLowerCase()];
+
+        if (!handler) {
+            return [];
+        }
+
+        const result = handler(block);
+        return Array.isArray(result) ? result : [result];
+    });
+
+    if (children.length === 0) {
+        children.push(new Paragraph(''));
+    }
 
     return Packer.toBuffer(new Document({ sections: [{ children }] }));
 }
 
+async function drawText(
+    page: PDFPage,
+    text: string,
+    x: number,
+    y: number,
+    fontMap: any,
+    options: {
+        size?: number;
+        bold?: boolean;
+        maxWidth?: number;
+    } = {}
+): Promise<number> {
+    const { size = 11, bold = false, maxWidth = 500 } = options;
+    const font = bold ? fontMap.bold : fontMap.normal;
+
+    page.drawText(text, {
+        x,
+        y,
+        size,
+        font,
+        color: rgb(0, 0, 0),
+        maxWidth,
+        lineHeight: size * 1.4,
+    });
+
+    // Estimate height based on text length and width
+    const estimatedLines = Math.ceil(text.length / (maxWidth / (size * 0.6)));
+    return y - (size * estimatedLines * 1.4);
+}
+
+export async function editorJsToPDF(data: EditorJsData): Promise<Uint8Array> {
+    const pdfDoc = await PDFDocument.create();
+    const normalFont = await pdfDoc.embedFont('Helvetica');
+    const boldFont = await pdfDoc.embedFont('Helvetica-Bold');
+
+    let page = pdfDoc.addPage([612, 792]); // US Letter size
+    let yPosition = 750;
+    const margin = 50;
+    const bottomMargin = 50;
+
+    const blocks = data.blocks || [];
+
+    const fontMap = {
+        normal: normalFont,
+        bold: boldFont,
+    };
+
+    for (const block of blocks) {
+        const type = block.type;
+
+        // Check if we need a new page
+        if (yPosition < bottomMargin + 80) {
+            page = pdfDoc.addPage([612, 792]);
+            yPosition = 750;
+        }
+
+        try {
+            switch (type) {
+                case "header":
+                case "Header": {
+                    const headerData = block.data as any;
+                    const level = headerData.level || 1;
+                    const sizes = [24, 20, 18, 16, 14, 12];
+                    const size = sizes[level - 1] || 16;
+                    const text = headerData.text || '';
+
+                    // Skip empty headers
+                    if (text.trim() === '') {
+                        break;
+                    }
+
+                    try {
+                        page.drawText(text, {
+                            x: margin,
+                            y: yPosition,
+                            size,
+                            font: fontMap.bold,
+                            color: rgb(0, 0, 0),
+                            maxWidth: 500,
+                        });
+                    } catch (e) {
+                        // If emoji causes issues, draw without it
+                        const cleanText = text.replace(/[\u{1F300}-\u{1F9FF}]/gu, '').trim();
+                        if (cleanText) {
+                            page.drawText(cleanText, {
+                                x: margin,
+                                y: yPosition,
+                                size,
+                                font: fontMap.bold,
+                                color: rgb(0, 0, 0),
+                                maxWidth: 500,
+                            });
+                        }
+                    }
+                    yPosition -= size + 8;
+                    break;
+                }
+
+                case "paragraph":
+                case "Paragraph": {
+                    const paraData = block.data as any;
+                    yPosition = await drawText(page, paraData.text || '', margin, yPosition, fontMap, {
+                        size: 11,
+                        maxWidth: 500,
+                    });
+                    yPosition -= 10;
+                    break;
+                }
+
+                case "list":
+                case "List": {
+                    const listData = block.data as any;
+                    const items = listData.items || [];
+
+                    if (listData.style === "checklist") {
+                        for (const item of items) {
+                            const checked = item.meta?.checked ? "[x]" : "[ ]";
+                            const text = `${checked} ${item.content || ''}`;
+                            page.drawText(text, {
+                                x: margin + 20,
+                                y: yPosition,
+                                size: 11,
+                                font: fontMap.normal,
+                                color: rgb(0, 0, 0),
+                                maxWidth: 480,
+                            });
+                            yPosition -= 18;
+                        }
+                    } else if (listData.style === "ordered") {
+                        for (let i = 0; i < items.length; i++) {
+                            const text = `${i + 1}. ${items[i].content || ''}`;
+                            page.drawText(text, {
+                                x: margin + 20,
+                                y: yPosition,
+                                size: 11,
+                                font: fontMap.normal,
+                                color: rgb(0, 0, 0),
+                                maxWidth: 480,
+                            });
+                            yPosition -= 18;
+                        }
+                    } else {
+                        // unordered
+                        for (const item of items) {
+                            const text = `• ${item.content || ''}`;
+                            page.drawText(text, {
+                                x: margin + 20,
+                                y: yPosition,
+                                size: 11,
+                                font: fontMap.normal,
+                                color: rgb(0, 0, 0),
+                                maxWidth: 480,
+                            });
+                            yPosition -= 18;
+                        }
+                    }
+                    yPosition -= 10;
+                    break;
+                }
+
+                case "code":
+                case "Code": {
+                    const codeData = block.data as any;
+                    const code = codeData.code || '';
+
+                    page.drawRectangle({
+                        x: margin,
+                        y: yPosition - 40,
+                        width: 500,
+                        height: 40,
+                        color: rgb(0.94, 0.94, 0.94),
+                        borderColor: rgb(0.8, 0.8, 0.8),
+                        borderWidth: 1,
+                    });
+
+                    page.drawText(code, {
+                        x: margin + 8,
+                        y: yPosition - 28,
+                        size: 9,
+                        font: fontMap.normal,
+                        color: rgb(0, 0, 0),
+                        maxWidth: 484,
+                    });
+                    yPosition -= 50;
+                    break;
+                }
+
+                case "quote":
+                case "Quote": {
+                    const quoteData = block.data as any;
+                    const cleanText = (quoteData.text || '').replace(/&nbsp;/g, ' ');
+                    const caption = quoteData.caption || 'Anonymous';
+
+                    // Draw left border
+                    page.drawRectangle({
+                        x: margin,
+                        y: yPosition - 35,
+                        width: 3,
+                        height: 35,
+                        color: rgb(0.3, 0.3, 0.3),
+                    });
+
+                    page.drawText(`"${cleanText}"`, {
+                        x: margin + 15,
+                        y: yPosition,
+                        size: 10,
+                        font: fontMap.normal,
+                        color: rgb(0, 0, 0),
+                        maxWidth: 480,
+                    });
+
+                    page.drawText(`— ${caption}`, {
+                        x: margin + 15,
+                        y: yPosition - 16,
+                        size: 9,
+                        font: fontMap.normal,
+                        color: rgb(0.4, 0.4, 0.4),
+                        maxWidth: 480,
+                    });
+                    yPosition -= 40;
+                    break;
+                }
+
+                case "warning":
+                case "Warning": {
+                    const warningData = block.data as any;
+                    const title = warningData.title || 'Warning';
+                    const message = warningData.message || '';
+
+                    page.drawRectangle({
+                        x: margin,
+                        y: yPosition - 60,
+                        width: 500,
+                        height: 60,
+                        color: rgb(1, 0.96, 0.88),
+                        borderColor: rgb(1, 0.84, 0.5),
+                        borderWidth: 1,
+                    });
+
+                    page.drawText(`⚠ ${title}`, {
+                        x: margin + 10,
+                        y: yPosition - 15,
+                        size: 11,
+                        font: fontMap.bold,
+                        color: rgb(0, 0, 0),
+                    });
+
+                    page.drawText(message, {
+                        x: margin + 10,
+                        y: yPosition - 35,
+                        size: 10,
+                        font: fontMap.normal,
+                        color: rgb(0, 0, 0),
+                        maxWidth: 480,
+                    });
+                    yPosition -= 70;
+                    break;
+                }
+
+                case "delimiter":
+                case "Delimiter": {
+                    page.drawLine({
+                        start: { x: margin, y: yPosition - 10 },
+                        end: { x: 612 - margin, y: yPosition - 10 },
+                        color: rgb(0.8, 0.8, 0.8),
+                        thickness: 1,
+                    });
+                    yPosition -= 25;
+                    break;
+                }
+            }
+        } catch (error) {
+            console.error(`Error processing block type ${type}:`, error);
+        }
+    }
+
+    return pdfDoc.save();
+}
