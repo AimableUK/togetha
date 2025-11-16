@@ -514,7 +514,7 @@ export async function editorJsToPDF(data: EditorJsData): Promise<Uint8Array> {
     let yPosition = 750;
     const margin = 50;
     const bottomMargin = 50;
-    const pageHeight = 792;
+    const pageWidth = 612;
 
     const blocks = data.blocks || [];
 
@@ -522,7 +522,7 @@ export async function editorJsToPDF(data: EditorJsData): Promise<Uint8Array> {
         const type = block.type;
 
         // Check if we need a new page
-        if (yPosition < bottomMargin + 80) {
+        if (yPosition < bottomMargin + 100) {
             page = pdfDoc.addPage([612, 792]);
             yPosition = 750;
         }
@@ -537,9 +537,8 @@ export async function editorJsToPDF(data: EditorJsData): Promise<Uint8Array> {
                     const size = sizes[level - 1] || 16;
                     const text = headerData.text || '';
 
-                    // Skip empty headers
                     if (text.trim() === '') {
-                        yPosition -= 5;
+                        yPosition -= 10;
                         break;
                     }
 
@@ -550,10 +549,9 @@ export async function editorJsToPDF(data: EditorJsData): Promise<Uint8Array> {
                             size,
                             font: boldFont,
                             color: rgb(0, 0, 0),
-                            maxWidth: 500,
+                            maxWidth: pageWidth - (margin * 2),
                         });
                     } catch (e) {
-                        // If emoji causes issues, draw without it
                         const cleanText = text.replace(/[\u{1F300}-\u{1F9FF}]/gu, '').trim();
                         if (cleanText) {
                             page.drawText(cleanText, {
@@ -562,11 +560,11 @@ export async function editorJsToPDF(data: EditorJsData): Promise<Uint8Array> {
                                 size,
                                 font: boldFont,
                                 color: rgb(0, 0, 0),
-                                maxWidth: 500,
+                                maxWidth: pageWidth - (margin * 2),
                             });
                         }
                     }
-                    yPosition -= size + 10;
+                    yPosition -= size + 12;
                     break;
                 }
 
@@ -581,11 +579,11 @@ export async function editorJsToPDF(data: EditorJsData): Promise<Uint8Array> {
                         size: 11,
                         font: normalFont,
                         color: rgb(0, 0, 0),
-                        maxWidth: 500,
+                        maxWidth: pageWidth - (margin * 2),
                     });
-                    yPosition -= 22;
+                    yPosition -= 28;
                     break;
-                };
+                }
 
                 case "list":
                 case "List": {
@@ -602,7 +600,7 @@ export async function editorJsToPDF(data: EditorJsData): Promise<Uint8Array> {
                                 size: 11,
                                 font: normalFont,
                                 color: rgb(0, 0, 0),
-                                maxWidth: 480,
+                                maxWidth: pageWidth - (margin * 2) - 20,
                             });
                             yPosition -= 18;
                         }
@@ -615,12 +613,11 @@ export async function editorJsToPDF(data: EditorJsData): Promise<Uint8Array> {
                                 size: 11,
                                 font: normalFont,
                                 color: rgb(0, 0, 0),
-                                maxWidth: 480,
+                                maxWidth: pageWidth - (margin * 2) - 20,
                             });
                             yPosition -= 18;
                         }
                     } else {
-                        // unordered
                         for (const item of items) {
                             const text = `• ${item.content || ''}`;
                             page.drawText(text, {
@@ -629,12 +626,12 @@ export async function editorJsToPDF(data: EditorJsData): Promise<Uint8Array> {
                                 size: 11,
                                 font: normalFont,
                                 color: rgb(0, 0, 0),
-                                maxWidth: 480,
+                                maxWidth: pageWidth - (margin * 2) - 20,
                             });
                             yPosition -= 18;
                         }
                     }
-                    yPosition -= 5;
+                    yPosition -= 10;
                     break;
                 }
 
@@ -643,11 +640,11 @@ export async function editorJsToPDF(data: EditorJsData): Promise<Uint8Array> {
                     const codeData = block.data as any;
                     const code = codeData.code || '';
 
-                    const boxHeight = 35;
+                    const boxHeight = 50;
                     page.drawRectangle({
                         x: margin,
                         y: yPosition - boxHeight,
-                        width: 500,
+                        width: pageWidth - (margin * 2),
                         height: boxHeight,
                         color: rgb(0.94, 0.94, 0.94),
                         borderColor: rgb(0.8, 0.8, 0.8),
@@ -656,13 +653,13 @@ export async function editorJsToPDF(data: EditorJsData): Promise<Uint8Array> {
 
                     page.drawText(code, {
                         x: margin + 8,
-                        y: yPosition - 20,
+                        y: yPosition - 18,
                         size: 9,
                         font: normalFont,
                         color: rgb(0, 0, 0),
-                        maxWidth: 484,
+                        maxWidth: pageWidth - (margin * 2) - 16,
                     });
-                    yPosition -= boxHeight + 12;
+                    yPosition -= boxHeight + 15;
                     break;
                 }
 
@@ -678,18 +675,18 @@ export async function editorJsToPDF(data: EditorJsData): Promise<Uint8Array> {
                         size: 10,
                         font: normalFont,
                         color: rgb(0, 0, 0),
-                        maxWidth: 480,
+                        maxWidth: pageWidth - (margin * 2) - 15,
                     });
 
                     page.drawText(`— ${caption}`, {
                         x: margin + 15,
-                        y: yPosition - 10,
+                        y: yPosition - 18,
                         size: 9,
                         font: normalFont,
                         color: rgb(0.4, 0.4, 0.4),
-                        maxWidth: 480,
+                        maxWidth: pageWidth - (margin * 2) - 15,
                     });
-                    yPosition -= 35;
+                    yPosition -= 50;
                     break;
                 }
 
@@ -698,11 +695,21 @@ export async function editorJsToPDF(data: EditorJsData): Promise<Uint8Array> {
                     const warningData = block.data as any;
                     const title = warningData.title || 'Warning';
                     const message = warningData.message || '';
-                    const boxHeight = 55;
+
+                    const boxHeight = 65;
+                    page.drawRectangle({
+                        x: margin,
+                        y: yPosition - boxHeight,
+                        width: pageWidth - (margin * 2),
+                        height: boxHeight,
+                        color: rgb(1, 0.96, 0.88),
+                        borderColor: rgb(1, 0.84, 0.5),
+                        borderWidth: 1,
+                    });
 
                     page.drawText(`⚠ ${title}`, {
                         x: margin + 10,
-                        y: yPosition - 12,
+                        y: yPosition - 15,
                         size: 11,
                         font: boldFont,
                         color: rgb(0, 0, 0),
@@ -710,25 +717,25 @@ export async function editorJsToPDF(data: EditorJsData): Promise<Uint8Array> {
 
                     page.drawText(message, {
                         x: margin + 10,
-                        y: yPosition - 32,
+                        y: yPosition - 38,
                         size: 10,
                         font: normalFont,
                         color: rgb(0, 0, 0),
-                        maxWidth: 480,
+                        maxWidth: pageWidth - (margin * 2) - 20,
                     });
-                    yPosition -= boxHeight + 12;
+                    yPosition -= boxHeight + 15;
                     break;
                 }
 
                 case "delimiter":
                 case "Delimiter": {
                     page.drawLine({
-                        start: { x: margin, y: yPosition - 8 },
-                        end: { x: 612 - margin, y: yPosition - 8 },
+                        start: { x: margin, y: yPosition - 10 },
+                        end: { x: pageWidth - margin, y: yPosition - 10 },
                         color: rgb(0.8, 0.8, 0.8),
                         thickness: 1,
                     });
-                    yPosition -= 20;
+                    yPosition -= 30;
                     break;
                 }
             }

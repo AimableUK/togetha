@@ -81,12 +81,12 @@ const WorkspaceHeader = ({
             <DropdownMenuContent>
               <DropdownMenuLabel>Export Options</DropdownMenuLabel>
               <Separator />
-              <DropdownMenuItem
+              {/* <DropdownMenuItem
                 onSelect={() => download("pdf")}
                 className="cursor-pointer"
               >
                 .pdf
-              </DropdownMenuItem>
+              </DropdownMenuItem> */}
               <DropdownMenuItem
                 onSelect={() => download("docx")}
                 className="cursor-pointer"
