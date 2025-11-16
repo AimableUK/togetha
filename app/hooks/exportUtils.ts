@@ -1,6 +1,6 @@
 import { EditorJsData } from "@/lib/utils";
 import { Document, Paragraph, Packer, HeadingLevel, BorderStyle, TextRun } from 'docx';
-import { PDFDocument, PDFPage, rgb } from 'pdf-lib';
+import { PDFDocument, rgb } from 'pdf-lib';
 
 
 export function editorJsToText(data: EditorJsData) {
@@ -381,36 +381,6 @@ export async function editorJsToDOCX(data: EditorJsData): Promise<Buffer> {
     return Packer.toBuffer(new Document({ sections: [{ children }] }));
 }
 
-async function drawText(
-    page: PDFPage,
-    text: string,
-    x: number,
-    y: number,
-    fontMap: any,
-    options: {
-        size?: number;
-        bold?: boolean;
-        maxWidth?: number;
-    } = {}
-): Promise<number> {
-    const { size = 11, bold = false, maxWidth = 500 } = options;
-    const font = bold ? fontMap.bold : fontMap.normal;
-
-    page.drawText(text, {
-        x,
-        y,
-        size,
-        font,
-        color: rgb(0, 0, 0),
-        maxWidth,
-        lineHeight: size * 1.4,
-    });
-
-    // Estimate height based on text length and width
-    const estimatedLines = Math.ceil(text.length / (maxWidth / (size * 0.6)));
-    return y - (size * estimatedLines * 1.4);
-}
-
 export async function editorJsToPDF(data: EditorJsData): Promise<Uint8Array> {
     const pdfDoc = await PDFDocument.create();
     const normalFont = await pdfDoc.embedFont('Helvetica');
@@ -420,13 +390,9 @@ export async function editorJsToPDF(data: EditorJsData): Promise<Uint8Array> {
     let yPosition = 750;
     const margin = 50;
     const bottomMargin = 50;
+    const pageHeight = 792;
 
     const blocks = data.blocks || [];
-
-    const fontMap = {
-        normal: normalFont,
-        bold: boldFont,
-    };
 
     for (const block of blocks) {
         const type = block.type;
@@ -449,6 +415,7 @@ export async function editorJsToPDF(data: EditorJsData): Promise<Uint8Array> {
 
                     // Skip empty headers
                     if (text.trim() === '') {
+                        yPosition -= 5;
                         break;
                     }
 
@@ -457,7 +424,7 @@ export async function editorJsToPDF(data: EditorJsData): Promise<Uint8Array> {
                             x: margin,
                             y: yPosition,
                             size,
-                            font: fontMap.bold,
+                            font: boldFont,
                             color: rgb(0, 0, 0),
                             maxWidth: 500,
                         });
@@ -469,26 +436,32 @@ export async function editorJsToPDF(data: EditorJsData): Promise<Uint8Array> {
                                 x: margin,
                                 y: yPosition,
                                 size,
-                                font: fontMap.bold,
+                                font: boldFont,
                                 color: rgb(0, 0, 0),
                                 maxWidth: 500,
                             });
                         }
                     }
-                    yPosition -= size + 8;
+                    yPosition -= size + 10;
                     break;
                 }
 
                 case "paragraph":
                 case "Paragraph": {
                     const paraData = block.data as any;
-                    yPosition = await drawText(page, paraData.text || '', margin, yPosition, fontMap, {
+                    const text = paraData.text || '';
+
+                    page.drawText(text, {
+                        x: margin,
+                        y: yPosition,
                         size: 11,
+                        font: normalFont,
+                        color: rgb(0, 0, 0),
                         maxWidth: 500,
                     });
-                    yPosition -= 10;
+                    yPosition -= 22;
                     break;
-                }
+                };
 
                 case "list":
                 case "List": {
@@ -503,7 +476,7 @@ export async function editorJsToPDF(data: EditorJsData): Promise<Uint8Array> {
                                 x: margin + 20,
                                 y: yPosition,
                                 size: 11,
-                                font: fontMap.normal,
+                                font: normalFont,
                                 color: rgb(0, 0, 0),
                                 maxWidth: 480,
                             });
@@ -516,7 +489,7 @@ export async function editorJsToPDF(data: EditorJsData): Promise<Uint8Array> {
                                 x: margin + 20,
                                 y: yPosition,
                                 size: 11,
-                                font: fontMap.normal,
+                                font: normalFont,
                                 color: rgb(0, 0, 0),
                                 maxWidth: 480,
                             });
@@ -530,14 +503,14 @@ export async function editorJsToPDF(data: EditorJsData): Promise<Uint8Array> {
                                 x: margin + 20,
                                 y: yPosition,
                                 size: 11,
-                                font: fontMap.normal,
+                                font: normalFont,
                                 color: rgb(0, 0, 0),
                                 maxWidth: 480,
                             });
                             yPosition -= 18;
                         }
                     }
-                    yPosition -= 10;
+                    yPosition -= 5;
                     break;
                 }
 
@@ -546,11 +519,12 @@ export async function editorJsToPDF(data: EditorJsData): Promise<Uint8Array> {
                     const codeData = block.data as any;
                     const code = codeData.code || '';
 
+                    const boxHeight = 35;
                     page.drawRectangle({
                         x: margin,
-                        y: yPosition - 40,
+                        y: yPosition - boxHeight,
                         width: 500,
-                        height: 40,
+                        height: boxHeight,
                         color: rgb(0.94, 0.94, 0.94),
                         borderColor: rgb(0.8, 0.8, 0.8),
                         borderWidth: 1,
@@ -558,13 +532,13 @@ export async function editorJsToPDF(data: EditorJsData): Promise<Uint8Array> {
 
                     page.drawText(code, {
                         x: margin + 8,
-                        y: yPosition - 28,
+                        y: yPosition - 20,
                         size: 9,
-                        font: fontMap.normal,
+                        font: normalFont,
                         color: rgb(0, 0, 0),
                         maxWidth: 484,
                     });
-                    yPosition -= 50;
+                    yPosition -= boxHeight + 12;
                     break;
                 }
 
@@ -574,33 +548,24 @@ export async function editorJsToPDF(data: EditorJsData): Promise<Uint8Array> {
                     const cleanText = (quoteData.text || '').replace(/&nbsp;/g, ' ');
                     const caption = quoteData.caption || 'Anonymous';
 
-                    // Draw left border
-                    page.drawRectangle({
-                        x: margin,
-                        y: yPosition - 35,
-                        width: 3,
-                        height: 35,
-                        color: rgb(0.3, 0.3, 0.3),
-                    });
-
                     page.drawText(`"${cleanText}"`, {
                         x: margin + 15,
                         y: yPosition,
                         size: 10,
-                        font: fontMap.normal,
+                        font: normalFont,
                         color: rgb(0, 0, 0),
                         maxWidth: 480,
                     });
 
                     page.drawText(`— ${caption}`, {
                         x: margin + 15,
-                        y: yPosition - 16,
+                        y: yPosition - 10,
                         size: 9,
-                        font: fontMap.normal,
+                        font: normalFont,
                         color: rgb(0.4, 0.4, 0.4),
                         maxWidth: 480,
                     });
-                    yPosition -= 40;
+                    yPosition -= 35;
                     break;
                 }
 
@@ -609,46 +574,37 @@ export async function editorJsToPDF(data: EditorJsData): Promise<Uint8Array> {
                     const warningData = block.data as any;
                     const title = warningData.title || 'Warning';
                     const message = warningData.message || '';
-
-                    page.drawRectangle({
-                        x: margin,
-                        y: yPosition - 60,
-                        width: 500,
-                        height: 60,
-                        color: rgb(1, 0.96, 0.88),
-                        borderColor: rgb(1, 0.84, 0.5),
-                        borderWidth: 1,
-                    });
+                    const boxHeight = 55;
 
                     page.drawText(`⚠ ${title}`, {
                         x: margin + 10,
-                        y: yPosition - 15,
+                        y: yPosition - 12,
                         size: 11,
-                        font: fontMap.bold,
+                        font: boldFont,
                         color: rgb(0, 0, 0),
                     });
 
                     page.drawText(message, {
                         x: margin + 10,
-                        y: yPosition - 35,
+                        y: yPosition - 32,
                         size: 10,
-                        font: fontMap.normal,
+                        font: normalFont,
                         color: rgb(0, 0, 0),
                         maxWidth: 480,
                     });
-                    yPosition -= 70;
+                    yPosition -= boxHeight + 12;
                     break;
                 }
 
                 case "delimiter":
                 case "Delimiter": {
                     page.drawLine({
-                        start: { x: margin, y: yPosition - 10 },
-                        end: { x: 612 - margin, y: yPosition - 10 },
+                        start: { x: margin, y: yPosition - 8 },
+                        end: { x: 612 - margin, y: yPosition - 8 },
                         color: rgb(0.8, 0.8, 0.8),
                         thickness: 1,
                     });
-                    yPosition -= 25;
+                    yPosition -= 20;
                     break;
                 }
             }
