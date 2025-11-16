@@ -2,6 +2,11 @@ import { EditorJsData } from "@/lib/utils";
 import { Document, Paragraph, Packer, HeadingLevel, BorderStyle, TextRun } from 'docx';
 import { PDFDocument, rgb } from 'pdf-lib';
 
+function cleanTextForPlainText(text: string): string {
+    text = text.replace(/&nbsp;/g, " ");
+    text = text.replace(/<[^>]*>/g, "");
+    return text;
+}
 
 export function editorJsToText(data: EditorJsData) {
     return data.blocks
@@ -9,17 +14,17 @@ export function editorJsToText(data: EditorJsData) {
             const type = b.type;
 
             if (type === "header" || type === "Header") {
-                return b.data.text;
+                return cleanTextForPlainText(b.data.text);
             }
 
             if (type === "paragraph" || type === "Paragraph") {
-                return b.data.text;
+                return cleanTextForPlainText(b.data.text);
             }
 
             if (type === "list" || type === "List") {
                 const listData = b.data as any;
                 const items = listData.items.map((item: any) => ({
-                    text: item.content,
+                    text: cleanTextForPlainText(item.content),
                     checked: item.meta?.checked ?? false
                 }));
 
@@ -40,19 +45,20 @@ export function editorJsToText(data: EditorJsData) {
 
             if (type === "code" || type === "Code") {
                 const codeData = b.data as any;
-                return `\`\`\`\n${codeData.code}\n\`\`\``;
+                return `\`\`\`\n${cleanTextForPlainText(codeData.code)}\n\`\`\``;
             }
 
             if (type === "quote" || type === "Quote") {
                 const quoteData = b.data as any;
-                const { text, caption } = quoteData;
-                const cleanText = text.replace(/&nbsp;/g, " ");
-                return `"${cleanText}"\n— ${caption || "Anonymous"}`;
+                const cleanText = cleanTextForPlainText(quoteData.text);
+                const caption = cleanTextForPlainText(quoteData.caption || "Anonymous");
+                return `"${cleanText}"\n— ${caption}`;
             }
 
             if (type === "warning" || type === "Warning") {
                 const warningData = b.data as any;
-                const { title, message } = warningData;
+                const title = cleanTextForPlainText(warningData.title);
+                const message = cleanTextForPlainText(warningData.message);
                 return `⚠ ${title}\n${message}`;
             }
 
@@ -235,6 +241,108 @@ function escapeHTML(text: string): string {
     return text.replace(/[&<>"']/g, (char) => map[char]);
 }
 
+function parseHtmlToTextRuns(text: string): TextRun[] {
+    // Replace HTML entities
+    text = text.replace(/&nbsp;/g, ' ');
+
+    const runs: TextRun[] = [];
+    let currentText = '';
+    let bold = false;
+    let italic = false;
+    let underline = false;
+
+    let i = 0;
+    while (i < text.length) {
+        if (text.slice(i, i + 3) === '<b>') {
+            if (currentText) {
+                runs.push(new TextRun({
+                    text: currentText,
+                    bold,
+                    italics: italic,
+                    underline: underline ? {} : undefined,
+                }));
+                currentText = '';
+            }
+            bold = true;
+            i += 3;
+        } else if (text.slice(i, i + 4) === '</b>') {
+            if (currentText) {
+                runs.push(new TextRun({
+                    text: currentText,
+                    bold,
+                    italics: italic,
+                    underline: underline ? {} : undefined,
+                }));
+                currentText = '';
+            }
+            bold = false;
+            i += 4;
+        } else if (text.slice(i, i + 3) === '<i>') {
+            if (currentText) {
+                runs.push(new TextRun({
+                    text: currentText,
+                    bold,
+                    italics: italic,
+                    underline: underline ? {} : undefined,
+                }));
+                currentText = '';
+            }
+            italic = true;
+            i += 3;
+        } else if (text.slice(i, i + 4) === '</i>') {
+            if (currentText) {
+                runs.push(new TextRun({
+                    text: currentText,
+                    bold,
+                    italics: italic,
+                    underline: underline ? {} : undefined,
+                }));
+                currentText = '';
+            }
+            italic = false;
+            i += 4;
+        } else if (text.slice(i, i + 3) === '<u>') {
+            if (currentText) {
+                runs.push(new TextRun({
+                    text: currentText,
+                    bold,
+                    italics: italic,
+                    underline: underline ? {} : undefined,
+                }));
+                currentText = '';
+            }
+            underline = true;
+            i += 3;
+        } else if (text.slice(i, i + 4) === '</u>') {
+            if (currentText) {
+                runs.push(new TextRun({
+                    text: currentText,
+                    bold,
+                    italics: italic,
+                    underline: underline ? {} : undefined,
+                }));
+                currentText = '';
+            }
+            underline = false;
+            i += 4;
+        } else {
+            currentText += text[i];
+            i++;
+        }
+    }
+
+    if (currentText) {
+        runs.push(new TextRun({
+            text: currentText,
+            bold,
+            italics: italic,
+            underline: underline ? {} : undefined,
+        }));
+    }
+
+    return runs.length > 0 ? runs : [new TextRun({ text: '' })];
+}
+
 const blockHandlers: Record<string, (block: any) => Paragraph | Paragraph[]> = {
     header: (block) => {
         const headerData = block.data as any;
@@ -248,8 +356,9 @@ const blockHandlers: Record<string, (block: any) => Paragraph | Paragraph[]> = {
             HeadingLevel.HEADING_5,
             HeadingLevel.HEADING_6,
         ];
+        const children = parseHtmlToTextRuns(headerData.text || '');
         return new Paragraph({
-            text: headerData.text || '',
+            children,
             heading: headingLevels[level] || HeadingLevel.HEADING_3,
             spacing: { after: 200 },
         });
@@ -262,8 +371,9 @@ const blockHandlers: Record<string, (block: any) => Paragraph | Paragraph[]> = {
         if (listData.style === "checklist") {
             return items.map((item: any) => {
                 const checked = item.meta?.checked ? "☑" : "☐";
+                const children = parseHtmlToTextRuns(`${checked} ${item.content || ''}`);
                 return new Paragraph({
-                    children: [new TextRun({ text: `${checked} ${item.content || ''}` })],
+                    children,
                     spacing: { after: 100 },
                 });
             });
@@ -272,27 +382,30 @@ const blockHandlers: Record<string, (block: any) => Paragraph | Paragraph[]> = {
         if (listData.style === "ordered") {
             return items.map((item: any, idx: number) => {
                 const num = idx + 1;
+                const children = parseHtmlToTextRuns(`${num}. ${item.content || ''}`);
                 return new Paragraph({
-                    children: [new TextRun({ text: `${num}. ${item.content || ''}` })],
+                    children,
                     spacing: { after: 100 },
                     indent: { left: 200 },
                 });
             });
         }
 
-        return items.map((item: any) =>
-            new Paragraph({
-                text: item.content || '',
+        return items.map((item: any) => {
+            const children = parseHtmlToTextRuns(item.content || '');
+            return new Paragraph({
+                children,
                 bullet: { level: 0 },
                 spacing: { after: 100 },
-            })
-        );
+            });
+        });
     },
 
     paragraph: (block) => {
         const paraData = block.data as any;
+        const children = parseHtmlToTextRuns(paraData.text || '');
         return new Paragraph({
-            text: paraData.text || '',
+            children,
             spacing: { after: 150 },
         });
     },
@@ -307,6 +420,7 @@ const blockHandlers: Record<string, (block: any) => Paragraph | Paragraph[]> = {
 
     code: (block) => {
         const codeData = block.data as any;
+        const children = parseHtmlToTextRuns(codeData.code || '');
         return new Paragraph({
             children: [new TextRun({ text: codeData.code || '', font: 'Courier New', size: 20 })],
             shading: { fill: 'f0f0f0' },
@@ -324,14 +438,21 @@ const blockHandlers: Record<string, (block: any) => Paragraph | Paragraph[]> = {
     quote: (block) => {
         const quoteData = block.data as any;
         const cleanText = (quoteData.text || '').replace(/&nbsp;/g, ' ');
+        const captionText = (quoteData.caption || 'Anonymous').replace(/&nbsp;/g, ' ');
+
         return new Paragraph({
             children: [
                 new TextRun({
                     text: `"${cleanText}"`,
                     italics: true,
-                    size: 24,
+                    size: 22,
                 }),
-                new TextRun({ text: `\n— ${quoteData.caption || 'Anonymous'}`, italics: true }),
+                new TextRun({ text: '\n' }),
+                new TextRun({
+                    text: `— ${captionText}`,
+                    italics: true,
+                    size: 20,
+                }),
             ],
             indent: { left: 720 },
             spacing: { before: 150, after: 150 },
@@ -341,18 +462,21 @@ const blockHandlers: Record<string, (block: any) => Paragraph | Paragraph[]> = {
 
     warning: (block) => {
         const warningData = block.data as any;
+        const titleText = warningData.title || 'Warning';
+        const messageText = warningData.message || '';
+
         return [
             new Paragraph({
                 children: [
                     new TextRun({ text: '⚠ ', size: 28 }),
-                    new TextRun({ text: warningData.title || 'Warning', bold: true, size: 24 }),
+                    new TextRun({ text: titleText, bold: true, size: 24 }),
                 ],
                 shading: { fill: 'fff3cd' },
                 spacing: { before: 100, after: 100 },
                 indent: { left: 200, right: 200 },
             }),
             new Paragraph({
-                text: warningData.message || '',
+                children: [new TextRun({ text: messageText })],
                 shading: { fill: 'fff3cd' },
                 spacing: { before: 50, after: 200 },
                 indent: { left: 200, right: 200 },
