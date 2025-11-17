@@ -64,12 +64,6 @@ const PrivacySettings = () => {
   };
 
   const handleDeleteAccount = async () => {
-    const confirmed = window.confirm(
-      "Are you sure you want to delete your account? This action cannot be undone. All your data will be permanently deleted."
-    );
-
-    if (!confirmed) return;
-
     const errorMessages: Record<string, string> = {
       ACCOUNT_NOT_FOUND: "We couldn't find your account. Please try again.",
       USER_NOT_FOUND: "Your account no longer exists.",
@@ -101,7 +95,7 @@ const PrivacySettings = () => {
       });
 
       setTimeout(() => {
-        window.location.href = "/";
+        window.location.href = "/api/auth/logout";
       }, 1500);
     } catch (err) {
       toast.dismiss(toastId);

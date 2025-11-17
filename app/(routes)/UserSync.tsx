@@ -27,21 +27,14 @@ export const UserSync = () => {
       // 2. Create if missing
       if (!existing) {
         await createUser({
-          name: `${user.given_name} ${user.family_name}`,
+          name:
+            [user.given_name, user.family_name].filter(Boolean).join(" ") ||
+            "User",
           email: user.email!,
           image: user.picture!,
         });
       }
       setUserDetails_(existing);
-
-      // 3. Check for pending team invites
-      // const pendingInvites = useQuery(api.teamInvites.getPendingInvites, {
-      //   email: user.email!,
-      // });
-
-      // if (pendingInvites?.length) {
-      //   setUpdates_(pendingInvites);
-      // }
 
       hasCreated.current = true;
     })();

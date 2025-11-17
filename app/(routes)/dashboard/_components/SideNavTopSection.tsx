@@ -331,7 +331,9 @@ const SideNavTopSection = ({ user, setActiveTeamInfo }: any) => {
                 />
                 <div className="flex flex-col overflow-hidden">
                   <h2 className="font-bold text-foreground/85 text-sm truncate">
-                    {user?.given_name} {user?.family_name}
+                    {[user?.given_name, user?.family_name]
+                      .filter(Boolean)
+                      .join(" ") || "User"}
                   </h2>
                   <h2 className="text-[14px] text-foreground/75 truncate max-w-[180px]">
                     {user?.email}
