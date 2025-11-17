@@ -26,7 +26,6 @@ import { useMutation } from "convex/react";
 import { api } from "@/convex/_generated/api";
 import { Id } from "@/convex/_generated/dataModel";
 import { TeamContext } from "@/app/FilesListContext";
-
 import { Input } from "@/components/ui/input";
 import DeleteDialog from "../_components/DeleteDialog";
 import { FILE, TEAM } from "@/lib/utils";
@@ -49,7 +48,7 @@ const FileList = () => {
   const pathname = usePathname();
   const addToArchieve = useMutation(api.files.addArchieve);
   const renameFileName = useMutation(api.files.renameFile);
-  const { user, files_, activeTeam_ } = useContext(TeamContext);
+  const { user, files_, activeTeam_, searchQuery } = useContext(TeamContext);
 
   useEffect(() => {
     setLoadingItem(null);
@@ -167,42 +166,6 @@ const FileList = () => {
     }
   };
 
-  // const handleExportFile = async (
-  //   fileId: Id<"files">,
-  //   format: "txt" | "md" | "html" | "pdf" | "docx"
-  // ) => {
-  //   toast.promise(
-  //     (async () => {
-  //       const data = await useSecureFile(fileId);
-  //       setFileData(data);
-  //       if (!fileData) throw new Error("File not found");
-  //       await download(format);
-  //     })(),
-  //     {
-  //       loading: `Fetching file...`,
-  //       success: () => ({
-  //         message: "Done",
-  //         description: "Download Started!",
-  //       }),
-  //       error: (err) => {
-  //         // let cleanMessage =
-  //         //   err?.message
-  //         //     ?.split("Uncaught Error: ")[1]
-  //         //     ?.split("at handler")[0]
-  //         //     ?.trim() ||
-  //         //   err?.message?.replace(/\[.*?\]/g, "").trim() ||
-  //         //   "Something went wrong, please try again.";
-  //         // console.log(err)
-
-  //         return {
-  //           message: "Failed to Download File",
-  //           description: err,
-  //         };
-  //       },
-  //     }
-  //   );
-  // };
-
   return (
     <div className="mt-6 p-1 px-2 md:p-4">
       <div className="overflow-x-auto">
@@ -230,17 +193,25 @@ const FileList = () => {
                   (files_: FILE) => files_.archieve === false
                 );
 
-                if (activeFiles.length === 0) {
+                const filteredFiles = activeFiles.filter((file: FILE) =>
+                  file.fileName
+                    .toLowerCase()
+                    .includes(searchQuery.toLowerCase())
+                );
+
+                if (filteredFiles.length === 0) {
                   return (
                     <tr className="bg-foreground/5">
                       <td colSpan={5} className="px-3 py-2 text-center">
-                        No active files (all files are archived)
+                        {searchQuery
+                          ? "No files match your search"
+                          : "No active files (all files are archived)"}
                       </td>
                     </tr>
                   );
                 }
 
-                return activeFiles.map((file: any) => (
+                return filteredFiles.map((file: any) => (
                   <tr
                     key={file._id}
                     className="odd:bg-foreground/5 hover:bg-foreground/15"

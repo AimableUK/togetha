@@ -29,7 +29,7 @@ import { TeamContext } from "@/app/FilesListContext";
 import DeleteDialog from "../_components/DeleteDialog";
 import { Input } from "@/components/ui/input";
 import { DeleteData } from "../files/FileList";
-import { TEAM } from "@/lib/utils";
+import { FILE, TEAM } from "@/lib/utils";
 
 const ArchievedList = () => {
   const { isLoading }: any = useKindeBrowserClient();
@@ -44,7 +44,7 @@ const ArchievedList = () => {
 
   const removeFromArchieve = useMutation(api.files.undoArchieve);
   const renameFileName = useMutation(api.files.renameFile);
-  const { user, files_, activeTeam_ } = useContext(TeamContext);
+  const { user, files_, activeTeam_, searchQuery } = useContext(TeamContext);
 
   useEffect(() => {
     setLoadingItem(null);
@@ -177,21 +177,29 @@ const ArchievedList = () => {
               </tr>
             ) : files_ && files_.length > 0 ? (
               (() => {
-                const archievedFiles = files_.filter(
+                const archivedFiles = files_.filter(
                   (file: { archieve: boolean }) => file.archieve === true
                 );
 
-                if (archievedFiles.length === 0) {
+                const filteredFiles = archivedFiles.filter((file: FILE) =>
+                  file.fileName
+                    .toLowerCase()
+                    .includes(searchQuery.toLowerCase())
+                );
+
+                if (filteredFiles.length === 0) {
                   return (
                     <tr className="bg-foreground/5">
                       <td colSpan={5} className="px-3 py-2 text-center">
-                        No archieved files (all files are active)
+                        {searchQuery
+                          ? "No files match your search"
+                          : "No archived files (all files are active)"}
                       </td>
                     </tr>
                   );
                 }
 
-                return archievedFiles.map((file: any) => (
+                return filteredFiles.map((file: any) => (
                   <tr
                     key={file._id}
                     className="odd:bg-foreground/5 hover:bg-foreground/15"

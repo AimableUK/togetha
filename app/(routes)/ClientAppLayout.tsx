@@ -30,6 +30,7 @@ export default function ClientAppLayout({
   const [userPlan_, setUserPlan_] = useState<USERPLAN>("PRO");
   const [updates_, setUpdates_] = useState<TEAMINVITES[]>([]);
   const [userDetails_, setUserDetails_] = useState<string[]>([]);
+  const [searchQuery, setSearchQuery] = useState("");
 
   useEffect(() => {
     isMobile && setCollapseSidebar_(true);
@@ -110,6 +111,8 @@ export default function ClientAppLayout({
         setUpdates_,
         userDetails_,
         setUserDetails_,
+        searchQuery,
+        setSearchQuery,
       }}
     >
       {children}
