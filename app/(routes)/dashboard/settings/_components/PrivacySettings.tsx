@@ -1,9 +1,11 @@
-import React, { useContext } from "react";
+import React, { useContext, useState } from "react";
 import { LogOut } from "lucide-react";
 import { useMutation } from "convex/react";
 import { api } from "@/convex/_generated/api";
 import { toast } from "sonner";
 import { TeamContext } from "@/app/FilesListContext";
+import { DeleteData } from "../../files/FileList";
+import PermanentDelete from "./PermanentDelete";
 
 const PrivacySettings = () => {
   const { user } = useContext(TeamContext);
@@ -11,6 +13,8 @@ const PrivacySettings = () => {
   const deleteAllTeams = useMutation(api.teams.deleteAllUserTeams);
   const deleteAllFiles = useMutation(api.files.deleteAllUserFiles);
   const deleteAccount = useMutation(api.user.deleteUserAccount);
+  const [openDialog, setOpenDialog] = useState(false);
+  const [deleteData, setDeleteData] = useState<DeleteData>();
 
   const handleDeleteAllFiles = () => {
     toast.promise(deleteAllFiles({ userEmail: user?.email }), {
@@ -135,39 +139,59 @@ const PrivacySettings = () => {
   };
 
   return (
-    <div className="space-y-8">
-      <div>
-        <h1 className="text-3xl font-bold mb-1">Privacy & Security</h1>
-        <p className="opacity-60 text-sm">
-          Manage your privacy settings and security preferences
-        </p>
-      </div>
+    <>
+      <div className="space-y-8">
+        <div>
+          <h1 className="text-3xl font-bold mb-1">Privacy & Security</h1>
+          <p className="opacity-60 text-sm">
+            Manage your privacy settings and security preferences
+          </p>
+        </div>
 
-      <div className="border rounded-lg p-6 space-y-6">
-        <h2 className="text-lg font-semibold">Data & Privacy</h2>
+        <div className="border rounded-lg p-6 space-y-6">
+          <h2 className="text-lg font-semibold">Data & Privacy</h2>
 
-        <div className="space-y-4">
-          <div className="flex flex-col justify-start menu-center">
-            <button onClick={handleDeleteAllTeams}>Delete All teams</button>
-            <button onClick={handleDeleteAllFiles}>Delete All Files</button>
+          <div className="space-y-4">
+            <div className="flex flex-col sm:flex-row justify-start menu-center gap-2">
+              <button
+                className="border bg-secondary p-1 w-full rounded-md cursor-pointer"
+                onClick={handleDeleteAllTeams}
+              >
+                Delete All teams
+              </button>
+              <button
+                className="border bg-secondary p-1 w-full rounded-md cursor-pointer"
+                onClick={handleDeleteAllFiles}
+              >
+                Delete All Files
+              </button>
+            </div>
           </div>
         </div>
-      </div>
 
-      <div className="border rounded-lg p-6 space-y-6">
-        <h2 className="text-lg font-semibold flex items-center gap-2 text-red-500 opacity-80">
-          <LogOut size={20} />
-          Account Management
-        </h2>
+        <div className="border rounded-lg p-6 space-y-6">
+          <h2 className="text-lg font-semibold flex items-center gap-2 text-red-500 opacity-80">
+            <LogOut size={20} />
+            Account Management
+          </h2>
 
-        <button
-          onClick={handleDeleteAccount}
-          className="cursor-pointer w-full px-4 py-3 border border-red-500 border-opacity-30 rounded-lg font-medium text-red-600 opacity-80 hover:opacity-100 transition-opacity"
-        >
-          Delete yout Account
-        </button>
+          <button
+            onClick={handleDeleteAccount}
+            className="cursor-pointer w-full px-4 py-3 border border-red-500 hover:bg-red-900/15 border-opacity-30 rounded-lg font-medium text-red-500 opacity-80 hover:opacity-100 transition-opacity"
+          >
+            Delete your Account
+          </button>
+        </div>
       </div>
-    </div>
+      {openDialog && deleteData && (
+        <PermanentDelete
+          id={deleteData?.id!}
+          type={deleteData?.type!}
+          open={openDialog}
+          setOpen={setOpenDialog}
+        />
+      )}
+    </>
   );
 };
 
