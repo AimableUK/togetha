@@ -23,19 +23,24 @@ type SideNavBottomProps = {
   onFileCreate: (fileInput: string) => void;
   totalFiles?: number;
   errorMsg: string;
+  fileInput: string;
+  setFileInput: React.Dispatch<React.SetStateAction<string>>;
+  dialogCloseRef: React.RefObject<HTMLButtonElement | null>;
 };
 
 const SideNavBottomSection = ({
   onFileCreate,
   totalFiles,
   errorMsg,
+  fileInput,
+  setFileInput,
+  dialogCloseRef,
 }: SideNavBottomProps) => {
   const [loadingItem, setLoadingItem] = useState<number | null>(null);
   const router = useRouter();
   const pathname = usePathname();
   const isMobile = useIsMobile();
   const { setCollapseSidebar_ } = useContext(TeamContext);
-  const [fileInput, setFileInput] = useState("");
 
   const menuList = [
     {
@@ -113,7 +118,7 @@ const SideNavBottomSection = ({
             )}
           </div>
           <DialogFooter>
-            <DialogClose asChild>
+            <DialogClose asChild ref={dialogCloseRef}>
               <Button type="button" variant="secondary">
                 Close
               </Button>

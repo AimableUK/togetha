@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useContext, useState } from "react";
+import React, { useContext, useRef, useState } from "react";
 import SideNavTopSection from "./SideNavTopSection";
 import { useKindeBrowserClient } from "@kinde-oss/kinde-auth-nextjs";
 import SideNavBottomSection from "./SideNavBottomSection";
@@ -15,8 +15,10 @@ const SideNav = () => {
   const { user } = useKindeBrowserClient();
   const createFile = useMutation(api.files.createFile);
   const [errorMsg, setErrorMsg] = useState("");
+  const [fileInput, setFileInput] = useState("");
   const { collapseSidebar_, activeTeam_, setActiveTeam_, totalFiles_ } =
     useContext(TeamContext);
+  const dialogCloseRef = useRef<HTMLButtonElement>(null);
 
   const files = useQuery(
     api.files.getFiles,
@@ -48,7 +50,7 @@ const SideNav = () => {
     });
 
     toast.promise(promise, {
-      loading: "Creating...",
+      loading: "Creating file...",
       success: () => ({
         message: "File Created",
         description: `${fileName} created successfully!`,
@@ -68,7 +70,11 @@ const SideNav = () => {
         };
       },
     });
+
+    await promise;
     setErrorMsg("");
+    setFileInput("");
+    dialogCloseRef.current?.click();
   };
 
   return (
@@ -85,8 +91,11 @@ const SideNav = () => {
       <div>
         <SideNavBottomSection
           onFileCreate={onFileCreate}
+          fileInput={fileInput}
+          setFileInput={setFileInput}
           totalFiles={totalFiles_}
           errorMsg={errorMsg}
+          dialogCloseRef={dialogCloseRef}
         />
       </div>
     </div>
