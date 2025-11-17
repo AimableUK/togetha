@@ -1,5 +1,5 @@
 import React from "react";
-import { LogOut, ChevronRight, Download } from "lucide-react";
+import { LogOut, ChevronRight } from "lucide-react";
 
 const PrivacySettings = () => {
   return (
@@ -15,10 +15,6 @@ const PrivacySettings = () => {
         <h2 className="text-lg font-semibold">Data & Privacy</h2>
 
         <div className="space-y-4">
-          <button className="w-full px-4 py-3 border rounded-lg text-left font-medium hover:opacity-80 transition-opacity flex items-center justify-between">
-            <span className="text-sm">Download Your Data</span>
-            <Download size={18} />
-          </button>
           <button className="w-full px-4 py-3 border rounded-lg text-left font-medium hover:opacity-80 transition-opacity flex items-center justify-between">
             <span className="text-sm">Request Data Deletion</span>
             <ChevronRight size={18} />

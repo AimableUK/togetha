@@ -155,7 +155,7 @@ const ArchievedList = () => {
   };
 
   return (
-    <div className="mt-6 p-1 px-2 md:p-4">
+    <div className="mt-1 p-1 px-2 md:p-4">
       <div className="overflow-x-auto">
         <table className="min-w-full divide-y-2">
           <thead className="sticky top-0 ltr:text-left rtl:text-right">

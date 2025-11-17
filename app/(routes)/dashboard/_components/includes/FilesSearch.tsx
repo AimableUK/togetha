@@ -7,8 +7,8 @@ const FilesSearch = () => {
   const { searchQuery, setSearchQuery } = useContext(TeamContext);
 
   return (
-    <div className="hidden md:flex gap-2 items-center md:px-2">
-      <Search className="h-4 w-4 absolute ml-2" />
+    <div className="flex gap-2 items-center md:px-2 mx-3 md:mx-0">
+      <Search className="h-4 w-5 absolute ml-2" />
       <Input
         placeholder="Search files..."
         className="relative border rounded-md pl-7"
