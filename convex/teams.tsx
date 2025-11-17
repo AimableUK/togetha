@@ -364,7 +364,14 @@ export const deleteTeam = mutation({
       throw new Error("Unauthorized: Only the team owner can delete this team");
     }
 
-    const result = await ctx.db.delete(args._id);
+    const files = await ctx.db
+      .query("files")
+      .filter((q) => q.eq(q.field("teamId"), args._id))
+      .collect();
+
+    for (const file of files) {
+      await ctx.db.delete(file._id);
+    }
 
     const invites = await ctx.db
       .query("teamInvites")
@@ -375,6 +382,47 @@ export const deleteTeam = mutation({
       await ctx.db.delete(invite._id);
     }
 
+    const result = await ctx.db.delete(args._id);
+
     return result;
+  },
+});
+
+export const deleteAllUserTeams = mutation({
+  args: {
+    userEmail: v.string(),
+  },
+
+  handler: async (ctx, args) => {
+    const teams = await ctx.db
+      .query("teams")
+      .filter((q) => q.eq(q.field("createdBy"), args.userEmail))
+      .collect();
+
+    for (const team of teams) {
+      const files = await ctx.db
+        .query("files")
+        .filter((q) => q.eq(q.field("teamId"), team._id))
+        .collect();
+
+      for (const file of files) {
+        await ctx.db.delete(file._id);
+      }
+
+      // Delete all invites for each team
+      const invites = await ctx.db
+        .query("teamInvites")
+        .filter((q) => q.eq(q.field("teamId"), team._id))
+        .collect();
+
+      for (const invite of invites) {
+        await ctx.db.delete(invite._id);
+      }
+
+      // Delete the team itself
+      await ctx.db.delete(team._id);
+    }
+
+    return { deletedTeamsCount: teams.length };
   },
 });

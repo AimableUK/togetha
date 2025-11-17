@@ -244,3 +244,22 @@ export const updateWhiteboard = mutation({
     return result;
   },
 });
+
+export const deleteAllUserFiles = mutation({
+  args: {
+    userEmail: v.string(),
+  },
+
+  handler: async (ctx, args) => {
+    const files = await ctx.db
+      .query("files")
+      .filter((q) => q.eq(q.field("createdBy"), args.userEmail))
+      .collect();
+
+    for (const file of files) {
+      await ctx.db.delete(file._id);
+    }
+
+    return { deletedFilesCount: files.length };
+  },
+});
