@@ -1,5 +1,5 @@
 import React from "react";
-import { Shield, LogOut, ChevronRight, Download } from "lucide-react";
+import { LogOut, ChevronRight, Download } from "lucide-react";
 
 const PrivacySettings = () => {
   return (
@@ -9,26 +9,6 @@ const PrivacySettings = () => {
         <p className="opacity-60 text-sm">
           Manage your privacy settings and security preferences
         </p>
-      </div>
-
-      <div className="border rounded-lg p-6 space-y-6">
-        <h2 className="text-lg font-semibold flex items-center gap-2">
-          <Shield size={20} />
-          Security Preferences
-        </h2>
-
-        <div className="flex items-center justify-between py-3">
-          <div>
-            <p className="font-medium text-sm">Team Invites</p>
-            <p className="text-xs opacity-60 mt-1">
-              Allow anyone to invite you to teams
-            </p>
-          </div>
-          <label className="relative inline-flex items-center cursor-pointer">
-            <input type="checkbox" defaultChecked className="sr-only peer" />
-            <div className="w-11 h-6 border rounded-full peer-checked:after:translate-x-full after:content-[''] after:absolute after:top-0.5 after:left-0.5 after:h-5 after:w-5 after:rounded-full after:transition-all after:opacity-40"></div>
-          </label>
-        </div>
       </div>
 
       <div className="border rounded-lg p-6 space-y-6">

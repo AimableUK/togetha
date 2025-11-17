@@ -1,12 +1,10 @@
 "use client";
 
 import React, { useState } from "react";
-import { Settings, User, Bell, Shield, Users, Component } from "lucide-react";
+import { User, Shield, Users, Component } from "lucide-react";
 import AccountSettings from "./_components/AccountSettings";
-import NotificationSettings from "./_components/NotificationSettings";
 import TeamSettings from "./_components/TeamSettings";
 import PrivacySettings from "./_components/PrivacySettings";
-import PreferenciesSettings from "./_components/PreferenciesSettings";
 import AppSettings from "./_components/AppSettings";
 
 const SettingsDashboard = () => {
@@ -14,10 +12,8 @@ const SettingsDashboard = () => {
 
   const tabs = [
     { id: "account", label: "Account", icon: User },
-    { id: "notifications", label: "Notifications", icon: Bell },
     { id: "teams", label: "Teams", icon: Users },
     { id: "privacy", label: "Privacy", icon: Shield },
-    { id: "preferences", label: "Preferences", icon: Settings },
     { id: "App", label: "App", icon: Component },
   ];
 
@@ -52,13 +48,9 @@ const SettingsDashboard = () => {
           <main className="lg:col-span-4 space-y-8">
             {activeTab === "account" && <AccountSettings />}
 
-            {activeTab === "notifications" && <NotificationSettings />}
-
             {activeTab === "teams" && <TeamSettings />}
 
             {activeTab === "privacy" && <PrivacySettings />}
-
-            {activeTab === "preferences" && <PreferenciesSettings />}
 
             {activeTab === "App" && <AppSettings />}
           </main>

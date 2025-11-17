@@ -43,14 +43,14 @@ const AccountSettings = () => {
             <label className="block text-sm font-medium mb-2">
               Email Address
             </label>
-            <div className="flex items-center gap-2">
+            <div className="flex flex-col md:flex-row md:items-center md:gap-2">
               <input
                 type="email"
                 value={userDetails_?.email || "User Email"}
                 disabled
                 className="flex-1 px-4 py-2 border rounded-lg opacity-50 cursor-not-allowed"
               />
-              <span className="px-3 py-2 text-xs font-medium opacity-60 whitespace-nowrap">
+              <span className="md:px-3 py-1 md:py-2 text-xs font-medium opacity-60 whitespace-nowrap">
                 Google Connected
               </span>
             </div>

@@ -163,7 +163,7 @@ const TeamInvite = ({
 
   const handleRemoveCollaborator = async (email: string) => {
     if (activeTeam_.createdBy !== user?.email) {
-      toast.error("Only the team owner can update roles");
+      toast.error("Only the team owner can remove a collaborator");
       return;
     }
     const promise = removeCollab({

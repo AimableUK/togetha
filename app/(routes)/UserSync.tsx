@@ -1,5 +1,5 @@
 import { useContext, useEffect, useRef } from "react";
-import { useConvex, useMutation } from "convex/react";
+import { useConvex, useMutation, useQuery } from "convex/react";
 import { useKindeBrowserClient } from "@kinde-oss/kinde-auth-nextjs";
 
 import { api } from "@/convex/_generated/api";
@@ -12,6 +12,12 @@ export const UserSync = () => {
   const hasCreated = useRef(false);
 
   const { setUpdates_, setUserDetails_ } = useContext(TeamContext);
+
+  // Real-time subscription to pending invites
+  const pendingInvites = useQuery(
+    api.teamInvites.getPendingInvites,
+    user?.email ? { email: user.email } : "skip"
+  );
 
   useEffect(() => {
     if (!user || hasCreated.current) return;
@@ -32,21 +38,16 @@ export const UserSync = () => {
       }
       setUserDetails_(existing);
 
-      // 3. Check for pending team invites
-      const pendingInvites = await convex.query(
-        api.teamInvites.getPendingInvites,
-        {
-          email: user.email!,
-        }
-      );
-
-      if (pendingInvites?.length) {
-        setUpdates_(pendingInvites);
-      }
-
       hasCreated.current = true;
     })();
   }, [user, convex, createUser]);
+
+  // Update context when invites change
+  useEffect(() => {
+    if (pendingInvites?.length) {
+      setUpdates_(pendingInvites);
+    }
+  }, [pendingInvites, setUpdates_]);
 
   return null;
 };
