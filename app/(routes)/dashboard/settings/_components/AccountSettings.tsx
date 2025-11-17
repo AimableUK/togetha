@@ -28,7 +28,7 @@ const AccountSettings = () => {
             <label className="block text-sm font-medium mb-2">Full Name</label>
             <div className="flex items-center gap-2">
               <input
-                type="email"
+                type="text"
                 value={userDetails_?.name || "User Name"}
                 disabled
                 className="flex-1 px-4 py-2 border rounded-lg opacity-50 cursor-not-allowed"

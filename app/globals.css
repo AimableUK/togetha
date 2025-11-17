@@ -385,14 +385,14 @@ h6.ce-header {
   }
 
   to {
-    max-height: 200px;
+    max-height: fit-content;
     opacity: 1;
   }
 }
 
 @keyframes slideDown {
   from {
-    max-height: 200px;
+    max-height: fit-content;
     opacity: 1;
   }
 
