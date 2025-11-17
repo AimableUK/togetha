@@ -173,7 +173,7 @@ const PrivacySettings = () => {
                     <AlertTriangle className="w-5 h-5 text-red-600 dark:text-red-400" />
                   </div>
                   <h3 className="font-bold text-base text-red-600 dark:text-red-400">
-                    Permanent Teams Deletion
+                    Delete All Teams
                   </h3>
                 </div>
                 <p className="text-sm text-foreground/80 leading-relaxed">
@@ -243,7 +243,7 @@ const PrivacySettings = () => {
                 {/* Delete Button */}
                 <button
                   onClick={handleDeleteAllTeams}
-                  className="cursor-pointer w-full px-4 py-3 bg-red-800/25 hover:bg-red-700 active:bg-red-800 dark:bg-red-700/50 dark:hover:bg-red-700 text-white font-semibold rounded-lg transition-all duration-200 flex items-center justify-center gap-2 group"
+                  className="text-sm cursor-pointer w-full px-4 py-3 bg-red-800/25 hover:bg-red-700 active:bg-red-800 dark:bg-red-700/50 dark:hover:bg-red-700 text-white font-semibold rounded-lg transition-all duration-200 flex items-center justify-center gap-2 group"
                 >
                   <Trash2 className="w-4 h-4 group-hover:scale-110 transition-transform" />
                   Delete Team Permanently
@@ -329,7 +329,7 @@ const PrivacySettings = () => {
                 {/* Delete Button */}
                 <button
                   onClick={handleDeleteAllFiles}
-                  className="cursor-pointer w-full px-4 py-3 bg-orange-800/25 hover:bg-orange-700 active:bg-orange-800 dark:bg-orange-700/50 dark:hover:bg-orange-700 text-white font-semibold rounded-lg transition-all duration-200 flex items-center justify-center gap-2 group"
+                  className="text-sm cursor-pointer w-full px-4 py-3 bg-orange-800/25 hover:bg-orange-700 active:bg-orange-800 dark:bg-orange-700/50 dark:hover:bg-orange-700 text-white font-semibold rounded-lg transition-all duration-200 flex items-center justify-center gap-2 group"
                 >
                   <Trash2 className="w-4 h-4 group-hover:scale-110 transition-transform" />
                   Delete All Files Permanently
@@ -378,7 +378,7 @@ const PrivacySettings = () => {
             </p>
 
             {/* What Gets Deleted - Multiple Sections */}
-            <div className="space-y-3 bg-red-50 dark:bg-red-950/30 rounded-lg p-4 border border-red-200 dark:border-red-900/50">
+            <div className="space-y-3 bg-red-50 dark:bg-red-950/30 rounded-lg p-2 md:p-4 border border-red-200 dark:border-red-900/50">
               <p className="text-xs font-semibold text-foreground/70 uppercase tracking-wide">
                 Everything will be permanently deleted:
               </p>
@@ -560,7 +560,7 @@ const PrivacySettings = () => {
 
             {/* Important Note */}
             <div className="bg-yellow-50 dark:bg-yellow-950/30 rounded-lg p-3 border border-yellow-200 dark:border-yellow-900/50">
-              <p className="text-xs text-foreground/70  flex whitespace-nowrap items-center gap-x-1">
+              <p className="text-xs text-foreground/70 flex flex-col md:flex-row text-center md:text-start items-center gap-x-1">
                 <AlertTriangle className="w-5 h-5 text-yellow-600 dark:text-yellow-400" />
                 <span className="font-semibold"> Important:</span> You will be
                 immediately logged out. If you have any questions or need
@@ -569,19 +569,19 @@ const PrivacySettings = () => {
             </div>
 
             {/* Action Buttons */}
-            <div className="flex gap-2">
+            <div className="flex flex-col md:flex-row gap-2">
               <button
                 onClick={() => setShowDeleteAccountWarning(false)}
-                className="cursor-pointer flex-1 px-4 py-3 bg-foreground/10 hover:bg-foreground/20 text-foreground font-semibold rounded-lg transition-all duration-200"
+                className="text-sm cursor-pointer flex-1 px-4 py-3 bg-foreground/10 hover:bg-foreground/20 text-foreground font-semibold rounded-lg transition-all duration-200"
               >
                 Cancel
               </button>
               <button
                 onClick={handleDeleteAccount}
-                className="cursor-pointer flex-1 px-4 py-3 bg-red-600 hover:bg-red-700 active:bg-red-800 dark:bg-red-600 dark:hover:bg-red-700 text-white font-semibold rounded-lg transition-all duration-200 flex items-center justify-center gap-2 group"
+                className="text-sm cursor-pointer flex-1 px-4 py-3 bg-red-600 hover:bg-red-700 active:bg-red-800 dark:bg-red-600 dark:hover:bg-red-700 text-white font-semibold rounded-lg transition-all duration-200 flex items-center justify-center gap-2 group"
               >
                 <Trash2 className="w-4 h-4 group-hover:scale-110 transition-transform" />
-                Delete Account Permanently
+                Delete Account permanently
               </button>
             </div>
           </div>
