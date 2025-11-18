@@ -237,7 +237,7 @@ const PrivacySettings = () => {
                 {/* Delete Button */}
                 <button
                   onClick={handleDeleteAllTeams}
-                  className="text-sm cursor-pointer w-full px-4 py-3 bg-red-800/25 hover:bg-red-700 active:bg-red-800 dark:bg-red-700/50 dark:hover:bg-red-700 text-white font-semibold rounded-lg transition-all duration-200 flex items-center justify-center gap-2 group"
+                  className="text-sm cursor-pointer w-full px-4 py-3 bg-red-800/90 hover:bg-red-700 active:bg-red-800 dark:bg-red-700/50 dark:hover:bg-red-700 text-white font-semibold rounded-lg transition-all duration-200 flex items-center justify-center gap-2 group"
                 >
                   <Trash2 className="w-4 h-4 group-hover:scale-110 transition-transform" />
                   Delete Team Permanently
@@ -323,7 +323,7 @@ const PrivacySettings = () => {
                 {/* Delete Button */}
                 <button
                   onClick={handleDeleteAllFiles}
-                  className="text-sm cursor-pointer w-full px-4 py-3 bg-orange-800/25 hover:bg-orange-700 active:bg-orange-800 dark:bg-orange-700/50 dark:hover:bg-orange-700 text-white font-semibold rounded-lg transition-all duration-200 flex items-center justify-center gap-2 group"
+                  className="text-sm cursor-pointer w-full px-4 py-3 bg-orange-800/90 hover:bg-orange-700 active:bg-orange-800 dark:bg-orange-700/50 dark:hover:bg-orange-700 text-white font-semibold rounded-lg transition-all duration-200 flex items-center justify-center gap-2 group"
                 >
                   <Trash2 className="w-4 h-4 group-hover:scale-110 transition-transform" />
                   Delete All Files Permanently
