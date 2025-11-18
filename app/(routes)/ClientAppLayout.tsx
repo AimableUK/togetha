@@ -42,7 +42,7 @@ export default function ClientAppLayout({
   const teams = useQuery(api.teams.getTeam, email ? { email } : "skip");
   const files: FILE[] | undefined = useQuery(
     api.files.getFiles,
-    activeTeam_ ? { teamId: activeTeam_?._id } : "skip"
+    activeTeam_?._id ? { teamId: activeTeam_?._id } : "skip"
   );
 
   // Handle auth errors

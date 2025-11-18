@@ -334,7 +334,7 @@ const PrivacySettings = () => {
         </div>
       </div>
 
-      <div className="hidden border rounded-lg p-6 space-y-6">
+      <div className="border rounded-lg p-6 space-y-6">
         <h2 className="text-lg font-semibold flex items-center gap-2 text-red-500 opacity-80">
           <LogOut size={20} />
           Account Management
