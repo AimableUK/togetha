@@ -39,17 +39,7 @@ const Hero = () => {
             <div className="mx-auto max-w-2xl py-32 sm:py-48 lg:py-28">
               <div className="hidden sm:mb-8 sm:flex sm:justify-center">
                 <div className="trans relative rounded-full px-3 py-1 text-sm/6 text-primary ring-1 ring-primary/10 hover:ring-primary/20">
-                  Announcing our new Big Features.{" "}
-                  <button
-                    onClick={() => handleScroll(350)}
-                    className="font-semibold text-accent hover:underline cursor-pointer"
-                  >
-                    <span
-                      aria-hidden="true"
-                      className="absolute inset-0 cursor-pointer"
-                    />
-                    Read more <span aria-hidden="true">&rarr;</span>
-                  </button>
+                  Your All in One Collaborative Workspace
                 </div>
               </div>
               <div className="text-center">
