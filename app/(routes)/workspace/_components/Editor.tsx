@@ -59,6 +59,7 @@ const Editor = ({ fileId, fileData, setSavingWorkspace }: EditorProps) => {
         header: {
           class: Header as unknown as ToolConstructable,
           shortcut: "CMD+SHIFT+H",
+          inlineToolbar: true,
           tunes: ["alignmentTune"],
           config: {
             placeholder: "Enter a header",
