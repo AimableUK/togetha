@@ -1,5 +1,5 @@
 import { EditorJsData } from "@/lib/utils";
-import { Document, Paragraph, Packer, HeadingLevel, BorderStyle, TextRun } from 'docx';
+import { Document, Paragraph, Packer, HeadingLevel, BorderStyle, TextRun, AlignmentType } from 'docx';
 import { PDFDocument, rgb } from 'pdf-lib';
 
 function cleanTextForPlainText(text: string): string {
@@ -241,107 +241,162 @@ function escapeHTML(text: string): string {
     return text.replace(/[&<>"']/g, (char) => map[char]);
 }
 
-function parseHtmlToTextRuns(text: string): TextRun[] {
-    // Replace HTML entities
-    text = text.replace(/&nbsp;/g, ' ');
+const decodeHtmlEntities = (text: string): string => {
+    const entities: { [key: string]: string } = {
+        '&lt;': '<',
+        '&gt;': '>',
+        '&amp;': '&',
+        '&quot;': '"',
+        '&#039;': "'",
+        '&apos;': "'",
+        '&nbsp;': ' ',
+    };
+
+    let decoded = text;
+    for (const [entity, char] of Object.entries(entities)) {
+        decoded = decoded.replace(new RegExp(entity, 'g'), char);
+    }
+    return decoded;
+};
+
+// Sanitize text
+const sanitizeText = (text: string): string => {
+    if (!text) return '';
+
+    text = decodeHtmlEntities(text);
+
+    return text
+        .replace(/&nbsp;/g, ' ')
+        .replace(/→/g, '->')
+        .replace(/←/g, '<-')
+        .replace(/↑/g, '^')
+        .replace(/↓/g, 'v')
+        .replace(/⚠/g, '!')
+        .replace(/✓/g, '√')
+        .replace(/✔/g, 'x')
+        .replace(/★/g, '*')
+        .replace(/•/g, '-')
+        .replace(/—/g, '-')
+        .replace(/–/g, '-')
+        .replace(/…/g, '...')
+        .replace(/[""]/g, '"')
+        .replace(/['']/g, "'")
+        .replace(/'/g, "'")
+        .replace(/'/g, "'")
+        .replace(/’/g, "'")
+        .replace(/[^\x00-\x7F]/g, (char) => {
+            const map: { [key: string]: string } = {
+                'é': 'e', 'è': 'e', 'ê': 'e', 'ë': 'e',
+                'á': 'a', 'à': 'a', 'â': 'a', 'ä': 'a',
+                'ú': 'u', 'ù': 'u', 'û': 'u', 'ü': 'u',
+                'í': 'i', 'ì': 'i', 'î': 'i', 'ï': 'i',
+                'ó': 'o', 'ò': 'o', 'ô': 'o', 'ö': 'o',
+            };
+            return map[char] || '-';
+        });
+};
+
+// Parse inline HTML formatting (bold, italic, ...)
+const parseInlineFormatting = (htmlText: string): TextRun[] => {
+    const text = sanitizeText(htmlText.replace(/<[^>]*>/g, ''));
 
     const runs: TextRun[] = [];
     let currentText = '';
-    let bold = false;
-    let italic = false;
-    let underline = false;
+    let isBold = false;
+    let isItalic = false;
+    let isUnderline = false;
 
     let i = 0;
-    while (i < text.length) {
-        if (text.slice(i, i + 3) === '<b>') {
+    while (i < htmlText.length) {
+        if (htmlText.substr(i, 3) === '<b>') {
             if (currentText) {
                 runs.push(new TextRun({
                     text: currentText,
-                    bold,
-                    italics: italic,
-                    underline: underline ? {} : undefined,
+                    bold: isBold,
+                    italics: isItalic,
+                    underline: isUnderline ? {} : undefined,
                 }));
                 currentText = '';
             }
-            bold = true;
+            isBold = true;
             i += 3;
-        } else if (text.slice(i, i + 4) === '</b>') {
+        } else if (htmlText.substr(i, 4) === '</b>') {
             if (currentText) {
                 runs.push(new TextRun({
                     text: currentText,
-                    bold,
-                    italics: italic,
-                    underline: underline ? {} : undefined,
+                    bold: isBold,
+                    italics: isItalic,
+                    underline: isUnderline ? {} : undefined,
                 }));
                 currentText = '';
             }
-            bold = false;
+            isBold = false;
             i += 4;
-        } else if (text.slice(i, i + 3) === '<i>') {
+        } else if (htmlText.substr(i, 3) === '<i>') {
             if (currentText) {
                 runs.push(new TextRun({
                     text: currentText,
-                    bold,
-                    italics: italic,
-                    underline: underline ? {} : undefined,
+                    bold: isBold,
+                    italics: isItalic,
+                    underline: isUnderline ? {} : undefined,
                 }));
                 currentText = '';
             }
-            italic = true;
+            isItalic = true;
             i += 3;
-        } else if (text.slice(i, i + 4) === '</i>') {
+        } else if (htmlText.substr(i, 4) === '</i>') {
             if (currentText) {
                 runs.push(new TextRun({
                     text: currentText,
-                    bold,
-                    italics: italic,
-                    underline: underline ? {} : undefined,
+                    bold: isBold,
+                    italics: isItalic,
+                    underline: isUnderline ? {} : undefined,
                 }));
                 currentText = '';
             }
-            italic = false;
+            isItalic = false;
             i += 4;
-        } else if (text.slice(i, i + 3) === '<u>') {
+        } else if (htmlText.substr(i, 3) === '<u>') {
             if (currentText) {
                 runs.push(new TextRun({
                     text: currentText,
-                    bold,
-                    italics: italic,
-                    underline: underline ? {} : undefined,
+                    bold: isBold,
+                    italics: isItalic,
+                    underline: isUnderline ? {} : undefined,
                 }));
                 currentText = '';
             }
-            underline = true;
+            isUnderline = true;
             i += 3;
-        } else if (text.slice(i, i + 4) === '</u>') {
+        } else if (htmlText.substr(i, 4) === '</u>') {
             if (currentText) {
                 runs.push(new TextRun({
                     text: currentText,
-                    bold,
-                    italics: italic,
-                    underline: underline ? {} : undefined,
+                    bold: isBold,
+                    italics: isItalic,
+                    underline: isUnderline ? {} : undefined,
                 }));
                 currentText = '';
             }
-            underline = false;
+            isUnderline = false;
             i += 4;
         } else {
-            currentText += text[i];
+            currentText += htmlText[i];
             i++;
         }
     }
 
     if (currentText) {
         runs.push(new TextRun({
-            text: currentText,
-            bold,
-            italics: italic,
-            underline: underline ? {} : undefined,
+            text: sanitizeText(currentText),
+            bold: isBold,
+            italics: isItalic,
+            underline: isUnderline ? {} : undefined,
         }));
     }
 
     return runs.length > 0 ? runs : [new TextRun({ text: '' })];
-}
+};
 
 const blockHandlers: Record<string, (block: any) => Paragraph | Paragraph[]> = {
     header: (block) => {
@@ -356,11 +411,20 @@ const blockHandlers: Record<string, (block: any) => Paragraph | Paragraph[]> = {
             HeadingLevel.HEADING_5,
             HeadingLevel.HEADING_6,
         ];
-        const children = parseHtmlToTextRuns(headerData.text || '');
+        const text = sanitizeText(headerData.text || '');
         return new Paragraph({
-            children,
+            children: [new TextRun({ text, bold: true, size: 24 })],
             heading: headingLevels[level] || HeadingLevel.HEADING_3,
             spacing: { after: 200 },
+        });
+    },
+
+    paragraph: (block) => {
+        const paraData = block.data as any;
+        const text = sanitizeText(paraData.text || '');
+        return new Paragraph({
+            children: parseInlineFormatting(paraData.text || ''),
+            spacing: { after: 150 },
         });
     },
 
@@ -368,23 +432,22 @@ const blockHandlers: Record<string, (block: any) => Paragraph | Paragraph[]> = {
         const listData = block.data as any;
         const items = listData.items || [];
 
-        if (listData.style === "checklist") {
+        if (listData.style === 'checklist') {
             return items.map((item: any) => {
-                const checked = item.meta?.checked ? "☑" : "☐";
-                const children = parseHtmlToTextRuns(`${checked} ${item.content || ''}`);
+                const checked = item.meta?.checked ? '✓' : '☐';
+                const text = sanitizeText(item.content || '');
                 return new Paragraph({
-                    children,
+                    children: [new TextRun({ text: `${checked} ${text}` })],
                     spacing: { after: 100 },
                 });
             });
         }
 
-        if (listData.style === "ordered") {
+        if (listData.style === 'ordered') {
             return items.map((item: any, idx: number) => {
-                const num = idx + 1;
-                const children = parseHtmlToTextRuns(`${num}. ${item.content || ''}`);
+                const text = sanitizeText(item.content || '');
                 return new Paragraph({
-                    children,
+                    children: [new TextRun({ text: `${idx + 1}. ${text}` })],
                     spacing: { after: 100 },
                     indent: { left: 200 },
                 });
@@ -392,37 +455,26 @@ const blockHandlers: Record<string, (block: any) => Paragraph | Paragraph[]> = {
         }
 
         return items.map((item: any) => {
-            const children = parseHtmlToTextRuns(item.content || '');
+            const text = sanitizeText(item.content || '');
             return new Paragraph({
-                children,
+                children: [new TextRun({ text: `- ${text}` })],
                 bullet: { level: 0 },
                 spacing: { after: 100 },
+                indent: { left: 200 },
             });
-        });
-    },
-
-    paragraph: (block) => {
-        const paraData = block.data as any;
-        const children = parseHtmlToTextRuns(paraData.text || '');
-        return new Paragraph({
-            children,
-            spacing: { after: 150 },
-        });
-    },
-
-    delimiter: () => {
-        return new Paragraph({
-            text: '─'.repeat(50),
-            spacing: { before: 200, after: 200 },
-            alignment: 'center' as any,
         });
     },
 
     code: (block) => {
         const codeData = block.data as any;
-        const children = parseHtmlToTextRuns(codeData.code || '');
+        const code = sanitizeText(codeData.code || '');
         return new Paragraph({
-            children: [new TextRun({ text: codeData.code || '', font: 'Courier New', size: 20 })],
+            children: [new TextRun({
+                text: code,
+                font: 'Courier New',
+                size: 20,
+                color: '666666',
+            })],
             shading: { fill: 'f0f0f0' },
             border: {
                 top: { color: 'cccccc', space: 1, style: BorderStyle.SINGLE },
@@ -437,21 +489,21 @@ const blockHandlers: Record<string, (block: any) => Paragraph | Paragraph[]> = {
 
     quote: (block) => {
         const quoteData = block.data as any;
-        const cleanText = (quoteData.text || '').replace(/&nbsp;/g, ' ');
-        const captionText = (quoteData.caption || 'Anonymous').replace(/&nbsp;/g, ' ');
-
+        const text = sanitizeText(quoteData.text || '');
+        const caption = sanitizeText(quoteData.caption || 'Anonymous');
         return new Paragraph({
             children: [
                 new TextRun({
-                    text: `"${cleanText}"`,
+                    text: `"${text}"`,
                     italics: true,
                     size: 22,
                 }),
                 new TextRun({ text: '\n' }),
                 new TextRun({
-                    text: `— ${captionText}`,
+                    text: `- ${caption}`,
                     italics: true,
                     size: 20,
+                    color: '666666',
                 }),
             ],
             indent: { left: 720 },
@@ -462,26 +514,51 @@ const blockHandlers: Record<string, (block: any) => Paragraph | Paragraph[]> = {
 
     warning: (block) => {
         const warningData = block.data as any;
-        const titleText = warningData.title || 'Warning';
-        const messageText = warningData.message || '';
-
+        const title = sanitizeText(warningData.title || 'Warning');
+        const message = sanitizeText(warningData.message || '');
         return [
             new Paragraph({
                 children: [
-                    new TextRun({ text: '⚠ ', size: 28 }),
-                    new TextRun({ text: titleText, bold: true, size: 24 }),
+                    new TextRun({ text: '[!] ', bold: true, size: 24 }),
+                    new TextRun({ text: title, bold: true, size: 24 }),
                 ],
                 shading: { fill: 'fff3cd' },
                 spacing: { before: 100, after: 100 },
                 indent: { left: 200, right: 200 },
             }),
             new Paragraph({
-                children: [new TextRun({ text: messageText })],
+                children: [new TextRun({ text: message })],
                 shading: { fill: 'fff3cd' },
                 spacing: { before: 50, after: 200 },
                 indent: { left: 200, right: 200 },
             }),
         ];
+    },
+
+    delimiter: () => {
+        return new Paragraph({
+            children: [new TextRun({ text: '─'.repeat(50) })],
+            spacing: { before: 200, after: 200 },
+            alignment: AlignmentType.CENTER,
+        });
+    },
+
+    image: (block) => {
+        const imageData = block.data as any;
+        const caption = sanitizeText(imageData.caption || 'Image');
+        return new Paragraph({
+            children: [new TextRun({ text: `[Image: ${caption}]`, italics: true })],
+            spacing: { after: 150 },
+        });
+    },
+
+    video: (block) => {
+        const videoData = block.data as any;
+        const caption = sanitizeText(videoData.caption || 'Video');
+        return new Paragraph({
+            children: [new TextRun({ text: `[Video: ${caption}]`, italics: true })],
+            spacing: { after: 150 },
+        });
     },
 };
 
@@ -491,11 +568,17 @@ export async function editorJsToDOCX(data: EditorJsData): Promise<Buffer> {
         const handler = blockHandlers[type] || blockHandlers[type.toLowerCase()];
 
         if (!handler) {
+            console.warn(`No handler for block type: ${type}`);
             return [];
         }
 
-        const result = handler(block);
-        return Array.isArray(result) ? result : [result];
+        try {
+            const result = handler(block);
+            return Array.isArray(result) ? result : [result];
+        } catch (error) {
+            console.error(`Error processing block type ${type}:`, error);
+            return [new Paragraph({ children: [new TextRun({ text: '[Error processing block]' })] })];
+        }
     });
 
     if (children.length === 0) {

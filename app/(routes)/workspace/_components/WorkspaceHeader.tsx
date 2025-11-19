@@ -46,7 +46,6 @@ const WorkspaceHeader = ({
   const isMobile = useIsMobile();
   const [headerCollapse, setHeaderCollapse] = useState(false);
   const [openInviteDialog, setOpenInviteDialog] = useState(false);
-  // Returned to my original Working State
 
   return (
     <>
