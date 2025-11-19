@@ -316,7 +316,7 @@ const getAlignment = (block: EditorJsBlock): any => {
         'right': 'right',
         'justify': 'justify',
     };
-    return alignmentMap[alignment as string] ;
+    return alignmentMap[alignment as string];
 };
 
 const parseInlineFormatting = (htmlText: string): TextRun[] => {
@@ -328,7 +328,48 @@ const parseInlineFormatting = (htmlText: string): TextRun[] => {
 
     let i = 0;
     while (i < htmlText.length) {
-        if (htmlText.substr(i, 3) === '<b>') {
+        // Handle <br> tags
+        if (htmlText.substr(i, 4) === '<br>' || htmlText.substr(i, 5) === '<br />' || htmlText.substr(i, 6) === '<br/>') {
+            if (currentText) {
+                runs.push(new TextRun({
+                    text: sanitizeText(currentText),
+                    bold: isBold,
+                    italics: isItalic,
+                    underline: isUnderline ? {} : undefined,
+                }));
+                currentText = '';
+            }
+            runs.push(new TextRun({ text: '\n' }));
+            i = htmlText.substr(i, 5) === '<br />' ? i + 5 : (htmlText.substr(i, 6) === '<br/>' ? i + 6 : i + 4);
+        }
+        // Handle span tags with color
+        else if (htmlText.substr(i, 5) === '<span') {
+            if (currentText) {
+                runs.push(new TextRun({
+                    text: sanitizeText(currentText),
+                    bold: isBold,
+                    italics: isItalic,
+                    underline: isUnderline ? {} : undefined,
+                }));
+                currentText = '';
+            }
+
+            const spanEndIndex = htmlText.indexOf('>', i);
+            i = spanEndIndex + 1;
+        }
+        else if (htmlText.substr(i, 7) === '</span>') {
+            if (currentText) {
+                runs.push(new TextRun({
+                    text: sanitizeText(currentText),
+                    bold: isBold,
+                    italics: isItalic,
+                    underline: isUnderline ? {} : undefined,
+                }));
+                currentText = '';
+            }
+            i += 7;
+        }
+        else if (htmlText.substr(i, 3) === '<b>') {
             if (currentText) {
                 runs.push(new TextRun({
                     text: sanitizeText(currentText),
@@ -431,9 +472,8 @@ const blockHandlers: Record<string, (block: EditorJsBlock) => Paragraph | Paragr
             HeadingLevel.HEADING_5,
             HeadingLevel.HEADING_6,
         ];
-        const text = sanitizeText(headerData.text || '');
         return new Paragraph({
-            children: [new TextRun({ text, bold: true, size: 24 * 2 })],
+            children: parseInlineFormatting(headerData.text || ''),
             heading: headingLevels[level] || HeadingLevel.HEADING_3,
             spacing: { after: 200 },
             alignment: getAlignment(block),
@@ -456,9 +496,11 @@ const blockHandlers: Record<string, (block: EditorJsBlock) => Paragraph | Paragr
         if (listData.style === 'checklist') {
             return items.map((item: any) => {
                 const checked = item.meta?.checked ? '✓' : '☐';
-                const text = sanitizeText(item.content || '');
                 return new Paragraph({
-                    children: [new TextRun({ text: `${checked} ${text}` })],
+                    children: [
+                        new TextRun({ text: `${checked} ` }),
+                        ...parseInlineFormatting(item.content || ''),
+                    ],
                     spacing: { after: 100 },
                     alignment: getAlignment(block),
                 });
@@ -467,9 +509,11 @@ const blockHandlers: Record<string, (block: EditorJsBlock) => Paragraph | Paragr
 
         if (listData.style === 'ordered') {
             return items.map((item: any, idx: number) => {
-                const text = sanitizeText(item.content || '');
                 return new Paragraph({
-                    children: [new TextRun({ text: `${idx + 1}. ${text}` })],
+                    children: [
+                        new TextRun({ text: `${idx + 1}. ` }),
+                        ...parseInlineFormatting(item.content || ''),
+                    ],
                     spacing: { after: 100 },
                     indent: { left: 200 },
                     alignment: getAlignment(block),
@@ -479,9 +523,11 @@ const blockHandlers: Record<string, (block: EditorJsBlock) => Paragraph | Paragr
 
         // unordered
         return items.map((item: any) => {
-            const text = sanitizeText(item.content || '');
             return new Paragraph({
-                children: [new TextRun({ text: `- ${text}` })],
+                children: [
+                    new TextRun({ text: '- ' }),
+                    ...parseInlineFormatting(item.content || ''),
+                ],
                 bullet: { level: 0 },
                 spacing: { after: 100 },
                 indent: { left: 200 },
