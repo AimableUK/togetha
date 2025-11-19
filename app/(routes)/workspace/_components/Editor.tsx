@@ -53,11 +53,13 @@ const Editor = ({ fileId, fileData, setSavingWorkspace }: EditorProps) => {
     const holder = document.getElementById("editorjs");
     if (!holder) return;
 
+    const AlignmentTuneTool = require("editorjs-text-alignment-blocktune");
     const editor = new EditorJS({
       tools: {
         header: {
           class: Header as unknown as ToolConstructable,
           shortcut: "CMD+SHIFT+H",
+          tunes: ["alignmentTune"],
           config: {
             placeholder: "Enter a header",
             levels: [2, 3, 4],
@@ -67,6 +69,7 @@ const Editor = ({ fileId, fileData, setSavingWorkspace }: EditorProps) => {
         List: {
           class: EditorjsList,
           shortcut: "CMD+SHIFT+L",
+          tunes: ["alignmentTune"],
           inlineToolbar: true,
           config: {
             defaultStyle: "unordered",
@@ -76,6 +79,7 @@ const Editor = ({ fileId, fileData, setSavingWorkspace }: EditorProps) => {
           class: Paragraph as unknown as ToolConstructable,
           shortcut: "CMD+SHIFT+G",
           inlineToolbar: true,
+          tunes: ["alignmentTune"],
           config: {
             placeholder: "Write...",
           },
@@ -98,6 +102,15 @@ const Editor = ({ fileId, fileData, setSavingWorkspace }: EditorProps) => {
           config: {
             titlePlaceholder: "Title",
             messagePlaceholder: "Message",
+          },
+        },
+        alignmentTune: {
+          class: AlignmentTuneTool,
+          config: {
+            default: "left",
+            blocks: {
+              list: "right",
+            },
           },
         },
       },

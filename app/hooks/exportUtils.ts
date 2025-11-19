@@ -1,4 +1,4 @@
-import { EditorJsData } from "@/lib/utils";
+import { EditorJsBlock, EditorJsData } from "@/lib/utils";
 import { Document, Paragraph, Packer, HeadingLevel, BorderStyle, TextRun, AlignmentType } from 'docx';
 import { PDFDocument, rgb } from 'pdf-lib';
 
@@ -230,6 +230,16 @@ export function editorJsToHTML(data: EditorJsData) {
         .join("\n");
 }
 
+// --- Docx ---
+// Types
+export type AlignmentType =
+    | typeof HeadingLevel.HEADING_1
+    | typeof HeadingLevel.HEADING_2
+    | typeof HeadingLevel.HEADING_3
+    | typeof HeadingLevel.HEADING_4
+    | typeof HeadingLevel.HEADING_5
+    | typeof HeadingLevel.HEADING_6;
+
 function escapeHTML(text: string): string {
     const map: Record<string, string> = {
         "&": "&amp;",
@@ -259,7 +269,6 @@ const decodeHtmlEntities = (text: string): string => {
     return decoded;
 };
 
-// Sanitize text
 const sanitizeText = (text: string): string => {
     if (!text) return '';
 
@@ -296,10 +305,21 @@ const sanitizeText = (text: string): string => {
         });
 };
 
-// Parse inline HTML formatting (bold, italic, ...)
-const parseInlineFormatting = (htmlText: string): TextRun[] => {
-    const text = sanitizeText(htmlText.replace(/<[^>]*>/g, ''));
+const stripHtml = (text: string): string => {
+    return text.replace(/<[^>]*>/g, '');
+};
 
+const getAlignment = (block: EditorJsBlock): any => {
+    const alignment = block.tunes?.alignmentTune?.alignment;
+    const alignmentMap: Record<string, any> = {
+        'center': 'center',
+        'right': 'right',
+        'justify': 'justify',
+    };
+    return alignmentMap[alignment as string] ;
+};
+
+const parseInlineFormatting = (htmlText: string): TextRun[] => {
     const runs: TextRun[] = [];
     let currentText = '';
     let isBold = false;
@@ -311,7 +331,7 @@ const parseInlineFormatting = (htmlText: string): TextRun[] => {
         if (htmlText.substr(i, 3) === '<b>') {
             if (currentText) {
                 runs.push(new TextRun({
-                    text: currentText,
+                    text: sanitizeText(currentText),
                     bold: isBold,
                     italics: isItalic,
                     underline: isUnderline ? {} : undefined,
@@ -323,7 +343,7 @@ const parseInlineFormatting = (htmlText: string): TextRun[] => {
         } else if (htmlText.substr(i, 4) === '</b>') {
             if (currentText) {
                 runs.push(new TextRun({
-                    text: currentText,
+                    text: sanitizeText(currentText),
                     bold: isBold,
                     italics: isItalic,
                     underline: isUnderline ? {} : undefined,
@@ -335,7 +355,7 @@ const parseInlineFormatting = (htmlText: string): TextRun[] => {
         } else if (htmlText.substr(i, 3) === '<i>') {
             if (currentText) {
                 runs.push(new TextRun({
-                    text: currentText,
+                    text: sanitizeText(currentText),
                     bold: isBold,
                     italics: isItalic,
                     underline: isUnderline ? {} : undefined,
@@ -347,7 +367,7 @@ const parseInlineFormatting = (htmlText: string): TextRun[] => {
         } else if (htmlText.substr(i, 4) === '</i>') {
             if (currentText) {
                 runs.push(new TextRun({
-                    text: currentText,
+                    text: sanitizeText(currentText),
                     bold: isBold,
                     italics: isItalic,
                     underline: isUnderline ? {} : undefined,
@@ -359,7 +379,7 @@ const parseInlineFormatting = (htmlText: string): TextRun[] => {
         } else if (htmlText.substr(i, 3) === '<u>') {
             if (currentText) {
                 runs.push(new TextRun({
-                    text: currentText,
+                    text: sanitizeText(currentText),
                     bold: isBold,
                     italics: isItalic,
                     underline: isUnderline ? {} : undefined,
@@ -371,7 +391,7 @@ const parseInlineFormatting = (htmlText: string): TextRun[] => {
         } else if (htmlText.substr(i, 4) === '</u>') {
             if (currentText) {
                 runs.push(new TextRun({
-                    text: currentText,
+                    text: sanitizeText(currentText),
                     bold: isBold,
                     italics: isItalic,
                     underline: isUnderline ? {} : undefined,
@@ -398,7 +418,7 @@ const parseInlineFormatting = (htmlText: string): TextRun[] => {
     return runs.length > 0 ? runs : [new TextRun({ text: '' })];
 };
 
-const blockHandlers: Record<string, (block: any) => Paragraph | Paragraph[]> = {
+const blockHandlers: Record<string, (block: EditorJsBlock) => Paragraph | Paragraph[]> = {
     header: (block) => {
         const headerData = block.data as any;
         const level = headerData.level || 1;
@@ -413,18 +433,19 @@ const blockHandlers: Record<string, (block: any) => Paragraph | Paragraph[]> = {
         ];
         const text = sanitizeText(headerData.text || '');
         return new Paragraph({
-            children: [new TextRun({ text, bold: true, size: 24 })],
+            children: [new TextRun({ text, bold: true, size: 24 * 2 })],
             heading: headingLevels[level] || HeadingLevel.HEADING_3,
             spacing: { after: 200 },
+            alignment: getAlignment(block),
         });
     },
 
     paragraph: (block) => {
         const paraData = block.data as any;
-        const text = sanitizeText(paraData.text || '');
         return new Paragraph({
             children: parseInlineFormatting(paraData.text || ''),
             spacing: { after: 150 },
+            alignment: getAlignment(block),
         });
     },
 
@@ -439,6 +460,7 @@ const blockHandlers: Record<string, (block: any) => Paragraph | Paragraph[]> = {
                 return new Paragraph({
                     children: [new TextRun({ text: `${checked} ${text}` })],
                     spacing: { after: 100 },
+                    alignment: getAlignment(block),
                 });
             });
         }
@@ -450,10 +472,12 @@ const blockHandlers: Record<string, (block: any) => Paragraph | Paragraph[]> = {
                     children: [new TextRun({ text: `${idx + 1}. ${text}` })],
                     spacing: { after: 100 },
                     indent: { left: 200 },
+                    alignment: getAlignment(block),
                 });
             });
         }
 
+        // unordered
         return items.map((item: any) => {
             const text = sanitizeText(item.content || '');
             return new Paragraph({
@@ -461,6 +485,7 @@ const blockHandlers: Record<string, (block: any) => Paragraph | Paragraph[]> = {
                 bullet: { level: 0 },
                 spacing: { after: 100 },
                 indent: { left: 200 },
+                alignment: getAlignment(block),
             });
         });
     },
@@ -477,13 +502,14 @@ const blockHandlers: Record<string, (block: any) => Paragraph | Paragraph[]> = {
             })],
             shading: { fill: 'f0f0f0' },
             border: {
-                top: { color: 'cccccc', space: 1, style: BorderStyle.SINGLE },
-                bottom: { color: 'cccccc', space: 1, style: BorderStyle.SINGLE },
-                left: { color: 'cccccc', space: 1, style: BorderStyle.SINGLE },
-                right: { color: 'cccccc', space: 1, style: BorderStyle.SINGLE },
+                top: { color: 'cccccc', space: 1, style: BorderStyle.SINGLE, size: 6 },
+                bottom: { color: 'cccccc', space: 1, style: BorderStyle.SINGLE, size: 6 },
+                left: { color: 'cccccc', space: 1, style: BorderStyle.SINGLE, size: 6 },
+                right: { color: 'cccccc', space: 1, style: BorderStyle.SINGLE, size: 6 },
             },
             spacing: { after: 150, before: 150 },
             indent: { left: 200, right: 200 },
+            alignment: getAlignment(block),
         });
     },
 
@@ -496,7 +522,7 @@ const blockHandlers: Record<string, (block: any) => Paragraph | Paragraph[]> = {
                 new TextRun({
                     text: `"${text}"`,
                     italics: true,
-                    size: 22,
+                    size: 22 * 2,
                 }),
                 new TextRun({ text: '\n' }),
                 new TextRun({
@@ -509,6 +535,7 @@ const blockHandlers: Record<string, (block: any) => Paragraph | Paragraph[]> = {
             indent: { left: 720 },
             spacing: { before: 150, after: 150 },
             border: { left: { color: '4472c4', space: 1, style: BorderStyle.SINGLE, size: 12 } },
+            alignment: getAlignment(block),
         });
     },
 
@@ -525,21 +552,23 @@ const blockHandlers: Record<string, (block: any) => Paragraph | Paragraph[]> = {
                 shading: { fill: 'fff3cd' },
                 spacing: { before: 100, after: 100 },
                 indent: { left: 200, right: 200 },
+                alignment: getAlignment(block),
             }),
             new Paragraph({
                 children: [new TextRun({ text: message })],
                 shading: { fill: 'fff3cd' },
                 spacing: { before: 50, after: 200 },
                 indent: { left: 200, right: 200 },
+                alignment: getAlignment(block),
             }),
         ];
     },
 
-    delimiter: () => {
+    delimiter: (block) => {
         return new Paragraph({
             children: [new TextRun({ text: '─'.repeat(50) })],
             spacing: { before: 200, after: 200 },
-            alignment: AlignmentType.CENTER,
+            alignment: getAlignment(block),
         });
     },
 
@@ -549,6 +578,7 @@ const blockHandlers: Record<string, (block: any) => Paragraph | Paragraph[]> = {
         return new Paragraph({
             children: [new TextRun({ text: `[Image: ${caption}]`, italics: true })],
             spacing: { after: 150 },
+            alignment: getAlignment(block),
         });
     },
 
@@ -558,12 +588,13 @@ const blockHandlers: Record<string, (block: any) => Paragraph | Paragraph[]> = {
         return new Paragraph({
             children: [new TextRun({ text: `[Video: ${caption}]`, italics: true })],
             spacing: { after: 150 },
+            alignment: getAlignment(block),
         });
     },
 };
 
 export async function editorJsToDOCX(data: EditorJsData): Promise<Buffer> {
-    const children = (data.blocks || []).flatMap((block: any) => {
+    const children = (data.blocks || []).flatMap((block: EditorJsBlock) => {
         const type = block.type;
         const handler = blockHandlers[type] || blockHandlers[type.toLowerCase()];
 
@@ -588,6 +619,32 @@ export async function editorJsToDOCX(data: EditorJsData): Promise<Buffer> {
     return Packer.toBuffer(new Document({ sections: [{ children }] }));
 }
 
+// --- PDF ---
+
+const wrapText = (text: string, maxWidth: number, fontSize: number, font: any): string[] => {
+    const words = text.split(' ').filter(w => w.trim());
+    const lines: string[] = [];
+    let currentLine = '';
+
+    for (const word of words) {
+        const testLine = currentLine ? `${currentLine} ${word}` : word;
+        const textWidth = font.widthOfTextAtSize(testLine, fontSize);
+
+        if (textWidth > maxWidth && currentLine) {
+            lines.push(currentLine);
+            currentLine = word;
+        } else {
+            currentLine = testLine;
+        }
+    }
+
+    if (currentLine) {
+        lines.push(currentLine);
+    }
+
+    return lines.length > 0 ? lines : [''];
+};
+
 export async function editorJsToPDF(data: EditorJsData): Promise<Uint8Array> {
     const pdfDoc = await PDFDocument.create();
     const normalFont = await pdfDoc.embedFont('Helvetica');
@@ -598,199 +655,295 @@ export async function editorJsToPDF(data: EditorJsData): Promise<Uint8Array> {
     const margin = 50;
     const bottomMargin = 50;
     const pageWidth = 612;
+    const textWidth = pageWidth - (margin * 2);
 
     const blocks = data.blocks || [];
 
     for (const block of blocks) {
-        const type = block.type;
-
-        // Check if we need a new page
-        if (yPosition < bottomMargin + 100) {
-            page = pdfDoc.addPage([612, 792]);
-            yPosition = 750;
-        }
+        const type = block.type?.toLowerCase();
 
         try {
             switch (type) {
-                case "header":
-                case "Header": {
+                case 'header': {
                     const headerData = block.data as any;
                     const level = headerData.level || 1;
                     const sizes = [24, 20, 18, 16, 14, 12];
                     const size = sizes[level - 1] || 16;
-                    const text = headerData.text || '';
+                    const rawText = headerData.text || '';
+                    const text = sanitizeText(stripHtml(rawText));
 
                     if (text.trim() === '') {
                         yPosition -= 10;
                         break;
                     }
 
-                    try {
-                        page.drawText(text, {
+                    // Check page space
+                    if (yPosition < bottomMargin + size + 20) {
+                        page = pdfDoc.addPage([612, 792]);
+                        yPosition = 750;
+                    }
+
+                    const lines = wrapText(text, textWidth, size, boldFont);
+                    for (const line of lines) {
+                        page.drawText(line, {
                             x: margin,
                             y: yPosition,
                             size,
                             font: boldFont,
                             color: rgb(0, 0, 0),
-                            maxWidth: pageWidth - (margin * 2),
                         });
-                    } catch (e) {
-                        const cleanText = text.replace(/[\u{1F300}-\u{1F9FF}]/gu, '').trim();
-                        if (cleanText) {
-                            page.drawText(cleanText, {
-                                x: margin,
-                                y: yPosition,
-                                size,
-                                font: boldFont,
-                                color: rgb(0, 0, 0),
-                                maxWidth: pageWidth - (margin * 2),
-                            });
-                        }
+                        yPosition -= size + 4;
                     }
-                    yPosition -= size + 12;
+                    yPosition -= 8;
                     break;
                 }
 
-                case "paragraph":
-                case "Paragraph": {
+                case 'paragraph': {
                     const paraData = block.data as any;
-                    const text = paraData.text || '';
+                    const rawText = paraData.text || '';
+                    const text = sanitizeText(stripHtml(rawText));
 
-                    page.drawText(text, {
-                        x: margin,
-                        y: yPosition,
-                        size: 11,
-                        font: normalFont,
-                        color: rgb(0, 0, 0),
-                        maxWidth: pageWidth - (margin * 2),
-                    });
-                    yPosition -= 28;
+                    if (text.trim() === '') {
+                        yPosition -= 10;
+                        break;
+                    }
+
+                    // Check page space
+                    if (yPosition < bottomMargin + 30) {
+                        page = pdfDoc.addPage([612, 792]);
+                        yPosition = 750;
+                    }
+
+                    const lines = wrapText(text, textWidth, 11, normalFont);
+                    for (const line of lines) {
+                        page.drawText(line, {
+                            x: margin,
+                            y: yPosition,
+                            size: 11,
+                            font: normalFont,
+                            color: rgb(0, 0, 0),
+                        });
+                        yPosition -= 18;
+                    }
+                    yPosition -= 8;
                     break;
                 }
 
-                case "list":
-                case "List": {
+                case 'list': {
                     const listData = block.data as any;
                     const items = listData.items || [];
 
-                    if (listData.style === "checklist") {
+                    if (items.length === 0) break;
+
+                    if (yPosition < bottomMargin + items.length * 20) {
+                        page = pdfDoc.addPage([612, 792]);
+                        yPosition = 750;
+                    }
+
+                    const listTextWidth = textWidth - 40;
+
+                    if (listData.style === 'checklist') {
                         for (const item of items) {
-                            const checked = item.meta?.checked ? "[x]" : "[ ]";
-                            const text = `${checked} ${item.content || ''}`;
-                            page.drawText(text, {
+                            const checked = item.meta?.checked ? '[x]' : '[ ]';
+                            const rawText = item.content || '';
+                            const text = sanitizeText(stripHtml(rawText));
+
+                            if (!text.trim()) continue;
+
+                            const lines = wrapText(text, listTextWidth, 11, normalFont);
+
+                            page.drawText(checked, {
                                 x: margin + 20,
                                 y: yPosition,
                                 size: 11,
                                 font: normalFont,
                                 color: rgb(0, 0, 0),
-                                maxWidth: pageWidth - (margin * 2) - 20,
                             });
-                            yPosition -= 18;
+
+                            for (let i = 0; i < lines.length; i++) {
+                                page.drawText(lines[i], {
+                                    x: margin + 40,
+                                    y: yPosition - i * 18,
+                                    size: 11,
+                                    font: normalFont,
+                                    color: rgb(0, 0, 0),
+                                });
+                            }
+                            yPosition -= lines.length * 18 + 4;
                         }
-                    } else if (listData.style === "ordered") {
+                    } else if (listData.style === 'ordered') {
                         for (let i = 0; i < items.length; i++) {
-                            const text = `${i + 1}. ${items[i].content || ''}`;
-                            page.drawText(text, {
+                            const rawText = items[i].content || '';
+                            const text = sanitizeText(stripHtml(rawText));
+
+                            if (!text.trim()) continue;
+
+                            const lines = wrapText(text, listTextWidth, 11, normalFont);
+
+                            page.drawText(`${i + 1}.`, {
                                 x: margin + 20,
                                 y: yPosition,
                                 size: 11,
                                 font: normalFont,
                                 color: rgb(0, 0, 0),
-                                maxWidth: pageWidth - (margin * 2) - 20,
                             });
-                            yPosition -= 18;
+
+                            for (let j = 0; j < lines.length; j++) {
+                                page.drawText(lines[j], {
+                                    x: margin + 40,
+                                    y: yPosition - j * 18,
+                                    size: 11,
+                                    font: normalFont,
+                                    color: rgb(0, 0, 0),
+                                });
+                            }
+                            yPosition -= lines.length * 18 + 4;
                         }
                     } else {
+                        // unordered
                         for (const item of items) {
-                            const text = `• ${item.content || ''}`;
-                            page.drawText(text, {
+                            const rawText = item.content || '';
+                            const text = sanitizeText(stripHtml(rawText));
+
+                            if (!text.trim()) continue;
+
+                            const lines = wrapText(text, listTextWidth, 11, normalFont);
+
+                            page.drawText('-', {
                                 x: margin + 20,
                                 y: yPosition,
                                 size: 11,
                                 font: normalFont,
                                 color: rgb(0, 0, 0),
-                                maxWidth: pageWidth - (margin * 2) - 20,
                             });
-                            yPosition -= 18;
+
+                            for (let i = 0; i < lines.length; i++) {
+                                page.drawText(lines[i], {
+                                    x: margin + 40,
+                                    y: yPosition - i * 18,
+                                    size: 11,
+                                    font: normalFont,
+                                    color: rgb(0, 0, 0),
+                                });
+                            }
+                            yPosition -= lines.length * 18 + 4;
                         }
                     }
-                    yPosition -= 10;
+                    yPosition -= 8;
                     break;
                 }
 
-                case "code":
-                case "Code": {
+                case 'code': {
                     const codeData = block.data as any;
-                    const code = codeData.code || '';
+                    const code = sanitizeText(codeData.code || '');
 
-                    const boxHeight = 50;
+                    if (!code.trim()) break;
+
+                    if (yPosition < bottomMargin + 80) {
+                        page = pdfDoc.addPage([612, 792]);
+                        yPosition = 750;
+                    }
+
+                    const lines = code.split('\n');
+                    const boxHeight = Math.max(50, lines.length * 16 + 20);
+
                     page.drawRectangle({
                         x: margin,
                         y: yPosition - boxHeight,
-                        width: pageWidth - (margin * 2),
+                        width: textWidth,
                         height: boxHeight,
                         color: rgb(0.94, 0.94, 0.94),
                         borderColor: rgb(0.8, 0.8, 0.8),
                         borderWidth: 1,
                     });
 
-                    page.drawText(code, {
-                        x: margin + 8,
-                        y: yPosition - 18,
-                        size: 9,
-                        font: normalFont,
-                        color: rgb(0, 0, 0),
-                        maxWidth: pageWidth - (margin * 2) - 16,
-                    });
+                    let codeY = yPosition - 15;
+                    for (const line of lines) {
+                        if (codeY < bottomMargin) {
+                            page = pdfDoc.addPage([612, 792]);
+                            codeY = 750;
+                        }
+                        page.drawText(line, {
+                            x: margin + 8,
+                            y: codeY,
+                            size: 9,
+                            font: normalFont,
+                            color: rgb(0, 0, 0),
+                            maxWidth: textWidth - 16,
+                        });
+                        codeY -= 14;
+                    }
                     yPosition -= boxHeight + 15;
                     break;
                 }
 
-                case "quote":
-                case "Quote": {
+                case 'quote': {
                     const quoteData = block.data as any;
-                    const cleanText = (quoteData.text || '').replace(/&nbsp;/g, ' ');
-                    const caption = quoteData.caption || 'Anonymous';
+                    const rawText = quoteData.text || '';
+                    const text = sanitizeText(stripHtml(rawText));
+                    const caption = sanitizeText(quoteData.caption || 'Anonymous');
 
-                    page.drawText(`"${cleanText}"`, {
-                        x: margin + 15,
-                        y: yPosition,
-                        size: 10,
-                        font: normalFont,
-                        color: rgb(0, 0, 0),
-                        maxWidth: pageWidth - (margin * 2) - 15,
-                    });
+                    if (!text.trim()) break;
 
-                    page.drawText(`— ${caption}`, {
+                    if (yPosition < bottomMargin + 50) {
+                        page = pdfDoc.addPage([612, 792]);
+                        yPosition = 750;
+                    }
+
+                    const quoteTextWidth = textWidth - 30;
+                    const quoteLines = wrapText(text, quoteTextWidth, 10, normalFont);
+
+                    let quoteY = yPosition;
+                    for (const line of quoteLines) {
+                        page.drawText(`"${line}"`, {
+                            x: margin + 15,
+                            y: quoteY,
+                            size: 10,
+                            font: normalFont,
+                            color: rgb(0, 0, 0),
+                        });
+                        quoteY -= 18;
+                    }
+
+                    page.drawText(`- ${caption}`, {
                         x: margin + 15,
-                        y: yPosition - 18,
+                        y: quoteY,
                         size: 9,
                         font: normalFont,
                         color: rgb(0.4, 0.4, 0.4),
-                        maxWidth: pageWidth - (margin * 2) - 15,
                     });
-                    yPosition -= 50;
+
+                    yPosition = quoteY - 20;
                     break;
                 }
 
-                case "warning":
-                case "Warning": {
+                case 'warning': {
                     const warningData = block.data as any;
-                    const title = warningData.title || 'Warning';
-                    const message = warningData.message || '';
+                    const title = sanitizeText(warningData.title || 'Warning');
+                    const message = sanitizeText(warningData.message || '');
 
-                    const boxHeight = 65;
+                    if (!title.trim() && !message.trim()) break;
+
+                    if (yPosition < bottomMargin + 80) {
+                        page = pdfDoc.addPage([612, 792]);
+                        yPosition = 750;
+                    }
+
+                    const warningTextWidth = textWidth - 40;
+                    const messageLines = wrapText(message, warningTextWidth, 10, normalFont);
+                    const boxHeight = Math.max(70, messageLines.length * 14 + 40);
+
                     page.drawRectangle({
                         x: margin,
                         y: yPosition - boxHeight,
-                        width: pageWidth - (margin * 2),
+                        width: textWidth,
                         height: boxHeight,
                         color: rgb(1, 0.96, 0.88),
                         borderColor: rgb(1, 0.84, 0.5),
                         borderWidth: 1,
                     });
 
-                    page.drawText(`⚠ ${title}`, {
+                    page.drawText(`[!] ${title}`, {
                         x: margin + 10,
                         y: yPosition - 15,
                         size: 11,
@@ -798,20 +951,28 @@ export async function editorJsToPDF(data: EditorJsData): Promise<Uint8Array> {
                         color: rgb(0, 0, 0),
                     });
 
-                    page.drawText(message, {
-                        x: margin + 10,
-                        y: yPosition - 38,
-                        size: 10,
-                        font: normalFont,
-                        color: rgb(0, 0, 0),
-                        maxWidth: pageWidth - (margin * 2) - 20,
-                    });
+                    let messageY = yPosition - 35;
+                    for (const line of messageLines) {
+                        page.drawText(line, {
+                            x: margin + 10,
+                            y: messageY,
+                            size: 10,
+                            font: normalFont,
+                            color: rgb(0, 0, 0),
+                        });
+                        messageY -= 14;
+                    }
+
                     yPosition -= boxHeight + 15;
                     break;
                 }
 
-                case "delimiter":
-                case "Delimiter": {
+                case 'delimiter': {
+                    if (yPosition < bottomMargin + 40) {
+                        page = pdfDoc.addPage([612, 792]);
+                        yPosition = 750;
+                    }
+
                     page.drawLine({
                         start: { x: margin, y: yPosition - 10 },
                         end: { x: pageWidth - margin, y: yPosition - 10 },
@@ -829,3 +990,4 @@ export async function editorJsToPDF(data: EditorJsData): Promise<Uint8Array> {
 
     return pdfDoc.save();
 }
+
