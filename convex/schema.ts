@@ -23,7 +23,8 @@ export default defineSchema({
         document: v.string(),
         whiteboard: v.string(),
         editedAt: v.optional(v.number()),
-    }),
+    })
+        .index("by_teamId", ["teamId"]),
 
     teamInvites: defineTable({
         teamId: v.id("teams"),

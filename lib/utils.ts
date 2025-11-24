@@ -69,128 +69,126 @@ export type SecureFileResult =
 
 
 export type EditorJsBlock =
-    | {
-        type: "header" | "Header";
-        data: {
-            text: string;
-            level: 1 | 2 | 3 | 4 | 5 | 6;
-        };
-        tunes?: {
-            alignmentTune?: {
-                alignment?: 'left' | 'center' | 'right' | 'justify';
-            };
-        };
-    }
-    | {
-        type: "paragraph" | "Paragraph";
-        data: {
-            text: string;
-        };
-        tunes?: {
-            alignmentTune?: {
-                alignment?: 'left' | 'center' | 'right' | 'justify';
-            };
-        };
-    }
-    | {
-        type: "list" | "List";
-        data: {
-            style: "unordered" | "ordered" | "checklist";
-            meta?: Record<string, any>;
-            items: {
-                content: string;
-                meta?: {
-                    checked?: boolean;
-                };
-                items?: any[];
-            }[];
-        };
-        tunes?: {
-            alignmentTune?: {
-                alignment?: 'left' | 'center' | 'right' | 'justify';
-            };
-        };
-    }
-    | {
-        type: "code" | "Code";
-        data: {
-            code: string;
-        };
-        tunes?: {
-            alignmentTune?: {
-                alignment?: 'left' | 'center' | 'right' | 'justify';
-            };
-        };
-    }
-    | {
-        type: "quote" | "Quote";
-        data: {
-            text: string;
-            caption?: string;
-            alignment?: string;
-        };
-        tunes?: {
-            alignmentTune?: {
-                alignment?: 'left' | 'center' | 'right' | 'justify';
-            };
-        };
-    }
-    | {
-        type: "warning" | "Warning";
-        data: {
-            title: string;
-            message: string;
-        };
-        tunes?: {
-            alignmentTune?: {
-                alignment?: 'left' | 'center' | 'right' | 'justify';
-            };
-        };
-    }
-    | {
-        type: "delimiter" | "Delimiter";
-        data: Record<string, unknown>;
-        tunes?: {
-            alignmentTune?: {
-                alignment?: 'left' | 'center' | 'right' | 'justify';
-            };
-        };
-    }
-    | {
-        type: "image" | "Image";
-        data: {
-            url?: string;
-            caption?: string;
-            withBorder?: boolean;
-            withBackground?: boolean;
-            stretched?: boolean;
-        };
-        tunes?: {
-            alignmentTune?: {
-                alignment?: 'left' | 'center' | 'right' | 'justify';
-            };
-        };
-    }
-    | {
-        type: "video" | "Video";
-        data: {
-            url?: string;
-            caption?: string;
-            withBorder?: boolean;
-            withBackground?: boolean;
-            stretched?: boolean;
-        };
-        tunes?: {
-            alignmentTune?: {
-                alignment?: 'left' | 'center' | 'right' | 'justify';
-            };
-        };
+  | {
+    type: "header" | "Header";
+    data: {
+      text: string;
+      level: 1 | 2 | 3 | 4 | 5 | 6;
     };
+    tunes?: {
+      alignmentTune?: {
+        alignment?: 'left' | 'center' | 'right' | 'justify';
+      };
+    };
+  }
+  | {
+    type: "paragraph" | "Paragraph";
+    data: {
+      text: string;
+    };
+    tunes?: {
+      alignmentTune?: {
+        alignment?: 'left' | 'center' | 'right' | 'justify';
+      };
+    };
+  }
+  | {
+    type: "list" | "List";
+    data: {
+      style: "unordered" | "ordered" | "checklist";
+      meta?: Record<string, any>;
+      items: {
+        content: string;
+        meta?: {
+          checked?: boolean;
+        };
+        items?: any[];
+      }[];
+    };
+    tunes?: {
+      alignmentTune?: {
+        alignment?: 'left' | 'center' | 'right' | 'justify';
+      };
+    };
+  }
+  | {
+    type: "code" | "Code";
+    data: {
+      code: string;
+    };
+    tunes?: {
+      alignmentTune?: {
+        alignment?: 'left' | 'center' | 'right' | 'justify';
+      };
+    };
+  }
+  | {
+    type: "quote" | "Quote";
+    data: {
+      text: string;
+      caption?: string;
+      alignment?: string;
+    };
+    tunes?: {
+      alignmentTune?: {
+        alignment?: 'left' | 'center' | 'right' | 'justify';
+      };
+    };
+  }
+  | {
+    type: "delimiter" | "Delimiter";
+    data: Record<string, unknown>;
+    tunes?: {
+      alignmentTune?: {
+        alignment?: 'left' | 'center' | 'right' | 'justify';
+      };
+    };
+  }
+  | {
+    type: "image" | "Image";
+    data: {
+      file: {
+        url: string;
+        width?: number;
+        height?: number;
+        imageId?: string;
+      };
+      caption?: string;
+      withBorder?: boolean;
+      withBackground?: boolean;
+      stretched?: boolean;
+    };
+    width?: number;
+    height?: number;
+    tunes?: {
+      alignmentTune?: {
+        alignment?: 'left' | 'center' | 'right' | 'justify';
+      };
+      CropperTune?: {
+        croppedImage?: string;
+      };
+    };
+  }
+  | {
+    type: "video" | "Video";
+    data: {
+      url?: string;
+      caption?: string;
+      withBorder?: boolean;
+      withBackground?: boolean;
+      stretched?: boolean;
+    };
+    tunes?: {
+      alignmentTune?: {
+        alignment?: 'left' | 'center' | 'right' | 'justify';
+      };
+    };
+  };
 
 export interface EditorJsData {
-    time?: number;
-    version?: string;
-    blocks: EditorJsBlock[];
+  time?: number;
+  version?: string;
+  blocks: EditorJsBlock[];
 }
 
 

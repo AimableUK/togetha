@@ -1,6 +1,7 @@
 import { EditorJsBlock, EditorJsData } from "@/lib/utils";
-import { Document, Paragraph, Packer, HeadingLevel, BorderStyle, TextRun, AlignmentType } from 'docx';
+import { Document, Paragraph, Packer, HeadingLevel, BorderStyle, TextRun, AlignmentType, ImageRun } from 'docx';
 import { PDFDocument, rgb } from 'pdf-lib';
+import { toast } from "sonner";
 
 function cleanTextForPlainText(text: string): string {
     text = text.replace(/&nbsp;/g, " ");
@@ -53,13 +54,6 @@ export function editorJsToText(data: EditorJsData) {
                 const cleanText = cleanTextForPlainText(quoteData.text);
                 const caption = cleanTextForPlainText(quoteData.caption || "Anonymous");
                 return `"${cleanText}"\n— ${caption}`;
-            }
-
-            if (type === "warning" || type === "Warning") {
-                const warningData = b.data as any;
-                const title = cleanTextForPlainText(warningData.title);
-                const message = cleanTextForPlainText(warningData.message);
-                return `⚠ ${title}\n${message}`;
             }
 
             if (type === "delimiter" || type === "Delimiter") {
@@ -124,12 +118,6 @@ export function editorJsToMarkdown(data: EditorJsData) {
                     const quoteData = b.data as any;
                     const cleanText = quoteData.text.replace(/&nbsp;/g, " ");
                     return `> ${cleanText}\n>\n> — ${quoteData.caption || "Anonymous"}`;
-                }
-
-                case "warning":
-                case "Warning": {
-                    const warningData = b.data as any;
-                    return `**⚠ ${warningData.title}**\n\n${warningData.message}`;
                 }
 
                 case "delimiter":
@@ -204,18 +192,6 @@ export function editorJsToHTML(data: EditorJsData) {
                             <p class="quote-text">"${cleanText}"</p>
                             <footer class="quote-author">— ${quoteData.caption || "Anonymous"}</footer>
                         </blockquote>`;
-                }
-
-                case "warning":
-                case "Warning": {
-                    const warningData = b.data as any;
-                    return `<div class="warning-box">
-                        <div class="warning-header">
-                            <span class="warning-icon">⚠</span>
-                            <strong>${warningData.title}</strong>
-                        </div>
-                        <p class="warning-message">${warningData.message}</p>
-                    </div>`;
                 }
 
                 case "delimiter":
@@ -585,31 +561,6 @@ const blockHandlers: Record<string, (block: EditorJsBlock) => Paragraph | Paragr
         });
     },
 
-    warning: (block) => {
-        const warningData = block.data as any;
-        const title = sanitizeText(warningData.title || 'Warning');
-        const message = sanitizeText(warningData.message || '');
-        return [
-            new Paragraph({
-                children: [
-                    new TextRun({ text: '[!] ', bold: true, size: 24 }),
-                    new TextRun({ text: title, bold: true, size: 24 }),
-                ],
-                shading: { fill: 'fff3cd' },
-                spacing: { before: 100, after: 100 },
-                indent: { left: 200, right: 200 },
-                alignment: getAlignment(block),
-            }),
-            new Paragraph({
-                children: [new TextRun({ text: message })],
-                shading: { fill: 'fff3cd' },
-                spacing: { before: 50, after: 200 },
-                indent: { left: 200, right: 200 },
-                alignment: getAlignment(block),
-            }),
-        ];
-    },
-
     delimiter: (block) => {
         return new Paragraph({
             children: [new TextRun({ text: '─'.repeat(50) })],
@@ -618,23 +569,69 @@ const blockHandlers: Record<string, (block: EditorJsBlock) => Paragraph | Paragr
         });
     },
 
+
     image: (block) => {
         const imageData = block.data as any;
-        const caption = sanitizeText(imageData.caption || 'Image');
-        return new Paragraph({
-            children: [new TextRun({ text: `[Image: ${caption}]`, italics: true })],
-            spacing: { after: 150 },
-            alignment: getAlignment(block),
-        });
-    },
+        const imageTunes = block.tunes as any;
 
-    video: (block) => {
-        const videoData = block.data as any;
-        const caption = sanitizeText(videoData.caption || 'Video');
+        const croppedImage = imageTunes?.CropperTune?.croppedImage;
+        const imageUrl = croppedImage || imageData.file?.url;
+
+        const width = imageData.width || 300;
+        const height = imageData.height || 200;
+
+        if (imageUrl && imageUrl.startsWith('data:image')) {
+            try {
+                // Extract image type from data URL
+                const typeMatch = imageUrl.match(/data:image\/(\w+);/);
+                let imageType: "png" | "jpg" | "gif" | "bmp" | "svg" = "png";
+
+                if (typeMatch && typeMatch[1]) {
+                    const type = typeMatch[1].toLowerCase();
+                    if (type === "jpeg") {
+                        imageType = "jpg";
+                    } else if (["jpg", "gif", "bmp", "svg"].includes(type)) {
+                        imageType = type as "jpg" | "gif" | "bmp" | "svg";
+                    }
+                }
+
+                // Skip SVG - use fallback text instead
+                if (imageType === "svg") {
+                    return new Paragraph({
+                        children: [new TextRun({ text: '[SVG Image]', italics: true })],
+                        spacing: { after: 150 },
+                        alignment: getAlignment(block),
+                    });
+                }
+
+                const base64Data = imageUrl.split(',')[1];
+                if (base64Data) {
+                    const buffer = Buffer.from(base64Data, 'base64');
+
+                    return new Paragraph({
+                        children: [
+                            new ImageRun({
+                                data: buffer,
+                                transformation: {
+                                    width: width,
+                                    height: height,
+                                },
+                                type: imageType,
+                            }),
+                        ],
+                        spacing: { after: 150 },
+                        alignment: getAlignment(block),
+                    });
+                }
+            } catch (error) {
+                toast.error('Error processing image(s). Please Try Again');
+            }
+        }
+
+        // Fallback
         return new Paragraph({
-            children: [new TextRun({ text: `[Video: ${caption}]`, italics: true })],
+            children: [new TextRun({ text: '[Image]' })],
             spacing: { after: 150 },
-            alignment: getAlignment(block),
         });
     },
 };
@@ -960,56 +957,6 @@ export async function editorJsToPDF(data: EditorJsData): Promise<Uint8Array> {
                     });
 
                     yPosition = quoteY - 20;
-                    break;
-                }
-
-                case 'warning': {
-                    const warningData = block.data as any;
-                    const title = sanitizeText(warningData.title || 'Warning');
-                    const message = sanitizeText(warningData.message || '');
-
-                    if (!title.trim() && !message.trim()) break;
-
-                    if (yPosition < bottomMargin + 80) {
-                        page = pdfDoc.addPage([612, 792]);
-                        yPosition = 750;
-                    }
-
-                    const warningTextWidth = textWidth - 40;
-                    const messageLines = wrapText(message, warningTextWidth, 10, normalFont);
-                    const boxHeight = Math.max(70, messageLines.length * 14 + 40);
-
-                    page.drawRectangle({
-                        x: margin,
-                        y: yPosition - boxHeight,
-                        width: textWidth,
-                        height: boxHeight,
-                        color: rgb(1, 0.96, 0.88),
-                        borderColor: rgb(1, 0.84, 0.5),
-                        borderWidth: 1,
-                    });
-
-                    page.drawText(`[!] ${title}`, {
-                        x: margin + 10,
-                        y: yPosition - 15,
-                        size: 11,
-                        font: boldFont,
-                        color: rgb(0, 0, 0),
-                    });
-
-                    let messageY = yPosition - 35;
-                    for (const line of messageLines) {
-                        page.drawText(line, {
-                            x: margin + 10,
-                            y: messageY,
-                            size: 10,
-                            font: normalFont,
-                            color: rgb(0, 0, 0),
-                        });
-                        messageY -= 14;
-                    }
-
-                    yPosition -= boxHeight + 15;
                     break;
                 }
 

@@ -409,3 +409,21 @@ h6.ce-header {
 .menu-exit {
   animation: slideDown 0.3s ease-out forwards;
 }
+
+/* Editor JS Resizing */
+/* .ce-block__content img {
+  max-width: 100%;
+  height: auto;
+  resize: both;
+  overflow: auto;
+} */
+
+.crop-button {
+  background-color: var(--secondary) !important;
+  color: var(--foreground) !important;
+}
+
+#dropdown option {
+  background-color: var(--secondary) !important;
+  color: var(--foreground) !important;
+}
