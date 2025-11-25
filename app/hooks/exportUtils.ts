@@ -1,5 +1,5 @@
 import { EditorJsBlock, EditorJsData } from "@/lib/utils";
-import { Document, Paragraph, Packer, HeadingLevel, BorderStyle, TextRun, AlignmentType, ImageRun } from 'docx';
+import { Document, Paragraph, Packer, HeadingLevel, BorderStyle, TextRun, AlignmentType, ImageRun, Footer } from 'docx';
 import { PDFDocument, rgb } from 'pdf-lib';
 import { toast } from "sonner";
 
@@ -659,7 +659,42 @@ export async function editorJsToDOCX(data: EditorJsData): Promise<Buffer> {
         children.push(new Paragraph(''));
     }
 
-    return Packer.toBuffer(new Document({ sections: [{ children }] }));
+    return Packer.toBuffer(new Document({
+        creator: 'Togetha User',
+        title: "Togetha Document",
+        subject: "Document created with Togetha",
+        sections: [
+            {
+                children,
+                footers: {
+                    default: new Footer({
+                        children: [
+                            new Paragraph({
+                                children: [
+                                    new TextRun({
+                                        text: "created with TOGETHA",
+                                        italics: true,
+                                        color: "29374c",
+                                        size: 20,
+                                    }),
+                                ],
+                                alignment: AlignmentType.RIGHT,
+                                spacing: { before: 200 },
+                                border: {
+                                    top: {
+                                        color: "29374c",
+                                        space: 1,
+                                        style: BorderStyle.SINGLE,
+                                        size: 6,
+                                    },
+                                },
+                            }),
+                        ],
+                    }),
+                },
+            },
+        ],
+    }));
 }
 
 // --- PDF ---
