@@ -1,6 +1,7 @@
 import React, { useEffect, useState, useRef } from "react";
 import {
   Excalidraw,
+  FONT_FAMILY,
   MainMenu,
   WelcomeScreen,
   exportToCanvas,
@@ -116,6 +117,9 @@ const Canvas = ({ fileId, fileData, setSavingWorkspace }: CanvasProps) => {
         <Excalidraw
           initialData={{
             elements: fileData?.whiteboard && JSON.parse(fileData.whiteboard),
+            appState: {
+              currentItemFontFamily: FONT_FAMILY.Nunito,
+            },
           }}
           onChange={(elements) => setWhiteBoardData(JSON.stringify(elements))}
           excalidrawAPI={(api) => (excalidrawAPIRef.current = api)}
