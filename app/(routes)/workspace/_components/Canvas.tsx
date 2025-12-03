@@ -13,7 +13,7 @@ import { useMutation } from "convex/react";
 import { api } from "@/convex/_generated/api";
 import { FILE } from "@/lib/utils";
 import { ImageDown } from "lucide-react";
-
+// 
 interface CanvasProps {
   fileId: any;
   fileData: FILE;
