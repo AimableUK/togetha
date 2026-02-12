@@ -15,7 +15,7 @@ export default async function AccessRestricted() {
         redirect("/dashboard");
     }
 
-    const firstName = user?.given_name || user?.email?.split('@')[0] || 'User';
+    const firstName = user?.family_name || user?.email?.split('@')[0] || 'User';
 
     return (
         <div className="min-h-screen bg-background flex items-center justify-center p-4">
