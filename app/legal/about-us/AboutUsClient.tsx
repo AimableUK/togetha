@@ -169,7 +169,7 @@ const AboutUs = () => {
               <div className="md:col-span-1 text-center">
                 <div className="w-fit rounded-full border-2 opacity-95 flex items-center justify-center mx-auto mb-6 text-4xl">
                   <Image
-                    src="/Aimable.jpg"
+                    src="/Aimable.png"
                     alt="Ukobizaba Aimable Picture"
                     width={120}
                     height={120}
