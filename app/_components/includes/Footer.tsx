@@ -141,6 +141,17 @@ const Footer = () => {
             Copyright &copy;
             {new Date().getFullYear()} Togetha. All Rights Reserved.
           </div>
+          <p className="text-sm">
+            A{" "}
+            <a
+              href="https://malos-tech.vercel.app"
+              target="_blank"
+              className="font-bold cursor-pointer"
+            >
+              Malos Tech
+            </a>{" "}
+            product
+          </p>
         </div>
       </div>
     </footer>
