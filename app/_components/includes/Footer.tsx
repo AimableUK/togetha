@@ -135,9 +135,9 @@ const Footer = () => {
           </div>
         </div>
       </div>
-      <div className="bg-accent/5 py-4">
-        <div className="flex flex-wrap justify-between text-sm">
-          <div className="px-4 w-full text-center">
+      <div className="bg-accent/5 p-4">
+        <div className="flex flex-row flex-wrap justify-between text-sm">
+          <div className="px-4 text-center">
             Copyright &copy;
             {new Date().getFullYear()} Togetha. All Rights Reserved.
           </div>
